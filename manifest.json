@@ -1,7 +1,7 @@
 {
     "name" : "uu-company",
     "appid" : "__UNI__C3677E8",
-    "description" : "应用描述",
+    "description" : "人人点评，帮助你我他",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,
@@ -94,7 +94,12 @@
         "devServer" : {
             "https" : false
         },
-        "title" : "人人点评"
+        "title" : "人人点评",
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        }
     },
     "vueVersion" : "3"
 }
