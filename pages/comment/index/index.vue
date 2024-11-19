@@ -8,15 +8,39 @@
           <text class="app-subtitle">匿名化点评，避雷指南</text>
         </view>
         <view class="nav-right">
-          <view class="nav-btn" @tap="goToComplaint">
-            <text class="icon">📢</text>
+          <view class="nav-btn theme-btn" @tap="showThemeSelector">
+            <text class="icon">🎨</text>
           </view>
         </view>
       </view>
     </view>
-
+    <view class="intro-section" :style="{ marginTop: statusBarHeight + 88 + 'rpx' }">
+      <view class="intro-cards">
+        <view class="intro-card glass-effect" @tap="showTotalReviews">
+          <view class="card-content">
+            <text class="count">{{ totalReviews || '0' }}</text>
+            <text class="label">总点评</text>
+          </view>
+          <text class="icon">📝</text>
+        </view>
+        <view class="intro-card glass-effect" @tap="showTotalCompanies">
+          <view class="card-content">
+            <text class="count">{{ totalCompanies || '0' }}</text>
+            <text class="label">已收录</text>
+          </view>
+          <text class="icon">🏢</text>
+        </view>
+        <view class="intro-card glass-effect" @tap="showTodayReviews">
+          <view class="card-content">
+            <text class="count">{{ todayReviews || '0' }}</text>
+            <text class="label">今日新增</text>
+          </view>
+          <text class="icon">🔥</text>
+        </view>
+      </view>
+    </view>
     <!-- 搜索区域 -->
-    <view class="search-section" :style="{ marginTop: statusBarHeight + 88 + 'rpx' }">
+    <view class="search-section" :style="{ marginTop: statusBarHeight  + 'rpx' }">
       <view class="search-wrapper glass-effect">
         <view class="search-input-box">
           <text class="icon">🔍</text>
@@ -66,7 +90,10 @@
 
           <view class="card-content">
             <view class="cons-box" v-if="company.cons">
-              <text class="cons-text">{{ company.cons }}</text>
+              <text class="cons-text" :class="{ 'truncated': !company.isExpanded }">{{ company.cons }}</text>
+              <text v-if="isTextOverflow(company.cons)" class="expand-btn" @tap.stop="toggleExpand(company)">
+                {{ company.isExpanded ? '收起' : '查看更多' }}
+              </text>
             </view>
           </view>
 
@@ -148,6 +175,7 @@
         </view>
       </view>
     </uni-popup>
+   
   </view>
 </template>
 
@@ -197,12 +225,16 @@ const getCompanyList = async (page = 1, isLoadMore = false) => {
     })
 
     if (result.code === 0) {
+      const processedData = result.data.map((item: any) => ({
+        ...item,
+        isExpanded: false
+      }));
+      
       if (isLoadMore) {
-        companies.value = [...companies.value, ...result.data]
+        companies.value = [...companies.value, ...processedData]
       } else {
-        // 添加一���小延迟,让骨架屏效果更明显
         setTimeout(() => {
-          companies.value = result.data
+          companies.value = processedData
           loading.value = false
         }, 500)
       }
@@ -246,19 +278,23 @@ const handleClear = () => {
 // 跳转到新增页面
 const goToAdd = () => {
   uni.navigateTo({
-    url: '/pages/add/add-review'
+    url: '/pages/comment/add/add-review'
   })
 }
 
 const goToDetail = (id: string) => {
   uni.navigateTo({
-    url: `/pages/detail/detail?id=${id}`
+    url: `/pages/comment/detail/detail?id=${id}`
   })
 }
 
 // 检查是否首次访问
 onMounted(() => {
-  // disclaimerPopup.value.open()
+  const hasShownDisclaimer = uni.getStorageSync('hasShownDisclaimer')
+  if (!hasShownDisclaimer) {
+    // 首次访问，显示免责声明
+    disclaimerPopup.value.open()
+  }
   getCompanyList()
 })
 
@@ -359,16 +395,158 @@ onMounted(async () => {
   getCompanyList()
 })
 
+// 判断文本是否超过5行
+const isTextOverflow = (text: string) => {
+  return text.length > 100
+}
+
+// 切换展开/收起状态
+const toggleExpand = (company: any) => {
+  company.isExpanded = !company.isExpanded
+}
+
+// 添加统计数据的响应式变量
+const totalReviews = ref(0)
+const totalCompanies = ref(0)
+const todayReviews = ref(0)
+
+// 点击事件处理
+const showTotalReviews = () => {
+  uni.showToast({
+    title: `总计 ${totalReviews.value} 条点评`,
+    icon: 'none'
+  })
+}
+
+const showTotalCompanies = () => {
+  uni.showToast({
+    title: `已收录 ${totalCompanies.value} 家企业`,
+    icon: 'none'
+  })
+}
+
+const showTodayReviews = () => {
+  uni.showToast({
+    title: `今日新增 ${todayReviews.value} 条点评`,
+    icon: 'none'
+  })
+}
+
+// 获取统计数据
+const getStatistics = async () => {
+  try {
+    const { result } = await uniCloud.callFunction({
+      name: 'getStatistics'
+    })
+    if (result.code === 0) {
+      totalReviews.value = result.data.totalReviews
+      totalCompanies.value = result.data.totalCompanies
+      todayReviews.value = result.data.todayReviews
+    }
+  } catch (error) {
+    console.error('获取统计数据失败:', error)
+  }
+}
+
+// 在 onMounted 中调用
+onMounted(async () => {
+  await getStatistics()
+  // ... 其他已有的代码
+})
+
+// 主题相关
+const currentTheme = ref(uni.getStorageSync('theme') || 'default')
+
+const themes = [
+  { name: 'default', label: '默认紫' },
+  { name: 'blue', label: '深邃蓝' },
+  { name: 'green', label: '自然绿' },
+  { name: 'red', label: '热情红' }
+]
+
+const changeTheme = (theme: string) => {
+  currentTheme.value = theme
+  document.documentElement.setAttribute('data-theme', theme)
+  uni.setStorageSync('theme', theme)
+  
+  // 显示切换提示
+  uni.showToast({
+    title: `已切换至${themes.find(t => t.name === theme)?.label}主题`,
+    icon: 'none'
+  })
+}
+
+// 在导航栏添加主题切换按钮
+const showThemeSelector = () => {
+  uni.showActionSheet({
+    itemList: themes.map(t => t.label),
+    success: (res) => {
+      changeTheme(themes[res.tapIndex].name)
+    }
+  })
+}
+
+// 初始化主题
+onMounted(() => {
+  const savedTheme = uni.getStorageSync('theme')
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme)
+  }
+})
+
 </script>
 
 <style lang="scss">
+// 定义主题变量
+:root {
+  // 默认主题（紫色）
+  --primary-gradient: linear-gradient(135deg, #7C3AED, #4F46E5);
+  --primary-color: #7C3AED;
+  --primary-light: rgba(124, 58, 237, 0.1);
+  
+  // 背景色
+  --bg-gradient: linear-gradient(135deg, #F8FAFC, #EEF2FF);
+  --card-bg: rgba(255, 255, 255, 0.7);
+  
+  // 文字颜色
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-tertiary: #999;
+}
+
+// 蓝色主题
+[data-theme="blue"] {
+  --primary-gradient: linear-gradient(135deg, #0EA5E9, #2563EB);
+  --primary-color: #0EA5E9;
+  --primary-light: rgba(14, 165, 233, 0.1);
+  --bg-gradient: linear-gradient(135deg, #F0F9FF, #EFF6FF);
+}
+
+// 绿色主题
+[data-theme="green"] {
+  --primary-gradient: linear-gradient(135deg, #10B981, #059669);
+  --primary-color: #10B981;
+  --primary-light: rgba(16, 185, 129, 0.1);
+  --bg-gradient: linear-gradient(135deg, #ECFDF5, #F0FDF4);
+}
+
+// 红色主题
+[data-theme="red"] {
+  --primary-gradient: linear-gradient(135deg, #EF4444, #DC2626);
+  --primary-color: #EF4444;
+  --primary-light: rgba(239, 68, 68, 0.1);
+  --bg-gradient: linear-gradient(135deg, #FEF2F2, #FEE2E2);
+}
+
+// 导航栏样式
 .nav-bar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 999;
-  background: linear-gradient(135deg, #4A90E2, #5C6BC0);
+  background: var(--primary-gradient);
+  box-shadow: 0 4rpx 30rpx rgba(124, 58, 237, 0.2);
 
   .nav-content {
     height: 88rpx;
@@ -399,7 +577,7 @@ onMounted(async () => {
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
         transition: all 0.3s;
 
         .icon {
@@ -408,7 +586,7 @@ onMounted(async () => {
 
         &:active {
           transform: scale(0.9);
-          background: rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.25);
         }
       }
     }
@@ -488,15 +666,15 @@ onMounted(async () => {
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f6f9fc 0%, #edf1f7 100%);
+  background: var(--bg-gradient);
   padding: 30rpx;
 }
 
 .glass-effect {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8rpx 32rpx rgba(124, 58, 237, 0.08);
 }
 
 .header {
@@ -549,11 +727,16 @@ onMounted(async () => {
       font-size: 32rpx;
       font-weight: 600;
       color: #1a1a1a;
+      max-width: 70%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .rating-wrapper {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
 
       .rating-text {
         margin-left: 12rpx;
@@ -566,15 +749,60 @@ onMounted(async () => {
 
   .card-content {
     .cons-box {
-      background: rgba(255, 184, 0, 0.1);
+      position: relative;
+      background: var(--primary-light);
       padding: 20rpx;
       border-radius: 12rpx;
-      border-left: 4rpx solid #FFB800;
+      border-left: 4rpx solid var(--primary-color);
 
       .cons-text {
         font-size: 28rpx;
         color: #666;
         line-height: 1.6;
+        
+        &.truncated {
+          display: -webkit-box;
+          -webkit-line-clamp: 5;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      }
+      
+      .expand-btn {
+        display: inline-block;
+        font-size: 26rpx;
+        color: var(--primary-color);
+        padding: 4rpx 20rpx;
+        margin-top: 16rpx;
+        background: var(--primary-light);
+        border-radius: 100rpx;
+        transition: all 0.3s ease;
+        
+        &:active {
+          transform: scale(0.95);
+          background: rgba(124, 58, 237, 0.2);
+        }
+      }
+
+      // 添加渐变遮罩
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60rpx;
+        background: linear-gradient(to bottom, rgba(124, 58, 237, 0), rgba(124, 58, 237, 0.1));
+        pointer-events: none; // 确保不影响点击事件
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      // 只在文本被截断时显示渐变遮罩
+      .cons-text.truncated + .expand-btn {
+        & + .cons-box::after {
+          opacity: 1;
+        }
       }
     }
   }
@@ -615,7 +843,7 @@ onMounted(async () => {
     .city-tag {
       font-size: 24rpx;
       color: #666;
-      background: rgba(0, 122, 255, 0.1);
+      background: rgba(124, 58, 237, 0.1);
       padding: 6rpx 16rpx;
       border-radius: 4rpx;
     }
@@ -641,12 +869,14 @@ onMounted(async () => {
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
 
+    &:not(.complaint-btn) {
+      background: var(--primary-gradient);
+      .icon { color: #fff; }
+    }
+    
     &.complaint-btn {
-      background: rgba(255, 59, 48, 0.1);
-
-      .icon {
-        font-size: 36rpx;
-      }
+      background: var(--secondary-gradient);
+      .icon { color: #fff; }
     }
 
     &:active {
@@ -686,7 +916,7 @@ onMounted(async () => {
     align-items: center;
     justify-content: center;
     padding: 20rpx 40rpx;
-    background: linear-gradient(135deg, #3B7FFF, #007AFF);
+    background: var(--primary-gradient);
     border-radius: 40rpx;
     box-shadow: 0 8rpx 16rpx rgba(0, 122, 255, 0.1);
     font-size: 28rpx;
@@ -733,7 +963,7 @@ onMounted(async () => {
     border-top: 1rpx solid #eee;
 
     .confirm-btn {
-      background: linear-gradient(135deg, #3B7FFF, #007AFF);
+      background: var(--primary-gradient);
       color: #fff;
       border-radius: 100rpx;
       font-size: 28rpx;
@@ -760,7 +990,7 @@ onMounted(async () => {
       height: 36rpx;
       margin-right: 12rpx;
       border: 3rpx solid #e5e5e5;
-      border-top-color: #3B7FFF;
+      border-top-color: #7C3AED;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -920,10 +1150,10 @@ onMounted(async () => {
       .copy-btn {
         margin-left: 20rpx;
         padding: 8rpx 24rpx;
-        background: rgba(59, 127, 255, 0.1);
+        background: rgba(124, 58, 237, 0.1);
         border-radius: 100rpx;
         font-size: 24rpx;
-        color: #3B7FFF;
+        color: #7C3AED;
         border: none;
         line-height: 1.5;
         
@@ -938,7 +1168,7 @@ onMounted(async () => {
     padding: 20rpx 30rpx 30rpx;
     
     .confirm-btn {
-      background: linear-gradient(135deg, #3B7FFF, #007AFF);
+      background: var(--primary-gradient);
       color: #fff;
       border-radius: 100rpx;
       font-size: 28rpx;
@@ -948,6 +1178,53 @@ onMounted(async () => {
       
       &:active {
         transform: scale(0.98);
+      }
+    }
+  }
+}
+
+.intro-section {
+  padding: 0 30rpx;
+  margin-bottom: 30rpx;
+
+  .intro-cards {
+    display: flex;
+    gap: 20rpx;
+    
+    .intro-card {
+      flex: 1;
+      padding: 20rpx;
+      border-radius: 16rpx;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      
+      &:active {
+        transform: scale(0.98);
+      }
+      
+      .card-content {
+        display: flex;
+        flex-direction: column;
+        
+        .count {
+          font-size: 32rpx;
+          font-weight: 600;
+          color: var(--primary-color);
+          margin-bottom: 4rpx;
+          font-family: 'DIN';
+        }
+        
+        .label {
+          font-size: 24rpx;
+          color: #666;
+        }
+      }
+      
+      .icon {
+        font-size: 32rpx;
+        opacity: 0.8;
       }
     }
   }

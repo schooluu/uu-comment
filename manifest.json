@@ -92,7 +92,7 @@
             "base" : "./"
         },
         "devServer" : {
-            "https" : true
+            "https" : false
         },
         "title" : "人人点评",
         "optimization" : {

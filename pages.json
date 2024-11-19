@@ -1,23 +1,33 @@
 {
   "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
-      "path": "pages/index/index",
+      "path": "pages/comment/index/index",
       "style": {
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/detail/detail",
+      "path": "pages/comment/detail/detail",
       "style": {
-        "navigationBarTitleText": "详情",
-        "enablePullDownRefresh": false
+       "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/add/add-review",
+      "path": "pages/comment/add/add-review",
       "style": {
-        "navigationBarTitleText": "新增",
-        "enablePullDownRefresh": false
+       "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/dance/home/index",
+      "style": {
+       "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/dance/course/index",
+      "style": {
+       "navigationStyle": "custom"
       }
     }
 ],

@@ -1,76 +1,96 @@
 <template>
   <view class="container">
-    <!-- 公司基本信息 -->
-    <view class="company-info" v-if="company">
-      <view class="header">
-        <text class="name">{{company.companyName}}</text>
-        <view class="stats-box">
-          <view class="rating-box">
-            <uni-rate :value="company.rating" size="15"/>
-            <text class="review-count">{{company.reviewCount || 0}}条点评</text>
+    <!-- 自定义导航栏 -->
+    <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="nav-content">
+        <view class="nav-left">
+          <view class="back-btn" @tap="goBack">
+            <text class="icon">←</text>
           </view>
-          <text class="view-count">
-            <text class="icon">👁️</text>
-            {{company.viewCount || 0}}
-          </text>
+          <text class="nav-title">详情</text>
         </view>
-        <text class="address">{{company.address}}</text>
-      </view>
-    </view>
-    <view class="company-info comments-section" v-if="company">
-      <view class="section-title">
-        <text class="title">评价</text>
-      </view>
-      <view style="color: darkorange;">
-        {{company.cons}}
-      </view>
-    </view>
-    <!-- 评论列表 -->
-    <view class="comments-section">
-      <view class="section-title">
-        <text class="title">看法</text>
-        <text class="count">({{comments.length}})</text>
-      </view>
-      
-      <view class="comment-list">
-        <view 
-          v-for="comment in comments" 
-          :key="comment._id"
-          class="comment-item"
-        >
-          <view class="comment-header">
-            <view class="user-info">
-              <text class="username">{{comment.userName || '匿名用户'}}</text>
-              <uni-rate :value="comment.rating" size="15"/>
-            </view>
-            <text class="time">{{formatTime(comment.createdAt)}}</text>
-          </view>
-          
-          <view class="comment-content">
-            <text class="text">{{comment.content}}</text>
+        <view class="nav-right">
+          <view class="share-btn" @tap="handleShare">
+            <text class="icon">📤</text>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 评论输入框 -->
-    <view class="comment-form">
-      <view class="rating-input">
-        <uni-rate v-model="newRating" size="20"/>
+    <!-- 调整原有内容的上边距 -->
+    <view class="main-content" :style="{ paddingTop: statusBarHeight + 88 + 'rpx' }">
+      <!-- 公司基本信息 -->
+      <view class="company-info" v-if="company">
+        <view class="header">
+          <text class="name">{{company.companyName}}</text>
+          <view class="stats-box">
+            <view class="rating-box">
+              <uni-rate :value="company.rating" size="15"/>
+              <text class="review-count">{{company.reviewCount || 0}}条点评</text>
+            </view>
+            <text class="view-count">
+              <text class="icon">👁️</text>
+              {{company.viewCount || 0}}
+            </text>
+          </view>
+          <text class="address">{{company.address}}</text>
+        </view>
       </view>
-      <input 
-        class="input"
-        v-model="newComment"
-        placeholder="说说你的看法..."
-        @confirm="submitComment"
-      />
-      <button 
-        class="submit-btn"
-        @click="submitComment"
-      >
-        <text class="icon">✏️</text>
-        <text>发表</text>
-      </button>
+      <view class="company-info comments-section" v-if="company">
+        <view class="section-title">
+          <text class="title">评价</text>
+        </view>
+        <view style="color: darkorange;">
+          {{company.cons}}
+        </view>
+      </view>
+      <!-- 评论列表 -->
+      <view class="comments-section">
+        <view class="section-title">
+          <text class="title">看法</text>
+          <text class="count">({{comments.length}})</text>
+        </view>
+        
+        <view class="comment-list">
+          <view 
+            v-for="comment in comments" 
+            :key="comment._id"
+            class="comment-item"
+          >
+            <view class="comment-header">
+              <view class="user-info">
+                <text class="username">{{comment.userName || '匿名用户'}}</text>
+                <uni-rate :value="comment.rating" size="15"/>
+              </view>
+              <text class="time">{{formatTime(comment.createdAt)}}</text>
+            </view>
+            
+            <view class="comment-content">
+              <text class="text">{{comment.content}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 评论输入框 -->
+      <view class="comment-form">
+        <view class="rating-input">
+          <uni-rate v-model="newRating" size="20"/>
+        </view>
+        <input 
+          class="input"
+          v-model="newComment"
+          placeholder="说说你的看法..."
+          @confirm="submitComment"
+        />
+        <button 
+          class="submit-btn"
+          @click="submitComment"
+        >
+          <text class="icon">✏️</text>
+          <text>发表</text>
+        </button>
+      </view>
     </view>
   </view>
 </template>
@@ -396,6 +416,85 @@
   opacity: 0;
   transform: translateX(-30rpx);
 }
+
+// 导航栏样式
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: var(--primary-gradient);
+  box-shadow: 0 4rpx 30rpx rgba(0, 0, 0, 0.1);
+
+  .nav-content {
+    height: 88rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30rpx;
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      
+      .back-btn {
+        width: 64rpx;
+        height: 64rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        margin-right: 20rpx;
+        transition: all 0.3s;
+        
+        .icon {
+          font-size: 36rpx;
+          color: #fff;
+        }
+        
+        &:active {
+          transform: scale(0.9);
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+
+      .nav-title {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #fff;
+      }
+    }
+
+    .nav-right {
+      .share-btn {
+        width: 64rpx;
+        height: 64rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        transition: all 0.3s;
+        
+        .icon {
+          font-size: 32rpx;
+        }
+        
+        &:active {
+          transform: scale(0.9);
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
+  }
+}
+
+// 主内容区域样式调整
+.main-content {
+  padding: 30rpx;
+}
 </style>
 
 <script setup lang="ts">
@@ -408,6 +507,22 @@ const comments = ref<any[]>([])
 // 评论表单数据
 const newRating = ref(0)
 const newComment = ref('')
+
+// 获取状态栏高度
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+
+// 返回上一页
+const goBack = () => {
+  uni.navigateBack()
+}
+
+// 分享功能
+const handleShare = () => {
+  uni.showShareMenu({
+    withShareTicket: true,
+    menus: ['shareAppMessage', 'shareTimeline']
+  })
+}
 
 // 获取公司详情
 const getCompanyDetail = async (id: string) => {

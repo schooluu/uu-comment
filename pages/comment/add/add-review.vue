@@ -1,6 +1,24 @@
 <template>
   <view class="container">
-    <view class="form-box">
+    <!-- 自定义导航栏 -->
+    <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="nav-content">
+        <view class="nav-left">
+          <view class="back-btn" @tap="goBack">
+            <text class="icon">←</text>
+          </view>
+          <text class="nav-title">发布点评</text>
+        </view>
+        <view class="nav-right">
+          <view class="draft-btn" @tap="saveDraft">
+            <text class="icon">📝</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 调整表单容器的上边距 -->
+    <view class="form-box" :style="{ marginTop: statusBarHeight + 88 + 'rpx' }">
       <!-- 标题名称 -->
       <view class="form-item">
         <text class="label">标题</text>
@@ -26,6 +44,7 @@
         <text class="label">评价</text>
         <textarea 
           class="textarea"
+          maxlength="99999"
           v-model="formData.cons"
           placeholder="请输入内容..."
         />
@@ -63,7 +82,6 @@
       </button>
     </view>
   </view>
-  // 添加城市选择弹窗
 <uni-popup ref="cityPopup" type="bottom">
   <view class="city-popup">
     <view class="popup-header">
@@ -136,7 +154,7 @@ const encryptData = (data: any) => {
 const validateForm = () => {
   if (!formData.companyName) {
     uni.showToast({
-      title: '请输入公司名称',
+      title: '请输入标题',
       icon: 'none'
     })
     return false
@@ -157,7 +175,7 @@ const validateForm = () => {
   }
   if (!formData.city) {
     uni.showToast({
-      title: '请选择城市',
+      title: '请选城市',
       icon: 'none'
     })
     return false
@@ -306,6 +324,22 @@ const closeCityPopup = () => {
 onMounted(async () => {
   await getProvinces()
 })
+
+// 获取状态栏高度
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+
+// 返回上一页
+const goBack = () => {
+  uni.navigateBack()
+}
+
+// 保存草稿
+const saveDraft = () => {
+  uni.showToast({
+    title: '已保存草稿',
+    icon: 'success'
+  })
+}
 </script>
 
 <style lang="scss">
@@ -410,13 +444,13 @@ onMounted(async () => {
   width: 100%;
   height: 96rpx;
   line-height: 96rpx;
-  background: linear-gradient(135deg, #007AFF, #0056b3);
+  background: var(--primary-gradient, linear-gradient(135deg, #7C3AED, #4F46E5));
   color: #fff;
   border-radius: 48rpx;
   font-size: 32rpx;
   margin-top: 60rpx;
   font-weight: 500;
-  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.2);
+  box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.2);
   transition: all 0.3s;
   animation: pulse 2s infinite;
   
@@ -450,13 +484,13 @@ onMounted(async () => {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.2);
+    box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.2);
   }
   50% {
-    box-shadow: 0 4rpx 20rpx rgba(0, 122, 255, 0.4);
+    box-shadow: 0 4rpx 20rpx rgba(124, 58, 237, 0.4);
   }
   100% {
-    box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.2);
+    box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.2);
   }
 }
 
@@ -506,7 +540,7 @@ onMounted(async () => {
     }
     
     .confirm {
-      color: #007AFF;
+      color: var(--primary-color, #7C3AED);
       font-weight: 500;
     }
   }
@@ -539,17 +573,17 @@ onMounted(async () => {
         }
         
         &.active {
-          background: rgba(0, 122, 255, 0.1);
+          background: rgba(124, 58, 237, 0.1);
           transform: translateX(4rpx);
           
           .name {
-            color: #007AFF;
+            color: var(--primary-color, #7C3AED);
             font-weight: 500;
           }
         }
         
         &:active {
-          background: rgba(0, 122, 255, 0.05);
+          background: rgba(124, 58, 237, 0.05);
         }
       }
     }
@@ -604,6 +638,85 @@ onMounted(async () => {
   }
   to {
     transform: translateX(0);
+  }
+}
+
+// 导航栏样式
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: var(--primary-gradient, linear-gradient(135deg, #007AFF, #0056b3));
+  box-shadow: 0 4rpx 30rpx rgba(0, 0, 0, 0.1);
+
+  .nav-content {
+    height: 88rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30rpx;
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      
+      .back-btn {
+        width: 64rpx;
+        height: 64rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        margin-right: 20rpx;
+        transition: all 0.3s;
+        
+        .icon {
+          font-size: 36rpx;
+          color: #fff;
+        }
+        
+        &:active {
+          transform: scale(0.9);
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+      
+      .nav-title {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #fff;
+      }
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+      
+      .draft-btn {
+        width: 64rpx;
+        height: 64rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        margin-left: 20rpx;
+        transition: all 0.3s;
+        
+        .icon {
+          font-size: 36rpx;
+          color: #fff;
+        }
+        
+        &:active {
+          transform: scale(0.9);
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
   }
 }
 </style> 
