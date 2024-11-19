@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="`theme-${currentTheme}`">
     <!-- 自定义导航栏 -->
     <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="nav-content">
@@ -132,29 +132,44 @@
 
 .container {
   padding: 30rpx;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+  
+  .main-content {
+    padding: 20rpx 0;
+  }
   
   .company-info {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1) !important;
     border-radius: 20rpx;
     padding: 30rpx;
-    margin-bottom: 30rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+    margin-bottom: 40rpx !important;
     animation: fadeInUp 0.6s ease-out;
     
     .header {
       .name {
-        font-size: 36rpx;
+        font-size: 40rpx;
         font-weight: bold;
         color: #333;
         animation: slideInRight 0.8s ease-out;
+        background: linear-gradient(to right, #333, #666);
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 24rpx;
+        line-height: 1.3;
       }
       
       .stats-box {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 20rpx 0;
+        margin: 24rpx 0;
         animation: scaleIn 0.8s ease-out 0.2s both;
+        background: rgba(0, 0, 0, 0.02);
+        padding: 20rpx 24rpx;
+        border-radius: 12rpx;
         
         .rating-box, .view-count {
           transition: transform 0.3s;
@@ -171,7 +186,8 @@
           .review-count {
             font-size: 24rpx;
             color: #666;
-            margin-left: 16rpx;
+            margin-left: 20rpx;
+            font-weight: 500;
           }
         }
         
@@ -191,6 +207,8 @@
         font-size: 26rpx;
         color: #666;
         animation: slideInRight 0.8s ease-out 0.4s both;
+        padding: 12rpx 0;
+        opacity: 0.8;
         
         &::before {
           display: inline-block;
@@ -204,10 +222,11 @@
     .section-title {
       display: flex;
       align-items: center;
-      margin-bottom: 20rpx;
+      margin-bottom: 30rpx;
+      padding: 0 6rpx;
       
       .title {
-        font-size: 32rpx;
+        font-size: 34rpx;
         font-weight: bold;
         color: #333;
         position: relative;
@@ -215,10 +234,10 @@
         &::after {
           content: '';
           position: absolute;
-          bottom: -4rpx;
+          bottom: -6rpx;
           left: 0;
           width: 0;
-          height: 2rpx;
+          height: 3rpx;
           background: #3B7FFF;
           animation: expandWidth 0.6s ease-out 0.8s forwards;
         }
@@ -233,13 +252,16 @@
     
     .comment-list {
       .comment-item {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 16rpx;
-        padding: 24rpx;
-        margin-bottom: 20rpx;
+        padding: 28rpx;
+        margin-bottom: 24rpx;
         box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.03);
         opacity: 0;
         animation: fadeInUp 0.5s ease-out forwards;
+        transition: all 0.3s ease;
         
         @for $i from 1 through 10 {
           &:nth-child(#{$i}) {
@@ -248,15 +270,15 @@
         }
         
         &:hover {
-          transform: translateY(-4rpx) scale(1.01);
-          box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.08);
+          transform: translateY(-4rpx);
+          box-shadow: 0 12rpx 36rpx rgba(31, 38, 135, 0.15);
         }
         
         .comment-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 16rpx;
+          margin-bottom: 20rpx;
           
           .user-info {
             display: flex;
@@ -265,8 +287,10 @@
             .username {
               font-size: 28rpx;
               color: #333;
-              margin-right: 16rpx;
+              margin-right: 20rpx;
               position: relative;
+              font-weight: 500;
+              padding-bottom: 4rpx;
               
               &::after {
                 content: '';
@@ -288,13 +312,17 @@
           .time {
             font-size: 24rpx;
             color: #999;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 4rpx 12rpx;
+            border-radius: 100rpx;
           }
         }
         
         .comment-content {
           font-size: 28rpx;
-          color: #666;
-          line-height: 1.6;
+          color: #454545;
+          line-height: 1.8;
+          padding: 20rpx 0;
         }
       }
     }
@@ -305,35 +333,38 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: #fff;
-    padding: 20rpx 30rpx;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 24rpx 30rpx calc(24rpx + env(safe-area-inset-bottom));
     box-shadow: 0 -2rpx 10rpx rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
     animation: slideUpForm 0.6s ease-out;
     
     .rating-input {
-      margin-right: 20rpx;
+      margin-right: 24rpx;
     }
     
     .input {
       flex: 1;
-      height: 72rpx;
-      background: #f5f5f5;
+      height: 80rpx;
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 36rpx;
-      padding: 0 30rpx;
+      padding: 0 36rpx;
       font-size: 28rpx;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       
       &:focus {
-        transform: translateY(-2rpx);
-        box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+        background: #fff;
+        border-color: var(--theme-color);
       }
     }
     
     .submit-btn {
-      width: 160rpx;
-      height: 72rpx;
+      min-width: 160rpx;
+      height: 80rpx;
       background: linear-gradient(135deg, #3B7FFF, #007AFF);
       color: #fff;
       border-radius: 36rpx;
@@ -344,9 +375,18 @@
       font-size: 28rpx;
       position: relative;
       overflow: hidden;
+      padding: 0 32rpx;
       
       .icon {
-        margin-right: 8rpx;
+        margin-right: 12rpx;
+        font-size: 32rpx;
+      }
+      
+      text {
+        color: #fff;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
       }
       
       &::after {
@@ -366,7 +406,8 @@
       }
       
       &:active {
-        transform: scale(0.95);
+        transform: scale(0.96);
+        box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
         &::after {
           animation: none;
         }
@@ -432,7 +473,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30rpx;
+    padding: 0 36rpx;
 
     .nav-left {
       display: flex;
@@ -445,13 +486,16 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
-        margin-right: 20rpx;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        margin-right: 24rpx;
         transition: all 0.3s;
         
         .icon {
           font-size: 36rpx;
           color: #fff;
+          font-weight: 500;
         }
         
         &:active {
@@ -461,9 +505,11 @@
       }
 
       .nav-title {
-        font-size: 32rpx;
+        font-size: 34rpx;
         font-weight: 600;
         color: #fff;
+        letter-spacing: 2rpx;
+        text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
       }
     }
 
@@ -475,11 +521,14 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         transition: all 0.3s;
         
         .icon {
           font-size: 32rpx;
+          font-weight: 500;
         }
         
         &:active {
@@ -494,6 +543,95 @@
 // 主内容区域样式调整
 .main-content {
   padding: 30rpx;
+}
+
+// 主题相关样式
+.container {
+  min-height: 100vh;
+  
+  // 默认主题
+  &.theme-default {
+    background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+    }
+    
+    .section-title .title::after {
+      background: #7C3AED;
+    }
+    
+    .username::after {
+      background: #7C3AED;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+    }
+  }
+  
+  // 蓝色主题
+  &.theme-blue {
+    background: linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #0EA5E9, #2563EB);
+    }
+    
+    .section-title .title::after {
+      background: #0EA5E9;
+    }
+    
+    .username::after {
+      background: #0EA5E9;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #0EA5E9, #2563EB);
+    }
+  }
+  
+  // 绿色主题
+  &.theme-green {
+    background: linear-gradient(135deg, #DCFCE7 0%, #D1FAE5 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #10B981, #059669);
+    }
+    
+    .section-title .title::after {
+      background: #10B981;
+    }
+    
+    .username::after {
+      background: #10B981;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #10B981, #059669);
+    }
+  }
+  
+  // 红色主题
+  &.theme-red {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+    }
+    
+    .section-title .title::after {
+      background: #EF4444;
+    }
+    
+    .username::after {
+      background: #EF4444;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+    }
+  }
 }
 </style>
 
@@ -510,6 +648,9 @@ const newComment = ref('')
 
 // 获取状态栏高度
 const statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+
+// 主题相关
+const currentTheme = ref('default')
 
 // 返回上一页
 const goBack = () => {
@@ -599,7 +740,13 @@ const formatTime = (timestamp: number) => {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
+// 初始化主题
 onMounted(() => {
+  const savedTheme = uni.getStorageSync('theme')
+  if (savedTheme) {
+    currentTheme.value = savedTheme
+  }
+  
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1]
   const id = currentPage.options.id

@@ -1,12 +1,12 @@
 {
-    "id": "uni-cloud",
-    "displayName": "hello uniCloud",
-    "version": "1.4.0",
-    "description": "为开发者提供的基于 serverless 模式和 js 编程的云开发平台。示例代码",
+    "id": "ai-uu",
+    "displayName": "ai-uu",
+    "version": "0.0.1",
+    "description": "AI 开发的项目",
     "keywords": [
-        "uniCloud示例"
+        "AI开发的项目示例"
     ],
-    "repository": "https://gitcode.net/dcloud/hellounicloud",
+    "repository": "",
     "engines": {
         "HBuilderX": "^3.7.0"
     },
@@ -28,7 +28,7 @@
             "permissions": "无"
         },
         "npmurl": "",
-        "type": "unicloud-template-project"
+        "type": ""
     },
     "uni_modules": {
         "platforms": {

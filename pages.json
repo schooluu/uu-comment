@@ -1,6 +1,12 @@
 {
   "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
+      "path": "pages/home",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/comment/index/index",
       "style": {
         "navigationStyle": "custom"
@@ -9,28 +15,28 @@
     {
       "path": "pages/comment/detail/detail",
       "style": {
-       "navigationStyle": "custom"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/comment/add/add-review",
       "style": {
-       "navigationStyle": "custom"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/dance/home/index",
       "style": {
-       "navigationStyle": "custom"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/dance/course/index",
       "style": {
-       "navigationStyle": "custom"
+        "navigationStyle": "custom"
       }
     }
-],
+  ],
   "tabBar": {
     "color": "#7A7E83",
     "selectedColor": "#1296db",

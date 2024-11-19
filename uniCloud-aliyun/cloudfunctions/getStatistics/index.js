@@ -8,15 +8,15 @@ exports.main = async (event, context) => {
     })
     
     // 获取总点评数
-    const totalReviews = await db.collection('reviews').count()
+    const totalReviews = await db.collection('comment').count()
     
     // 获取已收录企业数
-    const totalCompanies = await db.collection('companies').count()
+    const totalCompanies = await db.collection('company').count()
     
     // 获取今日新增点评数
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    const todayReviews = await db.collection('reviews')
+    const todayReviews = await db.collection('company')
       .where({
         createTime: db.command.gte(today.getTime())
       })

@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="`theme-${currentTheme}`">
     <!-- 自定义导航栏 -->
     <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="nav-content">
@@ -340,6 +340,26 @@ const saveDraft = () => {
     icon: 'success'
   })
 }
+
+// 添加当前主题的状态
+const currentTheme = ref('default') // 可以是 'default' | 'blue' | 'green' | 'red'
+
+// 获取当前主题
+const getCurrentTheme = () => {
+  try {
+    const theme = uni.getStorageSync('theme')
+    if (theme) {
+      currentTheme.value = theme
+    }
+  } catch (e) {
+    console.error('获取主题失败:', e)
+  }
+}
+
+// 在 onMounted 中初始化主题
+onMounted(() => {
+  getCurrentTheme()
+})
 </script>
 
 <style lang="scss">
@@ -714,6 +734,149 @@ const saveDraft = () => {
         &:active {
           transform: scale(0.9);
           background: rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
+  }
+}
+
+// 添加主题相关样式
+.container {
+  &.theme-default {
+    background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.2);
+    }
+    
+    .form-item {
+      .input:focus, .textarea:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.1);
+      }
+    }
+    
+    .city-popup {
+      .confirm {
+        color: #7C3AED;
+      }
+      
+      .province-item, .city-item {
+        &.active {
+          background: rgba(124, 58, 237, 0.1);
+          .name {
+            color: #7C3AED;
+          }
+        }
+      }
+    }
+  }
+  
+  &.theme-blue {
+    background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #0EA5E9, #2563EB);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #0EA5E9, #2563EB);
+      box-shadow: 0 4rpx 12rpx rgba(14, 165, 233, 0.2);
+    }
+    
+    .form-item {
+      .input:focus, .textarea:focus {
+        border-color: #0EA5E9;
+        box-shadow: 0 4rpx 12rpx rgba(14, 165, 233, 0.1);
+      }
+    }
+    
+    .city-popup {
+      .confirm {
+        color: #0EA5E9;
+      }
+      
+      .province-item, .city-item {
+        &.active {
+          background: rgba(14, 165, 233, 0.1);
+          .name {
+            color: #0EA5E9;
+          }
+        }
+      }
+    }
+  }
+  
+  &.theme-green {
+    background: linear-gradient(135deg, #DCFCE7 0%, #D1FAE5 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #10B981, #059669);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #10B981, #059669);
+      box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.2);
+    }
+    
+    .form-item {
+      .input:focus, .textarea:focus {
+        border-color: #10B981;
+        box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.1);
+      }
+    }
+    
+    .city-popup {
+      .confirm {
+        color: #10B981;
+      }
+      
+      .province-item, .city-item {
+        &.active {
+          background: rgba(16, 185, 129, 0.1);
+          .name {
+            color: #10B981;
+          }
+        }
+      }
+    }
+  }
+  
+  &.theme-red {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    
+    .nav-bar {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+      box-shadow: 0 4rpx 12rpx rgba(239, 68, 68, 0.2);
+    }
+    
+    .form-item {
+      .input:focus, .textarea:focus {
+        border-color: #EF4444;
+        box-shadow: 0 4rpx 12rpx rgba(239, 68, 68, 0.1);
+      }
+    }
+    
+    .city-popup {
+      .confirm {
+        color: #EF4444;
+      }
+      
+      .province-item, .city-item {
+        &.active {
+          background: rgba(239, 68, 68, 0.1);
+          .name {
+            color: #EF4444;
+          }
         }
       }
     }
