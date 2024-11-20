@@ -14,14 +14,15 @@ exports.main = async (event, context) => {
 				},
 				{
 					id: 2,
-					title: '舞蹈店模板',
+					title: '舞蹈店预约模板',
 					description: 'AI驱动的智能舞蹈店模板，提供全方位的智能服务',
 					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/computer2.jpg',
 					tags: ['Vue3', 'uniapp'],
 					path: '/pages/dance/home/index'
 				},
 			],
-			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/20241119152557.png'
+			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120134411.png',
+			wechatQunQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/20241119152557.png'
 		}
 
 		return {

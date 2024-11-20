@@ -59,15 +59,12 @@
 
         <!-- 底部联系区域 -->
         <view class="contact-section animate-fade-in">
-            <text class="contact-title">联系我们</text>
+            <text class="contact-title">需要定制开发？</text>
+            <text class="contact-subtitle">我们提供专业的技术支持和定制服务</text>
             <view class="contact-buttons">
-                <button class="contact-btn email-btn" @tap="sendEmail">
-                    <text class="icon">📧</text>
-                    <text>发送邮件</text>
-                </button>
-                <button class="contact-btn github-btn" @tap="openGithub">
-                    <text class="icon">📱</text>
-                    <text>了解更多</text>
+                <button class="contact-btn email-btn" @tap="showWechatQR">
+                    <text class="icon">👋</text>
+                    <text>加我微信</text>
                 </button>
             </view>
         </view>
@@ -95,7 +92,7 @@
             <text class="section-title">加入微信群</text>
             <text class="section-subtitle">与开发者和其他用户交流</text>
             <view class="qrcode-container">
-                <image class="qrcode" :src="wechatQr" mode="aspectFit" @tap="previewQRCode"/>
+                <image class="qrcode" :src="wechatQunQr" mode="aspectFit" @tap="previewQRCode"/>
                 <text class="tip">点击二维码放大查看</text>
             </view>
             <view class="group-info">
@@ -109,6 +106,14 @@
                 </text>
             </view>
         </view>
+
+        <!-- 添加微信二维码弹窗 -->
+        <uni-popup ref="wechatPopup" type="center">
+            <view class="qr-popup">
+                <image class="qr-code" :src="wechatQr" mode="aspectFit" />
+                <text class="qr-tip">扫码加微信</text>
+            </view>
+        </uni-popup>
     </view>
 </template>
 
@@ -127,6 +132,7 @@ const getCompanyDetail = async () => {
     if (result.code === 0) {
         projects.value = result.data.projects
         wechatQr.value = result.data.wechatQr
+        wechatQunQr.value = result.data.wechatQr
     }
   } catch (error) {
     uni.showToast({
@@ -136,6 +142,7 @@ const getCompanyDetail = async () => {
   }
 }
 const wechatQr = ref('')
+const wechatQunQr = ref('')
 // 示例项目数据
 const projects = ref([
     {
@@ -205,6 +212,13 @@ const previewQRCode = () => {
     })
 }
 getCompanyDetail()
+
+const wechatPopup = ref(null)
+
+// 显示微信二维码
+const showWechatQR = () => {
+    wechatPopup.value.open()
+}
 </script>
 
 <style lang="scss">
@@ -694,6 +708,27 @@ getCompanyDetail()
                 font-size: 28rpx;
             }
         }
+    }
+}
+
+.qr-popup {
+    background: #fff;
+    padding: 40rpx;
+    border-radius: 24rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .qr-code {
+        width: 400rpx;
+        height: 400rpx;
+        background: #f5f5f5;
+    }
+    
+    .qr-tip {
+        margin-top: 20rpx;
+        font-size: 28rpx;
+        color: #666;
     }
 }
 </style>
