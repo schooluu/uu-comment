@@ -140,14 +140,14 @@ const wechatQr = ref('')
 const projects = ref([
     {
         id: 1,
-        title: '人人点评',
+        title: '人人点评模板',
         description: '匿名化点评平台，为用户提供真实可靠的评价信息',
         image: '/static/images/project1.png',
         tags: ['Vue3', 'uniapp']
     },
     {
         id: 2,
-        title: '智能课程',
+        title: '舞蹈店模板',
         description: 'AI驱动的智能课程模板，提供全方位的智能服务',
         image: '/static/images/project2.png',
         tags: ['Vue3', 'uniapp']

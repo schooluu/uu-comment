@@ -1,52 +1,204 @@
 {
-  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+  "pages": [
     {
       "path": "pages/home",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "AI项目展示"
       }
     },
     {
       "path": "pages/comment/index/index",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "评论列表"
       }
     },
     {
       "path": "pages/comment/detail/detail",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "评论详情"
       }
     },
     {
       "path": "pages/comment/add/add-review",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "添加评论"
       }
     },
     {
       "path": "pages/dance/home/index",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/dance/home/ad",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "新人"
+      }
+    },
+    {
+      "path": "pages/dance/home/venueList",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "场馆列表"
+      }
+    },{
+      "path": "pages/dance/home/venueDetail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "场馆详情"
+      }
+    },
+    {
+      "path": "pages/dance/home/video",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "视频"
       }
     },
     {
       "path": "pages/dance/course/index",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "课程"
+      }
+    },
+    {
+      "path": "pages/dance/course/regular",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "常规课程"
+      }
+    },
+    {
+      "path": "pages/dance/course/private",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "私教课程"
+      }
+    },
+    {
+      "path": "pages/dance/course/gift",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "赠送课程"
+      }
+    },
+    {
+      "path": "pages/dance/my/coupon",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "券包"
+      }
+    },
+    {
+      "path": "pages/dance/my/activity",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "活动报名"
+      }
+    },
+    {
+      "path": "pages/dance/my/record",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "消费记录"
+      }
+    },
+    {
+      "path": "pages/dance/my/points",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "积分兑换"
+      }
+    },
+    {
+      "path": "pages/dance/my/invite",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的邀请"
+      }
+    },
+    {
+      "path": "pages/dance/my/favorite",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的收藏"
+      }
+    },
+    {
+      "path": "pages/dance/my/share",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "分享"
+      }
+    },
+    {
+      "path": "pages/dance/my/notification",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "通知"
+      }
+    },
+    {
+      "path": "pages/dance/my/invoice",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "申请开票"
+      }
+    },
+    {
+      "path": "pages/dance/my/feedback",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "意见反馈"
+      }
+    },
+    {
+      "path": "pages/dance/my/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/dance/login/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "登入"
+      }
+    },
+    {
+      "path": "pages/dance/teacher/teacher",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "导师"
+      }
+    },
+    {
+      "path": "pages/dance/teacher/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "导师详情"
       }
     }
   ],
   "tabBar": {
     "color": "#7A7E83",
-    "selectedColor": "#1296db",
+    "selectedColor": "#FF4D8F",
     "borderStyle": "black",
-    "backgroundColor": "#ffffff",
+    "backgroundColor": "#1C1B21",
     "list": []
   },
   "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#1C1B21",
+    "backgroundColor": "#1C1B21"
   }
 }
