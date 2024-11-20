@@ -94,7 +94,7 @@
         "devServer" : {
             "https" : false
         },
-        "title" : "人人点评",
+        "title" : "项目模板展示",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true

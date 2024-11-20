@@ -15,12 +15,12 @@
         <!-- 头部区域 -->
         <view class="hero-section" :style="{ paddingTop: statusBarHeight + 88 + 'px' }">
             <view class="hero-content animate-slide-up">
-                <text class="title">AI项目展示</text>
+                <text class="title">项目模板展示</text>
                 <text class="subtitle">探索独特的创意与技术结合</text>
                 <view class="stats">
                     <view class="stat-item">
                         <text class="count">10+</text>
-                        <text class="label">项目</text>
+                        <text class="label">模板</text>
                     </view>
                     <view class="stat-item">
                         <text class="count">1000+</text>
@@ -147,8 +147,8 @@ const projects = ref([
     },
     {
         id: 2,
-        title: '舞蹈店模板',
-        description: 'AI驱动的智能课程模板，提供全方位的智能服务',
+        title: '舞蹈店预约模板',
+        description: 'AI驱动的舞蹈店预约模板，提供全方位的智能服务',
         image: '/static/images/project2.png',
         tags: ['Vue3', 'uniapp']
     },
