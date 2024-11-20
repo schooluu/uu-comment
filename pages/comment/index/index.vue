@@ -187,7 +187,7 @@ import {
   onPullDownRefresh,
   onPageScroll
 } from '@dcloudio/uni-app';
-import CompanySkeleton from '@/components/CompanySkeleton.vue'
+import CompanySkeleton from '@/components/comment/CompanySkeleton.vue'
 const companies = ref([])
 const searchKeyword = ref('')
 const disclaimerPopup = ref(null)
