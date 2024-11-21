@@ -89,16 +89,77 @@ const handleCancel = () => {
   uni.navigateBack()
 }
 
-const handlePublish = () => {
+const handlePublish = async () => {
   if (!canPublish.value) return
-  // 发布逻辑
-  console.log('发布内容:', {
-    content: content.value,
-    mediaList: mediaList.value,
-    location: location.value,
-    privacy: privacyMode.value,
-    mentions: mentionList.value
-  })
+  
+  try {
+    uni.showLoading({
+      title: '发布中...'
+    })
+    
+    const { result } = await uniCloud.callFunction({
+      name: 'wx_add_moment',
+      data: {
+        content: content.value,
+        mediaList: mediaList.value,
+        location: location.value,
+        privacy: privacyMode.value
+      }
+    })
+    
+    if (result.code === 0) {
+      uni.showToast({
+        title: '发布成功',
+        icon: 'success'
+      })
+      // 返回上一页并刷新列表
+      uni.$emit('refreshMoments')
+      setTimeout(() => {
+        uni.navigateBack()
+      }, 1500)
+    } else {
+      throw new Error(result.msg)
+    }
+  } catch (error) {
+    uni.showToast({
+      title: error.message || '发布失败',
+      icon: 'none'
+    })
+  } finally {
+    uni.hideLoading()
+  }
+}
+
+const uploadImages = async (tempFilePaths) => {
+  console.log('uploadImages', tempFilePaths[0])
+  try {
+    const tasks = tempFilePaths.map(path => {
+      return new Promise((resolve, reject) => {
+        // 将文件上传到云存储
+        uniCloud.uploadFile({
+          filePath: path,
+          cloudPath: `wx-moments/${Date.now()}-${Math.random().toString(36).slice(-6)}${path.match(/\.[^.]+$/)}`,
+          success: (res) => {
+            resolve({
+              type: 'image',
+              url: res.fileID
+            })
+          },
+          fail: reject
+        })
+      })
+    })
+    
+    const results = await Promise.all(tasks)
+    return results
+  } catch (error) {
+    console.error(error)
+    uni.showToast({
+      title: error.message || '图片上传失败',
+      icon: 'none'
+    })
+    return []
+  }
 }
 
 const chooseMedia = () => {
@@ -111,12 +172,16 @@ const chooseMedia = () => {
         // 从相册选择
         uni.chooseImage({
           count: 9 - mediaList.value.length,
-          success: (res) => {
-            const newMedia = res.tempFilePaths.map(url => ({
-              type: 'image',
-              url
-            }))
-            mediaList.value.push(...newMedia)
+          success: async (res) => {
+            uni.showLoading({
+              title: '上传中...'
+            })
+            try {
+              const newMedia = await uploadImages(res.tempFilePaths)
+              mediaList.value.push(...newMedia)
+            } finally {
+              uni.hideLoading()
+            }
           }
         })
       }

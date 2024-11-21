@@ -71,7 +71,7 @@
           </view>
 
           <!-- 评论列表 -->
-          <view class="comments-section" v-if="item.comments && item.comments.length">
+          <view class="comments-section" v-if="item.comments && item.comments.length !== 0">
             <view class="comment-item" v-for="(comment, cIndex) in item.comments" :key="cIndex">
               <text class="comment-user">{{ comment.username }}：</text>
               <text class="comment-content">{{ comment.content }}</text>
@@ -129,152 +129,196 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
+import { ref, onMounted } from 'vue'
+import {
+  onShow,
+  onReachBottom,
+  onPullDownRefresh,
+  onPageScroll
+} from '@dcloudio/uni-app';
 // 提取重复使用的图片链接为常量
 const defaultAvatar = 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0'
-
-const moments = ref([
-  {
-    username: 'UNIAPP X',
-    avatar: defaultAvatar,
-    content: 'uni-app x, 是下一代 uni-app, 是一个跨平台应用开发引擎。uts是一门类ts的、跨平台的、新语言。uts在iOS端编译为swift、在Android端编译为kotlin、在Web端编译为js。',
-    mediaType: 'video',
-    mediaUrl: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
-    poster: defaultAvatar,
-    time: '3分钟前',
-    isLiked: false,
-    likes: ['张三', '查理斯', '王二麻', '切尔西'],
-    comments: [
-      { username: '查理斯', content: '这是什么地方？真好看啊' },
-      { username: '张三', content: '从视频上看，我感觉应该是网上随便截的图，包括文案！' }
-    ]
-  },
-  // 新增的多张图片类型数据
-  {
-    username: 'Alice',
-    avatar: defaultAvatar,
-    content: '这是我最近拍的一些照片，感觉很不错！',
-    mediaType: 'image',
-    mediaUrls: [
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-    ],
-    time: '5分钟前',
-    isLiked: true,
-    likes: ['李四', '王五'],
-    comments: [
-      { username: '李四', content: '这张照片拍得真好！' }
-    ]
-  },
-  // 新增的多张图片类型数据
-  {
-    username: 'Alice',
-    avatar: defaultAvatar,
-    content: '这是我最近拍的一些照片，感觉很不错！',
-    mediaType: 'image',
-    mediaUrls: [
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-    ],
-    time: '5分钟前',
-    isLiked: true,
-    likes: ['李四', '王五'],
-    comments: [
-      { username: '李四', content: '这张照片拍得真好！' }
-    ]
-  },
-  // 新增的多张图片类型数据
-  {
-    username: 'Alice',
-    avatar: defaultAvatar,
-    content: '这是我最近拍的一些照片，感觉很不错！',
-    mediaType: 'image',
-    mediaUrls: [
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-    ],
-    time: '5分钟前',
-    isLiked: true,
-    likes: ['李四', '王五'],
-    comments: [
-      { username: '李四', content: '这张照片拍得真好！' }
-    ]
-  },
-  // 新增的多张图片类型数据
-  {
-    username: 'Alice',
-    avatar: defaultAvatar,
-    content: '这是我最近拍的一些照片，感觉很不错！',
-    mediaType: 'image',
-    mediaUrls: [
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-    ],
-    time: '5分钟前',
-    isLiked: true,
-    likes: ['李四', '王五'],
-    comments: [
-      { username: '李四', content: '这张照片拍得真好！' }
-    ]
-  },
-  // 新增的多张图片类型数据
-  {
-    username: 'Alice',
-    avatar: defaultAvatar,
-    content: '这是我最近拍的一些照片，感觉很不错！',
-    mediaType: 'image',
-    mediaUrls: [
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0'
-    ],
-    time: '5分钟前',
-    isLiked: true,
-    likes: ['李四', '王五'],
-    comments: [
-      { username: '李四', content: '这张照片拍得真好！' }
-    ]
-  }
-])
-
-// 添加点赞动画状态数组
-const isLikeAnimating = ref({})
-
-// 优化点赞处理方法
-const handleLike = (index) => {
-  // 设置动画状态
-  isLikeAnimating.value[index] = true
-  
-  // 切换点赞状态
-  moments.value[index].isLiked = !moments.value[index].isLiked
-  
-  // 更新点赞列表
-  if (moments.value[index].isLiked) {
-    moments.value[index].likes.push('当前用户')
-  } else {
-    const userIndex = moments.value[index].likes.indexOf('当前用户')
-    if (userIndex > -1) {
-      moments.value[index].likes.splice(userIndex, 1)
-    }
-  }
-  
-  // 动画结束后重置状态
-  setTimeout(() => {
-    isLikeAnimating.value[index] = false
-  }, 1000)
-}
 
 // 评论相关的响应式变量
 const showCommentPopup = ref(false)
 const showEmojiPanel = ref(false)
 const commentText = ref('')
 const currentMomentIndex = ref(-1)
+const isLikeAnimating = ref({})
+
+// 分页相关变量
+const page = ref(1)
+const pageSize = ref(10)
+const loading = ref(false)
+const hasMore = ref(true)
+const moments = ref([])
+
+// 获取朋友圈列表
+const getMomentsList = async (isRefresh = false) => {
+  if (loading.value || (!hasMore.value && !isRefresh)) return
+  
+  try {
+    loading.value = true
+    const { result } = await uniCloud.callFunction({
+      name: 'wx_get_list',
+      data: {
+        page: isRefresh ? 1 : page.value,
+        pageSize: pageSize.value
+      }
+    })
+    
+    if (result.code === 0) {
+      if (isRefresh) {
+        moments.value = result.data.list
+        page.value = 1
+      } else {
+        moments.value = [...moments.value, ...result.data.list]
+        page.value++
+      }
+      hasMore.value = result.data.hasMore
+    } else {
+      throw new Error(result.msg)
+    }
+  } catch (error) {
+    uni.showToast({
+      title: error.message || '获取朋友圈失败',
+      icon: 'none'
+    })
+  } finally {
+    loading.value = false
+    // 停止下拉刷新
+    if (isRefresh) {
+      uni.stopPullDownRefresh()
+    }
+  }
+}
+
+onShow(() => {
+  getMomentsList(true)
+})
+// 触底加载
+onReachBottom(() => {
+  getMomentsList()
+})
+
+// 点赞/取消点赞
+const handleLike = async (index) => {
+  try {
+    const moment = moments.value[index]
+    isLikeAnimating.value[index] = true
+    
+    const { result } = await uniCloud.callFunction({
+      name: 'wx_add_toggle_like',
+      data: {
+        momentId: moment._id
+      }
+    })
+    
+    if (result.code === 0) {
+      moment.isLiked = result.data.isLiked
+      // 更新点赞状态
+      if (moment.isLiked) {
+        if (!moment.likes) moment.likes = []
+        moment.likes.push('我')
+      } else {
+        const idx = moment.likes.indexOf('我')
+        if (idx > -1) moment.likes.splice(idx, 1)
+      }
+    } else {
+      throw new Error(result.msg)
+    }
+    
+    setTimeout(() => {
+      isLikeAnimating.value[index] = false
+    }, 1000)
+    
+  } catch (error) {
+    uni.showToast({
+      title: error.message || '操作失败',
+      icon: 'none'
+    })
+  }
+}
+
+// 发表评论
+const submitComment = async () => {
+  if (!commentText.value.trim()) return
+  
+  try {
+    const { result } = await uniCloud.callFunction({
+      name: 'wx_add_comment',
+      data: {
+        momentId: moments.value[currentMomentIndex.value]._id,
+        content: commentText.value
+      }
+    })
+    
+    if (result.code === 0) {
+      // 更��评论列表
+      const moment = moments.value[currentMomentIndex.value]
+      if (!moment.comments) moment.comments = []
+      moment.comments.push({
+        username: '我',
+        content: commentText.value,
+        create_time: Date.now()
+      })
+      
+      // 重置状态
+      commentText.value = ''
+      showCommentPopup.value = false
+      showEmojiPanel.value = false
+      
+      uni.showToast({
+        title: '评论成功',
+        icon: 'success'
+      })
+    } else {
+      throw new Error(result.msg)
+    }
+  } catch (error) {
+    uni.showToast({
+      title: error.message || '评论失败',
+      icon: 'none'
+    })
+  }
+}
+
+// 跳转发布页面
+const handleCamera = async () => {
+  uni.navigateTo({
+    url: '/pages/wx/home/add'
+  })
+}
+
+// 评论相关方法
+const handleComment = (index) => {
+  currentMomentIndex.value = index
+  showCommentPopup.value = true
+}
+
+const closeCommentPopup = () => {
+  showCommentPopup.value = false
+  showEmojiPanel.value = false
+  commentText.value = ''
+  currentMomentIndex.value = -1
+}
+
+const toggleEmojiPanel = () => {
+  showEmojiPanel.value = !showEmojiPanel.value
+}
+
+const insertEmoji = (emoji) => {
+  commentText.value += emoji
+}
+
+// 视频错误处理
+const handleVideoError = () => {
+  uni.showToast({
+    title: '视频加载失败',
+    icon: 'none'
+  })
+}
+
 
 // 表情列表
 const emojiList = [
@@ -283,54 +327,6 @@ const emojiList = [
   '😷', '🤒', '🤕', '😈', '👻', '👽', '🤖', '💩', '😺',
   '💪', '👊', '✌️', '🤞', '🙏', '👏', '🙌', '👐', '🤲'
 ]
-
-// 打开评论弹窗
-const handleComment = (index) => {
-  currentMomentIndex.value = index
-  showCommentPopup.value = true
-  showEmojiPanel.value = false
-}
-
-// 切换表情面板
-const toggleEmojiPanel = () => {
-  showEmojiPanel.value = !showEmojiPanel.value
-}
-
-// 插入表情
-const insertEmoji = (emoji) => {
-  commentText.value += emoji
-}
-
-// 关闭评论弹窗
-const closeCommentPopup = () => {
-  showCommentPopup.value = false
-  showEmojiPanel.value = false
-  commentText.value = ''
-  currentMomentIndex.value = -1
-}
-
-// 提交评论
-const submitComment = () => {
-  if (!commentText.value.trim()) return
-  
-  const newComment = {
-    username: '当前用户',
-    content: commentText.value.trim()
-  }
-  
-  moments.value[currentMomentIndex.value].comments.push(newComment)
-  closeCommentPopup()
-}
-
-const handleCamera = () => {
-  uni.navigateTo({
-    url: '/pages/wx/home/add'
-  })
-}
-
-const handleVideoError = (err) => {
-  console.error('视频加载错误：', err)
-}
 </script>
 
 <style lang="scss" scoped>
@@ -418,7 +414,6 @@ $action-color: #576b95;
       border-radius: $border-radius;
       margin-right: $margins;
     }
-
     .content-area {
       flex: 1;
 
@@ -838,3 +833,4 @@ $action-color: #576b95;
   }
 }
 </style>
+
