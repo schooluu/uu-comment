@@ -3,9 +3,6 @@
     <!-- 顶部背景图和头像区域 -->
     <view class="header">
       <image class="bg-image" :src="defaultAvatar" mode="aspectFill"></image>
-      <view class="camera-icon" @tap="handleCamera">
-        <text class="iconfont icon-camera">📸</text>
-      </view>
       <view class="avatar-area">
         <view class="user-info">
           <text class="nickname">用户昵称</text>
@@ -55,14 +52,16 @@
           <view class="bottom-info">
             <text class="time">{{ item.time }}</text>
             <view class="actions">
-              <text 
-                class="like-btn" 
+              <view 
+                class="action-btn like-btn" 
                 :class="{ 'liked': item.isLiked, 'animating': isLikeAnimating[index] }"
                 @tap="handleLike(index)"
               >
-                {{ item.isLiked ? '❤️' : '🤍' }}
-              </text>
-              <text class="comment-btn" @tap="handleComment(index)">💬</text>
+                <text class="icon">{{ item.isLiked ? '❤️' : '🤍' }}</text>
+              </view>
+              <view class="action-btn comment-btn" @tap="handleComment(index)">
+                <text class="icon">💬</text>
+              </view>
             </view>
           </view>
 
@@ -117,6 +116,13 @@
             </view>
           </scroll-view>
         </view>
+      </view>
+    </view>
+
+    <!-- 发布按钮 -->
+    <view class="publish-btn" @tap="handleCamera">
+      <view class="icon-wrapper">
+        <text class="iconfont">+</text>
       </view>
     </view>
   </view>
@@ -443,11 +449,57 @@ $action-color: #576b95;
 
         .actions {
           display: flex;
-          gap: $margins;
-
-          .like-btn,
+          align-items: center;
+          gap: 20rpx;
+          
+          .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60rpx;
+            height: 60rpx;
+            position: relative;
+            
+            .icon {
+              font-size: 36rpx;
+              line-height: 1;
+            }
+          }
+          
+          .like-btn {
+            transition: transform 0.2s ease;
+            
+            &:active {
+              transform: scale(0.9);
+            }
+            
+            &.liked {
+              animation: likeScale 0.3s ease forwards;
+            }
+            
+            &.animating {
+              &::before {
+                content: '❤️';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                animation: likeFloat 1s ease-out;
+              }
+            }
+          }
+          
           .comment-btn {
-            font-size: 32rpx;
+            transition: transform 0.2s ease;
+            
+            &:active {
+              transform: scale(0.9);
+            }
+            
+            .icon {
+              transform: translateY(-1rpx); // 微调评论图标位置
+            }
           }
         }
       }
@@ -724,6 +776,65 @@ $action-color: #576b95;
   100% {
     transform: scale(2);
     opacity: 0;
+  }
+}
+
+.publish-btn {
+  position: fixed;
+  right: 30rpx;
+  bottom: 120rpx;
+  z-index: 99;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #07c160, #10ad7a);
+  border-radius: 50%;
+  box-shadow: 0 6rpx 16rpx rgba(7, 193, 96, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .iconfont {
+      color: #fff;
+      font-size: 60rpx;
+      font-weight: 300;
+      line-height: 1;
+    }
+  }
+  
+  
+  // 添加呼吸灯效果
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: inherit;
+    opacity: 0.6;
+    transform: scale(1);
+    animation: breathe 2s ease-in-out infinite;
+  }
+}
+
+// 呼吸灯动画
+@keyframes breathe {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
   }
 }
 </style>
