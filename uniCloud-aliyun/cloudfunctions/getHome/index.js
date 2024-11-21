@@ -24,7 +24,7 @@ exports.main = async (event, context) => {
 					id: 3,
 					title: '仿微信朋友圈模板',
 					description: '仿微信朋友圈模板，提供全方位的智能服务',
-					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/computer2.jpg',
+					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/life-1.jpg',
 					tags: ['Vue3', 'uniapp'],
 					path: '/pages/wx/home/index'
 				},
