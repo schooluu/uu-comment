@@ -132,7 +132,7 @@ const getCompanyDetail = async () => {
     if (result.code === 0) {
         projects.value = result.data.projects
         wechatQr.value = result.data.wechatQr
-        wechatQunQr.value = result.data.wechatQr
+        wechatQunQr.value = result.data.wechatQunQr
     }
   } catch (error) {
     uni.showToast({
@@ -208,7 +208,7 @@ onMounted(() => {
 // 添加预览二维码方法
 const previewQRCode = () => {
     uni.previewImage({
-        urls: [wechatQr.value]
+        urls: [wechatQunQr.value]
     })
 }
 getCompanyDetail()

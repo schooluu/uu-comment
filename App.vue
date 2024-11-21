@@ -1,12 +1,10 @@
 <script>
-  import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update';
   export default {
     onLaunch: async function() {
       console.log('App Launch')
 		// #ifdef MP-WEIXIN
 		uniCloud.initSecureNetworkByWeixin()
 		// #endif
-      checkUpdate() //更新升级
     },
     mounted() {
       // #ifdef H5

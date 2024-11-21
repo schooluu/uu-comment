@@ -5,7 +5,7 @@
       <view class="back-btn" @tap="handleBack">
         <text class="iconfont">←</text>
       </view>
-      <text class="title">场馆详情</text>
+      <text class="title">场馆列表</text>
     </view>
 
     <view class="venue-list">
@@ -32,16 +32,16 @@ import { ref } from 'vue'
 const venues = ref([
   {
     id: 1,
-    name: 'FancyFancy舞室大悦城店',
-    address: '上海市静安区西藏北路166号大悦城L6',
+    name: 'xxxxxxx舞室大悦城店',
+    address: '上海市静安区天xxxxx室',
     image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/venue1.jpg',
     tags: ['停车方便', '地铁直达', '设施齐全'],
     isFavorite: false
   },
   {
     id: 2,
-    name: 'FancyFancy舞室嘉里合集店',
-    address: '上海市静安区天目西路218号L2层206室',
+    name: 'XXXX舞室嘉里合集店',
+    address: '上海市静安区天xxxxx室',
     image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/venue2.jpg',
     tags: ['新店开业', '环境优雅', '交通便利'],
     isFavorite: false
@@ -50,7 +50,7 @@ const venues = ref([
 
 const goToDetail = (venue) => {
   uni.navigateTo({
-    url: `/pages/dance/venue/detail?id=${venue.id}`
+    url: `/pages/dance/home/venueDetail?id=${venue.id}`
   })
 }
 
@@ -107,6 +107,7 @@ const handleBack = () => {
   min-height: 100vh;
   background-color: #141123f5;
   padding: 30rpx;
+  padding-top: 118rpx;
 }
 
 .venue-list {
@@ -116,10 +117,18 @@ const handleBack = () => {
     border-radius: 20rpx;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.05);
-    
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
     .venue-image {
       width: 100%;
       height: 300rpx;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
     }
 
     .venue-info {
@@ -165,6 +174,12 @@ const handleBack = () => {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 50%;
     }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
   }
 }
 </style> 

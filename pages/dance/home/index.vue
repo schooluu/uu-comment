@@ -247,23 +247,23 @@ const dates = ref([
 
 const courses = ref([
   {
-    teacherName: 'FAFA',
+    teacherName: 'XX',
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png',
     title: 'JAZZ',
     level: 3,
     count: '1',
     time: '2024.11.19 周二 18:00~19:00',
-    location: 'FancyFancy舞室大悦城店 上空',
+    location: 'XXXX舞室大悦城店 上空',
     status: 'book'
   },
   {
-    teacherName: '宝宝babo',
+    teacherName: 'XX',
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png',
     title: 'JAZZ 身体开发',
     level: 1,
     count: '1',
     time: '2024.11.19 周二 18:00~19:00',
-    location: 'FancyFancy舞室大悦城店 B教室',
+    location: 'XXXX舞室大悦城店 B教室',
     status: 'tight',
     remaining: 2
   },
@@ -274,7 +274,7 @@ const courses = ref([
     level: 2,
     count: '1',
     time: '2024.11.19 周二 18:20~19:20',
-    location: 'FancyFancy舞室大悦城店 A教室',
+    location: 'XXXX舞室大悦城店 A教室',
     status: 'full'
   },
   {
@@ -284,7 +284,7 @@ const courses = ref([
     level: 3,
     count: '1',
     time: '2024.11.19 周二 19:10~20:10',
-    location: 'FancyFancy舞室大悦店 上空',
+    location: 'XXXX舞室大悦店 上空',
     status: 'tight',
     remaining: 8
   },
@@ -295,7 +295,7 @@ const courses = ref([
     level: 1,
     count: '1',
     time: '2024.11.19 周二 19:10~20:10',
-    location: 'FancyFancy舞室大悦城店 B教室',
+    location: 'XXXX舞室大悦城店 B教室',
     status: 'tight',
     remaining: 2
   }
@@ -304,13 +304,13 @@ const courses = ref([
 // 添加场馆数据
 const venues = ref([
   {
-    name: 'FancyFancy舞室大悦城店',
-    address: '上海市静安区西藏北路166号大悦城L6',
+    name: 'XXXX舞室大悦城店',
+    address: 'XXXXXXXXXXXXX',
     image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png'
   },
   {
-    name: 'FancyFancy舞室嘉里合集店',
-    address: '上海市静安区天目西路218号L2层206室',
+    name: 'XXXX舞室嘉里合集店',
+    address: 'XXXXXXXX室',
     image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png'
   }
 ])
@@ -331,43 +331,43 @@ const teachers = ref([
   },
   { 
     id: 3,
-    name: 'Lynn', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'Urban'
   },
   { 
     id: 4,
-    name: '鬼鬼', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'Popping'
   },
   { 
     id: 5,
-    name: 'TING', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'Swing'
   },
   { 
     id: 6,
-    name: 'BBablo', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'Ballet'
   },
   { 
     id: 7,
-    name: '晓宇', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'Contemporary'
   },
   { 
     id: 8,
-    name: '汤汤', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'K-pop'
   },
   { 
     id: 9,
-    name: '阿黄', 
+    name: 'XX', 
     avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
     style: 'Latin'
   },
@@ -458,9 +458,9 @@ const navigateTo = (path) => {
 }
 
 // 视频区域点击
-const goToVideo = () => {
+const goToTeacherList = () => {
   uni.navigateTo({
-    url: '/pages/dance/video/index'
+    url: '/pages/dance/teacher/teacher'
   })
 }
 
@@ -716,8 +716,7 @@ const handleDotClick = (index) => {
       border-radius: 2rpx;
       transition: transform 0.3s ease;
     }
-    
-    &:hover {
+    &:nth-child(1){
       background: rgba(255, 255, 255, 0.1);
       transform: translateY(-2rpx);
       
@@ -736,6 +735,10 @@ const handleDotClick = (index) => {
         transform: translateX(-50%) scaleX(1);
       }
     }
+
+    &:nth-child(1)::after{
+      opacity: 1;
+    }
     
     &::after {
       content: '';
@@ -749,10 +752,6 @@ const handleDotClick = (index) => {
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
-    }
-    
-    &:hover::after {
-      opacity: 1;
     }
   }
 }
@@ -775,13 +774,14 @@ const handleDotClick = (index) => {
   padding: 30rpx;
   color: #fff;
 
+
+
   .more-btn {
     font-size: 26rpx;
     color: rgba(255, 255, 255, 0.6);
     background: rgba(255, 255, 255, 0.1);
     padding: 8rpx 20rpx;
     border-radius: 100rpx;
-
     // 添加点击效果
     &:active {
       opacity: 0.8;
@@ -858,6 +858,7 @@ const handleDotClick = (index) => {
         width: 100rpx;
         height: 100rpx;
         border-radius: 50%;
+   
       }
 
       .teacher-name {
@@ -1161,10 +1162,7 @@ const handleDotClick = (index) => {
       margin-bottom: 12rpx;
       border: 2rpx solid rgba(255, 77, 143, 0.3);
       transition: transform 0.2s ease;
-      
-      &:hover {
-        animation: pulse 1s ease infinite;
-      }
+      animation: pulse 2s ease-out infinite;
     }
 
     .teacher-name {

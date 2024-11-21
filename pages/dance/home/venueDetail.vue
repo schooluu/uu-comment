@@ -182,6 +182,8 @@ onMounted(() => {
     image {
       width: 100%;
       height: 100%;
+      opacity: 0;
+      animation: fadeIn 1s forwards; // 添加淡入动画
     }
   }
 
@@ -195,6 +197,7 @@ onMounted(() => {
       margin-bottom: 30rpx;
 
       .title-area {
+        flex-grow: 1;
         .name {
           font-size: 36rpx;
           color: #fff;
@@ -225,6 +228,11 @@ onMounted(() => {
         font-size: 28rpx;
         padding: 12rpx 30rpx;
         border-radius: 100rpx;
+        transition: transform 0.2s ease; // 添加过渡效果
+
+        &:active {
+          transform: scale(0.95); // 点击时缩小
+        }
       }
     }
 
@@ -323,6 +331,11 @@ onMounted(() => {
         width: 200rpx;
         margin-right: 20rpx;
         text-align: center;
+        transition: transform 0.3s ease; // 添加过渡效果
+
+        &:hover {
+          transform: scale(1.05); // 悬停时放大
+        }
 
         .teacher-avatar {
           width: 120rpx;
@@ -352,6 +365,12 @@ onMounted(() => {
         }
       }
     }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
   }
 }
 </style> 

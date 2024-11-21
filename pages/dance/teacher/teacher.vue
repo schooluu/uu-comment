@@ -21,23 +21,23 @@
 import { ref } from 'vue'
 
 const teachers = ref([
-  { id: 1, name: 'APHRODITE', enName: 'APHRODITE', avatar: '/static/images/teachers/aphrodite.jpg' },
-  { id: 2, name: 'CHERRY', enName: 'CHERRY', avatar: '/static/images/teachers/cherry.jpg' },
-  { id: 3, name: 'DEVIN PORNEL', enName: 'DEVIN PORNEL', avatar: '/static/images/teachers/devin.jpg' },
-  { id: 4, name: 'DOYUN', enName: 'DOYUN', avatar: '/static/images/teachers/doyun.jpg' },
-  { id: 5, name: 'JUNHO LEE', enName: 'JUNHO LEE', avatar: '/static/images/teachers/junho.jpg' },
-  { id: 6, name: 'MAAIN', enName: 'MAAIN', avatar: '/static/images/teachers/maain.jpg' },
-  { id: 7, name: 'MARLEE HIGHTOWER', enName: 'MARLEE HIGHTOWER', avatar: '/static/images/teachers/marlee.jpg' },
-  { id: 8, name: 'MONROE', enName: 'MONROE', avatar: '/static/images/teachers/monroe.jpg' },
-  { id: 9, name: 'NANACO', enName: 'NANACO', avatar: '/static/images/teachers/nanaco.jpg' },
-  { id: 10, name: 'NEMA', enName: 'NEMA', avatar: '/static/images/teachers/nema.jpg' },
-  { id: 11, name: 'ONELOVE', enName: 'ONELOVE', avatar: '/static/images/teachers/onelove.jpg' },
-  { id: 12, name: 'semi', enName: 'semi', avatar: '/static/images/teachers/semi.jpg' },
-  { id: 13, name: 'SHOHEI', enName: 'SHOHEI', avatar: '/static/images/teachers/shohei.jpg' },
-  { id: 14, name: 'WOOTAE', enName: 'WOOTAE', avatar: '/static/images/teachers/wootae.jpg' },
-  { id: 15, name: 'YECHAN', enName: 'YECHAN', avatar: '/static/images/teachers/yechan.jpg' },
-  { id: 16, name: 'YEJUN', enName: 'YEJUN', avatar: '/static/images/teachers/yejun.jpg' },
-  { id: 17, name: '绵羊', enName: '', avatar: '/static/images/teachers/mianyang.jpg' }
+  { id: 1, name: 'XXX', enName: 'XXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 2, name: 'XX', enName: 'X', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 3, name: 'XX PORNEL', enName: 'DEVIN XXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 4, name: 'XX', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 5, name: 'XX LEE', enName: 'XX LEE', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 6, name: 'XX', enName: 'MAAIN', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 7, name: 'XX HIGHTOWER', enName: 'MARLEE HIGHTOWER', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 8, name: 'XX', enName: 'MONROE', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 9, name: 'XXX', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 10, name: 'XX', enName: 'NEMA', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 11, name: 'OXXNELOVE', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 12, name: 'sXXemi', enName: 'XXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 13, name: 'X', enName: 'XXXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 14, name: 'WXXOOTAE', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 15, name: 'YXXECHAN', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 16, name: 'XX', enName: 'X', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
+  { id: 17, name: 'X', enName: '', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' }
 ])
 
 const goToDetail = (teacher) => {
@@ -56,8 +56,16 @@ const handleBack = () => {
 <style lang="scss" scoped>
 .container {
   min-height: 100vh;
-  background-color: #1C1B21;
+  background-color: #141123f5;
   padding: 30rpx;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 .header {
@@ -99,7 +107,12 @@ const handleBack = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
     .avatar {
       width: 120rpx;
       height: 120rpx;

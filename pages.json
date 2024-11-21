@@ -187,6 +187,19 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "导师详情"
       }
+    },
+    {
+      "path": "pages/wx/home/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "朋友圈"
+      }
+    }, {
+      "path": "pages/wx/home/add",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我要发布"
+      }
     }
   ],
   "tabBar": {
