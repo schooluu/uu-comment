@@ -200,6 +200,101 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "我要发布"
       }
+    }, {
+      "path": "pages/shop/home/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    }, {
+      "path": "pages/shop/mall/index",
+      "style": {
+        "navigationBarTitleText": "商城"
+      }
+    }, {
+      "path": "pages/shop/cart/index",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    }, {
+      "path": "pages/shop/gift/index",
+      "style": {
+        "navigationBarTitleText": "礼品中心"
+      }
+    }, {
+      "path": "pages/shop/user/index",
+      "style": {
+        "navigationBarTitleText": "个人中心"
+      }
+    }, {
+      "path": "pages/shop/user/address",
+      "style": {
+        "navigationBarTitleText": "地址管理"
+      }
+    }, {
+      "path": "pages/shop/user/address-edit",
+      "style": {
+        "navigationBarTitleText": "地址编辑"
+      }
+    }, {
+      "path": "pages/shop/user/settings",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    }, {
+      "path": "pages/shop/user/level",
+      "style": {
+        "navigationBarTitleText": "会员等级"
+      }
+    }, {
+      "path": "pages/shop/user/help",
+      "style": {
+        "navigationBarTitleText": "帮助中心"
+      }
+    }, {
+      "path": "pages/shop/user/about",
+      "style": {
+        "navigationBarTitleText": "关于我们"
+      }
+    }, {
+      "path": "pages/shop/user/invite",
+      "style": {
+        "navigationBarTitleText": "邀请有礼"
+      }
+    }, {
+      "path": "pages/shop/store/list",
+      "style": {
+        "navigationBarTitleText": "门店列表"
+      }
+    }, {
+      "path": "pages/shop/store/detail",
+      "style": {
+        "navigationBarTitleText": "门店详情"
+      }
+    }, {
+      "path": "pages/shop/store/goodsList",
+      "style": {
+        "navigationBarTitleText": "商品列表"
+      }
+    }, {
+      "path": "pages/shop/store/checkout",
+      "style": {
+        "navigationBarTitleText": "结算"
+      }
+    }, {
+      "path": "pages/shop/store/orderDetail",
+      "style": {
+        "navigationBarTitleText": "订单详情"
+      }
+    }, {
+      "path": "pages/shop/orders/index",
+      "style": {
+        "navigationBarTitleText": "订单"
+      }
+    },{
+      "path": "pages/shop/group/index",
+      "style": {
+        "navigationBarTitleText": "企业团餐"
+      }
     }
   ],
   "tabBar": {

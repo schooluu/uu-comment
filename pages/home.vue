@@ -57,6 +57,25 @@
             </view>
         </view>
 
+        <!-- 项目地址部分 -->
+        <view class="projects-links-section animate-fade-in">
+            <view class="section-header">
+                <text class="section-title">项目地址</text>
+                <text class="section-subtitle">开源代码</text>
+            </view>
+            
+            <view class="link-card glass-effect" @tap="openLink">
+                <view class="link-icon">
+                    <text class="icon">📦</text>
+                </view>
+                <view class="link-info">
+                    <text class="link-title">UNIAPP</text>
+                    <text class="link-desc">查看源代码</text>
+                </view>
+                <text class="arrow">→</text>
+            </view>
+        </view>
+
         <!-- 底部联系区域 -->
         <view class="contact-section animate-fade-in">
             <text class="contact-title">需要定制开发？</text>
@@ -218,6 +237,26 @@ const wechatPopup = ref(null)
 // 显示微信二维码
 const showWechatQR = () => {
     wechatPopup.value.open()
+}
+
+const openLink = () => {
+    const githubUrl = 'https://ext.dcloud.net.cn/plugin?id=21066'
+    
+    // #ifdef H5
+    window.open(githubUrl)
+    // #endif
+    
+    // #ifdef MP-WEIXIN
+    uni.setClipboardData({
+        data: githubUrl,
+        success: () => {
+            uni.showToast({
+                title: '链接已复制',
+                icon: 'none'
+            })
+        }
+    })
+    // #endif
 }
 </script>
 
@@ -428,6 +467,81 @@ const showWechatQR = () => {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    // 项目地址部分样式
+    .projects-links-section {
+        padding: 40rpx;
+        margin-top: 20rpx;
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40rpx;
+            
+            .section-title {
+                font-size: 36rpx;
+                font-weight: 600;
+                margin-bottom: 12rpx;
+            }
+            
+            .section-subtitle {
+                font-size: 26rpx;
+                color: #666;
+            }
+        }
+        
+        .link-card {
+            display: flex;
+            align-items: center;
+            padding: 30rpx;
+            border-radius: 24rpx;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.05);
+            border: 1rpx solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+            
+            &:active {
+                transform: scale(0.98);
+            }
+            
+            .link-icon {
+                width: 80rpx;
+                height: 80rpx;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 20rpx;
+                background: rgba(var(--theme-rgb), 0.1);
+                margin-right: 20rpx;
+                
+                .icon {
+                    font-size: 40rpx;
+                }
+            }
+            
+            .link-info {
+                flex: 1;
+                
+                .link-title {
+                    font-size: 28rpx;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 4rpx;
+                }
+                
+                .link-desc {
+                    font-size: 24rpx;
+                    color: #666;
+                }
+            }
+            
+            .arrow {
+                font-size: 32rpx;
+                color: var(--theme-color);
+                margin-left: 20rpx;
             }
         }
     }
