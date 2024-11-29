@@ -1,0 +1,57 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  padding: 30rpx;
+}
+.header {
+  margin-bottom: 40rpx;
+}
+.header .title {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.teacher-list .teacher-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+.teacher-list .teacher-item .avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+.teacher-list .teacher-item .info {
+  flex: 1;
+}
+.teacher-list .teacher-item .info .name {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.teacher-list .teacher-item .info .style {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 26rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.teacher-list .teacher-item .info .price {
+  color: #FF4D8F;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.teacher-list .teacher-item .book-btn {
+  width: 120rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  background: #FF4D8F;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 100rpx;
+}

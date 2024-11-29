@@ -1,0 +1,15 @@
+
+  /*每个页面公共css */
+view {
+    box-sizing: border-box;
+}
+@font-face {
+    font-family: "iconfont";
+    src: url('https://at.alicdn.com/t/font_2354462_s00xh8caffp.ttf');
+}
+.ico {
+    font-family: iconfont;
+}
+
+
+page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}[data-c-h="true"]{display: none !important;}

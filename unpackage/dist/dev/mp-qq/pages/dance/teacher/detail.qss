@@ -1,0 +1,81 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  position: relative;
+}
+.back-btn {
+  position: fixed;
+  top: 60rpx;
+  left: 30rpx;
+  z-index: 100;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back-btn .icon {
+  color: #fff;
+  font-size: 40rpx;
+}
+.video-section {
+  width: 100%;
+  height: 80vh;
+}
+.video-section .video-player {
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+.teacher-info {
+  padding: 30rpx;
+}
+.teacher-info .avatar-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.teacher-info .avatar-row .avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+.teacher-info .avatar-row .info-right {
+  flex: 1;
+}
+.teacher-info .avatar-row .info-right .name {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+  display: block;
+}
+.teacher-info .avatar-row .info-right .title {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 28rpx;
+  margin-top: 8rpx;
+}
+.teacher-info .avatar-row .favorite-btn {
+  padding: 20rpx;
+}
+.teacher-info .avatar-row .favorite-btn .icon {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 40rpx;
+}
+.teacher-info .avatar-row .favorite-btn .icon.active {
+  color: #FF4D8F;
+}
+.bottom-btn {
+  position: fixed;
+  bottom: 40rpx;
+  left: 40rpx;
+  right: 40rpx;
+  height: 88rpx;
+  background: #FF4D8F;
+  border-radius: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 32rpx;
+}

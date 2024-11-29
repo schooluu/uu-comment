@@ -35,7 +35,21 @@ exports.main = async (event, context) => {
 					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/sticker.jpg',
 					tags: ['Vue3', 'uniapp'],
 					path: '/pages/shop/home/index'
-				},
+				}, {
+					id: 5,
+					title: '物流公司系统',
+					description: '物流公司系统，包括用户端和管理端',
+					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/2-image_04.jpg',
+					tags: ['Vue3', 'uniapp'],
+					path: 'https://static-host-ppny09lg-uu-pro.sealosbja.site'
+				},{
+					id: 6,
+					title: '自营电商系统',
+					description: '自营电商系统，包括用户端和管理端',
+					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/2-image_01.jpg',
+					tags: ['Vue3', 'uniapp'],
+					path: 'https://static-host-ppny09lg-uu-store.sealosbja.site'
+				}
 			],
 			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120134411.png',
 			wechatQunQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/20241119152557.png'

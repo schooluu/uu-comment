@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "课程",
+  "usingComponents": {
+    "tab-bar": "../../../components/dance/tab-bar",
+    "filter-popup": "../../../components/dance/filter-popup"
+  }
+}

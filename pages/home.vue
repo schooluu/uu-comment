@@ -182,9 +182,31 @@ const projects = ref([
 ])
 
 const goToProject = (project) => {
-    uni.navigateTo({
-        url: project.path
+    // 检查是否为http(s)链接
+    const isHttpLink = /^https?:\/\//.test(project.path)
+    
+    if (!isHttpLink) {
+        uni.navigateTo({
+            url: project.path
+        })
+        return
+    }
+    
+    // #ifdef H5
+    window.open(project.path)
+    // #endif
+    
+    // #ifdef MP-WEIXIN
+    uni.setClipboardData({
+        data: project.path,
+        success: () => {
+            uni.showToast({
+                title: '链接已复制',
+                icon: 'none'
+            })
+        }
     })
+    // #endif
 }
 
 const sendEmail = () => {

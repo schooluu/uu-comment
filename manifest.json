@@ -92,7 +92,7 @@
             "base" : "./"
         },
         "devServer" : {
-            "https" : true
+            "https" : false
         },
         "title" : "项目模板展示",
         "optimization" : {
@@ -101,5 +101,8 @@
             }
         }
     },
-    "vueVersion" : "3"
+    "vueVersion" : "3",
+    "mp-qq" : {
+        "appid" : "1109786824"
+    }
 }

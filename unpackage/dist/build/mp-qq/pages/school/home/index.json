@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "校园食堂",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "tab-bar": "../../../components/school/tab-bar"
+  }
+}

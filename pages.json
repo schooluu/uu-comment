@@ -295,6 +295,18 @@
       "style": {
         "navigationBarTitleText": "企业团餐"
       }
+    },{
+      "path": "pages/school/home/index",
+      "style": {
+        "navigationBarTitleText": "校园食堂",
+        "navigationStyle": "custom"
+      }
+    },{
+      "path": "pages/city/home/index",
+      "style": {
+        "navigationBarTitleText": "城市生活",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "tabBar": {

@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "添加评论",
+  "usingComponents": {
+    "uni-rate": "../../../uni_modules/uni-rate/components/uni-rate/uni-rate",
+    "uni-popup": "../../../uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

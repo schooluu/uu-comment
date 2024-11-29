@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "AI项目展示",
+  "usingComponents": {
+    "uni-popup": "../uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

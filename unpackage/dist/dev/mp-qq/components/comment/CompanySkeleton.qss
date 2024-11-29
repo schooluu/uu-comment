@@ -1,0 +1,61 @@
+.skeleton-card.data-v-efb77fb8 {
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+.skeleton-card .card-header.data-v-efb77fb8 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.skeleton-card .card-header .company-name.data-v-efb77fb8 {
+  width: 200rpx;
+  height: 32rpx;
+}
+.skeleton-card .card-header .rating.data-v-efb77fb8 {
+  width: 120rpx;
+  height: 28rpx;
+}
+.skeleton-card .cons-box.data-v-efb77fb8 {
+  height: 120rpx;
+  border-radius: 12rpx;
+}
+.skeleton-card .card-footer.data-v-efb77fb8 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+}
+.skeleton-card .card-footer .stats.data-v-efb77fb8 {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.skeleton-card .card-footer .stats .stat-item.data-v-efb77fb8 {
+  width: 80rpx;
+  height: 24rpx;
+}
+.skeleton-card .card-footer .stats .date.data-v-efb77fb8 {
+  width: 120rpx;
+  height: 24rpx;
+  margin-left: 20rpx;
+}
+.skeleton-card .card-footer .city-tag.data-v-efb77fb8 {
+  width: 100rpx;
+  height: 36rpx;
+  border-radius: 4rpx;
+}
+.skeleton-bg.data-v-efb77fb8 {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 400% 100%;
+  animation: shimmer-efb77fb8 1.4s ease infinite;
+}
+@keyframes shimmer-efb77fb8 {
+0% {
+    background-position: 100% 50%;
+}
+100% {
+    background-position: 0 50%;
+}
+}

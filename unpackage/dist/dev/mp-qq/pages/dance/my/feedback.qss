@@ -1,0 +1,133 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  padding: 30rpx 30rpx 120rpx;
+}
+.header {
+  margin-bottom: 40rpx;
+}
+.header .title {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.section-title {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 28rpx;
+  margin-bottom: 20rpx;
+  display: block;
+}
+.type-section {
+  margin-bottom: 40rpx;
+}
+.type-section .type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+.type-section .type-grid .type-item {
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  color: #fff;
+  font-size: 28rpx;
+}
+.type-section .type-grid .type-item.active {
+  background: #FF4D8F;
+}
+.content-section {
+  margin-bottom: 40rpx;
+  position: relative;
+}
+.content-section .content-input {
+  width: 100%;
+  height: 300rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  color: #fff;
+  font-size: 28rpx;
+}
+.content-section .word-count {
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 24rpx;
+}
+.upload-section {
+  margin-bottom: 40rpx;
+}
+.upload-section .upload-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.upload-section .upload-grid .upload-item {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+}
+.upload-section .upload-grid .upload-item .preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+}
+.upload-section .upload-grid .upload-item .delete-btn {
+  position: absolute;
+  top: -20rpx;
+  right: -20rpx;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 36rpx;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 32rpx;
+}
+.upload-section .upload-grid .upload-btn {
+  width: 160rpx;
+  height: 160rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upload-section .upload-grid .upload-btn .icon {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 48rpx;
+}
+.contact-section {
+  margin-bottom: 60rpx;
+}
+.contact-section .contact-input {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  height: 80rpx;
+  padding: 0 20rpx;
+  color: #fff;
+  font-size: 28rpx;
+}
+.placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+.submit-btn {
+  position: fixed;
+  bottom: 40rpx;
+  left: 40rpx;
+  right: 40rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #FF4D8F;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 100rpx;
+}
+.submit-btn.disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+}

@@ -1,0 +1,1 @@
+<view class="tab-bar data-v-5f792ece"><view qq:for="{{a}}" qq:for-item="tab" qq:key="c" class="{{['tab-item', 'data-v-5f792ece', tab.d && 'active']}}" bindtap="{{tab.e}}"><text class="text data-v-5f792ece">{{tab.a}}</text><view qq:if="{{tab.b}}" class="indicator data-v-5f792ece"></view></view></view>

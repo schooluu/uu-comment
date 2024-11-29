@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "评论详情",
+  "usingComponents": {
+    "uni-rate": "../../../uni_modules/uni-rate/components/uni-rate/uni-rate"
+  }
+}
