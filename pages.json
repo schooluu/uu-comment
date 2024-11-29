@@ -200,6 +200,24 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "我要发布"
       }
+    },{
+      "path": "pages/wx/agreement/terms",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "服务协议"
+      }
+    },{
+      "path": "pages/wx/agreement/privacy",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "隐私政策"
+      }
+    },{
+      "path": "pages/wx/login/login",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "登入"
+      }
     }, {
       "path": "pages/shop/home/index",
       "style": {

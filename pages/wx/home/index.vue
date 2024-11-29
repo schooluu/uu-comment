@@ -1,11 +1,11 @@
 <template>
   <view class="moments-container">
     <!-- 顶部背景图和头像区域 -->
-    <view class="header">
+    <view class="header" @tap="handleLogin">
       <image class="bg-image" :src="defaultAvatar" mode="aspectFill"></image>
       <view class="avatar-area">
         <view class="user-info">
-          <text class="nickname">用户昵称</text>
+          <text class="nickname">未登入</text>
           <image class="avatar" :src="defaultAvatar" mode="aspectFill"></image>
         </view>
       </view>
@@ -58,9 +58,11 @@
                 @tap="handleLike(index)"
               >
                 <text class="icon">{{ item.isLiked ? '❤️' : '🤍' }}</text>
+                <text class="action-text">{{ item.isLiked ? '已赞' : '点赞' }}</text>
               </view>
               <view class="action-btn comment-btn" @tap="handleComment(index)">
                 <text class="icon">💬</text>
+                <text class="action-text">评论</text>
               </view>
             </view>
           </view>
@@ -125,6 +127,14 @@
         <text class="iconfont">+</text>
       </view>
     </view>
+
+    <!-- 添加加载动画组件 -->
+    <view class="loading-container" v-if="loading">
+      <view class="loading-spinner">
+        <view class="dot" v-for="i in 3" :key="i"></view>
+      </view>
+      <text class="loading-text">加载中...</text>
+    </view>
   </view>
 </template>
 
@@ -152,20 +162,31 @@ const pageSize = ref(10)
 const loading = ref(false)
 const hasMore = ref(true)
 const moments = ref([])
-
+const handleLogin = () => {
+  uni.navigateTo({
+    url: '/pages/wx/login/login'
+  })
+}
 // 获取朋友圈列表
 const getMomentsList = async (isRefresh = false) => {
   if (loading.value || (!hasMore.value && !isRefresh)) return
   
   try {
     loading.value = true
-    const { result } = await uniCloud.callFunction({
-      name: 'wx_get_list',
-      data: {
-        page: isRefresh ? 1 : page.value,
-        pageSize: pageSize.value
-      }
-    })
+    
+    // 添加最小加载时间，确保动画效果显示
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 800))
+    
+    const [{ result }] = await Promise.all([
+      uniCloud.callFunction({
+        name: 'wx_get_list',
+        data: {
+          page: isRefresh ? 1 : page.value,
+          pageSize: pageSize.value
+        }
+      }),
+      minLoadTime
+    ])
     
     if (result.code === 0) {
       if (isRefresh) {
@@ -186,7 +207,6 @@ const getMomentsList = async (isRefresh = false) => {
     })
   } finally {
     loading.value = false
-    // 停止下拉刷新
     if (isRefresh) {
       uni.stopPullDownRefresh()
     }
@@ -254,7 +274,7 @@ const submitComment = async () => {
     })
     
     if (result.code === 0) {
-      // 更��评论列表
+      // 更新评论列表
       const moment = moments.value[currentMomentIndex.value]
       if (!moment.comments) moment.comments = []
       moment.comments.push({
@@ -376,6 +396,7 @@ $action-color: #576b95;
     
     .user-info {
       position: relative;
+      z-index: 999;
       
       .nickname {
         position: absolute;
@@ -427,7 +448,7 @@ $action-color: #576b95;
       .text-content {
         font-size: 28rpx;
         color: $font-color-light;
-        margin-bottom: 16rpx;
+        margin-bottom: 36rpx;
         line-height: 1.5;
       }
 
@@ -435,65 +456,55 @@ $action-color: #576b95;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 16rpx;
-
+        margin: 20rpx 0;
+        
         .time {
           font-size: 24rpx;
           color: #999;
         }
-
+        
         .actions {
           display: flex;
           align-items: center;
-          gap: 20rpx;
+          gap: 30rpx;
           
           .action-btn {
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 60rpx;
-            height: 60rpx;
-            position: relative;
+            padding: 12rpx 20rpx;
+            border-radius: 30rpx;
+            background: rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
             
             .icon {
-              font-size: 36rpx;
-              line-height: 1;
+              font-size: 32rpx;
+              margin-right: 8rpx;
+            }
+            
+            .action-text {
+              font-size: 24rpx;
+              color: #666;
+            }
+            
+            &:active {
+              transform: scale(0.95);
+              background: rgba(0, 0, 0, 0.06);
             }
           }
           
           .like-btn {
-            transition: transform 0.2s ease;
-            
-            &:active {
-              transform: scale(0.9);
-            }
-            
             &.liked {
-              animation: likeScale 0.3s ease forwards;
+              background: rgba(255, 69, 58, 0.1);
+              
+              .action-text {
+                color: #ff453a;
+              }
             }
             
             &.animating {
-              &::before {
-                content: '❤️';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                opacity: 0;
-                animation: likeFloat 1s ease-out;
+              .icon {
+                animation: likePopup 0.4s cubic-bezier(0.17, 0.89, 0.32, 1.49);
               }
-            }
-          }
-          
-          .comment-btn {
-            transition: transform 0.2s ease;
-            
-            &:active {
-              transform: scale(0.9);
-            }
-            
-            .icon {
-              transform: translateY(-1rpx); // 微调评论图标位置
             }
           }
         }
@@ -567,6 +578,7 @@ $action-color: #576b95;
 
 .media-content {
   margin-bottom: 16rpx;
+  margin-top: 20rpx;
   
   .video-content {
     width: 100%;
@@ -830,6 +842,264 @@ $action-color: #576b95;
   100% {
     transform: scale(1);
     opacity: 0.6;
+  }
+}
+
+// 添加加载动画样式
+.loading-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  // box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  
+  .loading-spinner {
+    position: relative;
+    width: 120rpx;
+    height: 120rpx;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6rpx solid rgba(7, 193, 96, 0.1);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6rpx solid transparent;
+      border-top-color: #07c160;
+      animation: spin 1s linear infinite;
+    }
+    
+    .dot {
+      position: absolute;
+      width: 20rpx;
+      height: 20rpx;
+      background: #07c160;
+      border-radius: 50%;
+      animation: dotPulse 1.5s ease-in-out infinite;
+      
+      &:nth-child(1) {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        animation-delay: -0.3s;
+      }
+      
+      &:nth-child(2) {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(120deg) translateX(30rpx);
+        animation-delay: -0.2s;
+      }
+      
+      &:nth-child(3) {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(240deg) translateX(30rpx);
+        animation-delay: -0.1s;
+      }
+    }
+  }
+  
+  .loading-text {
+    margin-top: 30rpx;
+    font-size: 28rpx;
+    color: #666;
+    letter-spacing: 2rpx;
+    animation: textPulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// 优化列表加载动画
+.moment-item {
+  opacity: 0;
+  transform: translateY(30rpx);
+  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.08}s;
+    }
+  }
+  
+  &:hover {
+    transform: translateY(-2rpx);
+    box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 添加骨架屏动画
+.skeleton {
+  background: linear-gradient(90deg, 
+    rgba(190, 190, 190, 0.2) 25%, 
+    rgba(129, 129, 129, 0.24) 37%, 
+    rgba(190, 190, 190, 0.2) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+// 添加下拉刷新动画
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.interaction-area {
+  margin-top: 16rpx;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  overflow: hidden;
+  
+  .likes-section {
+    padding: 16rpx;
+    display: flex;
+    align-items: center;
+    
+    .heart-icon {
+      font-size: 24rpx;
+      margin-right: 10rpx;
+    }
+    
+    .like-users {
+      font-size: 26rpx;
+      color: $action-color;
+      line-height: 1.4;
+    }
+  }
+  
+  .divider {
+    height: 1rpx;
+    background: rgba(0, 0, 0, 0.06);
+    margin: 0 16rpx;
+  }
+  
+  .comments-section {
+    padding: 16rpx;
+    
+    .comment-item {
+      display: flex;
+      margin-bottom: 12rpx;
+      font-size: 26rpx;
+      line-height: 1.4;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      &.new-comment {
+        animation: commentFadeIn 0.3s ease;
+      }
+      
+      .comment-user {
+        color: $action-color;
+        font-weight: 500;
+      }
+      
+      .comment-separator {
+        color: #999;
+        margin: 0 4rpx;
+      }
+      
+      .comment-content {
+        color: $font-color-dark;
+        flex: 1;
+        word-break: break-all;
+      }
+    }
+  }
+}
+
+@keyframes likePopup {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4) rotate(15deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes commentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>
