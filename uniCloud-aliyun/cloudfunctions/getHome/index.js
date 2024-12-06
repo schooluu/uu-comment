@@ -49,13 +49,6 @@ exports.main = async (event, context) => {
 					image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/2-image_01.jpg',
 					tags: ['Vue3', 'uniapp'],
 					path: 'https://static-host-ppny09lg-uu-store.sealosbja.site'
-				},{
-					id: 7,
-					title: '同城生活模板',
-					description: '同城生活模板，本地生活',
-					image: 'https://img1.baidu.com/it/u=2297377264,1459357291&fm=253&fmt=auto&app=138&f=JPG?w=265&h=380',
-					tags: ['Vue3', 'uniapp'],
-					path: '/pages/city/home/index'
 				}
 			],
 			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120134411.png',
