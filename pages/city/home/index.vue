@@ -12,13 +12,17 @@
 
     <!-- 搜索栏 -->
     <div class="search-bar">
-      <div class="category-btn">
+      <div class="category-btn" @click="showCategoryPicker">
         全部分类 
         <span class="arrow">▼</span>
       </div>
       <div class="search-input">
         <span class="search-icon">🔍</span>
-        <input type="text" placeholder="找工作、找房子、找顺风车">
+        <input 
+          type="text" 
+          placeholder="找工作、找房子、找顺风车"
+          @confirm="handleSearch"
+          v-model="searchKeyword">
       </div>
     </div>
 
@@ -41,7 +45,7 @@
       <div v-for="(tab, index) in tabs" 
            :key="index" 
            :class="['tab-item', { active: currentTab === index }]"
-           @click="currentTab = index">
+           @click="handleTabClick(tab, index)">
         <div class="tab-icon">{{ tab.emoji }}</div>
         <span class="tab-name">{{ tab.name }}</span>
       </div>
@@ -51,28 +55,28 @@
     <div>
       <!-- 横向滚动菜单 -->
       <div class="scroll-menu">
-        <div class="menu-item">
+        <div class="menu-item" @click="handleMenuClick('market')">
           <div class="menu-text">
             <span class="primary-text">同城二手</span>
             <span class="secondary-text">闲置换钱</span>
           </div>
           <span class="truck-emoji">🚛</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" @click="handleMenuClick('carpool')">
           <div class="menu-text">
             <span class="primary-text">顺风拼车</span>
             <span class="secondary-text">货物运输</span>
           </div>
           <span class="truck-emoji">🚛</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" @click="handleMenuClick('job')">
           <div class="menu-text">
             <span class="primary-text">求职招聘</span>
             <span class="secondary-text">信息发布</span>
           </div>
           <span class="water-emoji">💧</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" @click="handleMenuClick('house')">
           <div class="menu-text">
             <span class="primary-text">土地房产</span>
             <span class="secondary-text">房屋租售</span>
@@ -114,7 +118,8 @@
         <div class="merchant-list">
           <div v-for="(merchant, index) in merchants" 
                :key="index" 
-               class="merchant-item">
+               class="merchant-item"
+               @click="handleMerchantClick(merchant)">
             <img :src="merchant.image" :alt="merchant.name" class="merchant-img">
             <div class="merchant-info">
               <div class="merchant-name">{{ merchant.name }}</div>
@@ -172,17 +177,100 @@ export default {
           tags: ["美食", "特色"],
           address: "富邦广场2楼"
         }
-      ]
+      ],
+      searchKeyword: ''
     }
   },
   methods: {
     handleFeatureClick(item) {
-      console.log('点击了:', item.name)
+      // 根据功能名称跳转到对应页面
+      switch(item.name) {
+        case '土地房产':
+          uni.navigateTo({ url: '/pages/city/house/index' })
+          break
+        case '求职招聘':
+          uni.navigateTo({ url: '/pages/city/job/index' })
+          break
+        case '闲置买卖':
+          uni.navigateTo({ url: '/pages/city/market/index' })
+          break
+        case '车辆买卖':
+          uni.navigateTo({ url: '/pages/city/car/index' })
+          break
+        case '商户信息':
+          uni.navigateTo({ url: '/pages/city/business/index' })
+          break
+        case '顺风拼车':
+          uni.navigateTo({ url: '/pages/city/carpool/index' })
+          break
+        default:
+          uni.showToast({
+            title: '功能开发中...',
+            icon: 'none'
+          })
+      }
+    },
+    handleTabClick(tab, index) {
+      switch(tab.name) {
+        case '首页':
+          this.currentTab = index
+          uni.reLaunch({ url: '/pages/city/home/index' })
+          break
+        case '商圈':
+          this.currentTab = index
+          uni.navigateTo({ url: '/pages/city/business/index' })
+          break
+        case '发布':
+          uni.navigateTo({ url: '/pages/city/publish/index' })
+          break
+        case '名片':
+          this.currentTab = index
+          uni.navigateTo({ url: '/pages/city/card/index' })
+          break
+        case '我的':
+          this.currentTab = index
+          uni.navigateTo({ url: '/pages/city/user/index' })
+          break
+      }
+    },
+    handleMenuClick(type) {
+      switch(type) {
+        case 'market':
+          uni.navigateTo({ url: '/pages/city/market/index' })
+          break
+        case 'carpool':
+          uni.navigateTo({ url: '/pages/city/carpool/index' })
+          break
+        case 'job':
+          uni.navigateTo({ url: '/pages/city/job/index' })
+          break
+        case 'house':
+          uni.navigateTo({ url: '/pages/city/house/index' })
+          break
+      }
+    },
+    handleMerchantClick(merchant) {
+      uni.navigateTo({
+        url: `/pages/city/merchant/index?id=${merchant.id}`
+      })
+    },
+    showCategoryPicker() {
+      // 显示分类选择器
+      uni.showActionSheet({
+        itemList: ['全部', '房产', '招聘', '二手', '拼车'],
+        success: (res) => {
+          console.log('选择分类:', res.tapIndex)
+        }
+      })
+    },
+    handleSearch(e) {
+      uni.navigateTo({
+        url: `/pages/city/search/index?keyword=${this.searchKeyword}`
+      })
     }
   }
 }
 </script>
-
 <style scoped>
 .home-container {
   min-height: 100vh;
