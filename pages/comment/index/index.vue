@@ -834,7 +834,7 @@ onMounted(() => {
         right: 0;
         height: 60rpx;
         background: linear-gradient(to bottom, rgba(255, 184, 0, 0), rgba(255, 184, 0, 0.1));
-        pointer-events: none; // 确保不��响点击事件
+        pointer-events: none; // 确保不响点击事件
         opacity: 0;
         transition: opacity 0.3s;
       }

@@ -59,7 +59,7 @@ exports.main = async (event, context) => {
 				}
 			],
 			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120134411.png',
-			wechatQunQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/20241119152557.png'
+			wechatQunQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/23687d9f2f602d31317e1af279f1e0b.jpg'
 		}
 
 		return {

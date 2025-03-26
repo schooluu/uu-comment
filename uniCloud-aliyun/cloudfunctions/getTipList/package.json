@@ -1,0 +1,7 @@
+{
+  "name": "getTipList",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
