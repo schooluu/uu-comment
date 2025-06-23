@@ -21,23 +21,23 @@
 import { ref } from 'vue'
 
 const teachers = ref([
-  { id: 1, name: 'XXX', enName: 'XXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 2, name: 'XX', enName: 'X', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 3, name: 'XX PORNEL', enName: 'DEVIN XXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 4, name: 'XX', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 5, name: 'XX LEE', enName: 'XX LEE', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 6, name: 'XX', enName: 'MAAIN', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 7, name: 'XX HIGHTOWER', enName: 'MARLEE HIGHTOWER', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 8, name: 'XX', enName: 'MONROE', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 9, name: 'XXX', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 10, name: 'XX', enName: 'NEMA', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 11, name: 'OXXNELOVE', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 12, name: 'sXXemi', enName: 'XXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 13, name: 'X', enName: 'XXXX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 14, name: 'WXXOOTAE', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 15, name: 'YXXECHAN', enName: 'XX', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 16, name: 'XX', enName: 'X', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' },
-  { id: 17, name: 'X', enName: '', avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png' }
+  { id: 1, name: 'XXX', enName: 'XXX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 2, name: 'XX', enName: 'X', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 3, name: 'XX PORNEL', enName: 'DEVIN XXX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 4, name: 'XX', enName: 'XX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 5, name: 'XX LEE', enName: 'XX LEE', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 6, name: 'XX', enName: 'MAAIN', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 7, name: 'XX HIGHTOWER', enName: 'MARLEE HIGHTOWER', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 8, name: 'XX', enName: 'MONROE', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 9, name: 'XXX', enName: 'XX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 10, name: 'XX', enName: 'NEMA', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 11, name: 'OXXNELOVE', enName: 'XX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 12, name: 'sXXemi', enName: 'XXX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 13, name: 'X', enName: 'XXXX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 14, name: 'WXXOOTAE', enName: 'XX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 15, name: 'YXXECHAN', enName: 'XX', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 16, name: 'XX', enName: 'X', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' },
+  { id: 17, name: 'X', enName: '', avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500' }
 ])
 
 const goToDetail = (teacher) => {

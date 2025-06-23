@@ -13,7 +13,7 @@
         </view>
       </view>
       <view class="login-section" v-else>
-        <image class="logo" src="https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241119193419.png" mode="aspectFit"></image>
+        <image class="logo" src="https://img0.baidu.com/it/u=2468025311,1835159029&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=500" mode="aspectFit"></image>
         <text class="slogan">登录FancyFancy 开始我的学习</text>
         <button class="login-btn" @tap="handleLogin">登录/注册</button>
       </view>
@@ -90,7 +90,7 @@ const otherMenu = ref([
   { id: 7, name: '分享', icon: '📤', path: '/pages/dance/my/share' },
   { id: 8, name: '通知', icon: '🔔', path: '/pages/dance/my/notification' },
   { id: 9, name: '申请开票', icon: '📄', path: '/pages/dance/my/invoice' },
-  { id: 10, name: '意见反���', icon: '💭', path: '/pages/dance/my/feedback' }
+  { id: 10, name: '意见反馈', icon: '💭', path: '/pages/dance/my/feedback' }
 ])
 
 const tabBar = ref([

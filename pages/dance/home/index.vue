@@ -62,7 +62,7 @@
         <text class="more-btn" @tap="goToVideoList">更多视频</text>
       </view>
       <view class="video-card">
-        <image class="video-cover" src="https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120114522.png" mode="aspectFill"></image>
+        <image class="video-cover" src="https://img2.baidu.com/it/u=2254881676,2611235296&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=500" mode="aspectFill"></image>
         <view class="play-icon"></view>
       </view>
 
@@ -75,7 +75,7 @@
         <view class="course-image-wrapper">
           <image 
             class="course-image" 
-            src="https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120114537.png" 
+            src="https://img0.baidu.com/it/u=2897259486,2896663879&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500" 
             mode="aspectFill"
           ></image>
           <view class="overlay">
@@ -206,9 +206,9 @@ import TabBar from '@/components/dance/tab-bar.vue'
 
 const currentSwiper = ref(0)
 const banners = ref([
-  'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120114522.png',
-  'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120114522.png',
-  'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120114537.png'
+  'https://objectstorageapi.bja.sealos.run/ppny09lg-xr-im/dance/微信图片_20241120114522.png',
+  'https://objectstorageapi.bja.sealos.run/ppny09lg-xr-im/dance/微信图片_20241120131438.png',
+  'https://objectstorageapi.bja.sealos.run/ppny09lg-xr-im/dance/微信图片_20241120114537.png'
 ])
 
 const navItems = ref([
@@ -248,7 +248,7 @@ const dates = ref([
 const courses = ref([
   {
     teacherName: 'XX',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ',
     level: 3,
     count: '1',
@@ -258,7 +258,7 @@ const courses = ref([
   },
   {
     teacherName: 'XX',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ 身体开发',
     level: 1,
     count: '1',
@@ -269,7 +269,7 @@ const courses = ref([
   },
   {
     teacherName: '大圆',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'MV DANCE',
     level: 2,
     count: '1',
@@ -279,7 +279,7 @@ const courses = ref([
   },
   {
     teacherName: 'Lynn',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ',
     level: 3,
     count: '1',
@@ -290,7 +290,7 @@ const courses = ref([
   },
   {
     teacherName: 'Wantina',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ 基础',
     level: 1,
     count: '1',
@@ -306,12 +306,12 @@ const venues = ref([
   {
     name: 'XXXX舞室大悦城店',
     address: 'XXXXXXXXXXXXX',
-    image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png'
+    image: 'https://qcloud.dpfile.com/pc/Je_8tkOxYOAc4tEgnIaIF4JepryHR899dUp-8sZPSvRHcNdd0rKT_yP6s6vaki9A.jpg'
   },
   {
     name: 'XXXX舞室嘉里合集店',
     address: 'XXXXXXXX室',
-    image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png'
+    image: 'https://qcloud.dpfile.com/pc/hW3D6Eg1UIB7fz8kvtNVTo1iqxT4LNEIjzkpB-wW6RD1JqNcWwFU-9phykgJcvQC.jpg'
   }
 ])
 
@@ -320,61 +320,61 @@ const teachers = ref([
   { 
     id: 1,
     name: 'Joho', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Jazz'
   },
   { 
     id: 2,
     name: 'FEI', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Hip-hop'
   },
   { 
     id: 3,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Urban'
   },
   { 
     id: 4,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Popping'
   },
   { 
     id: 5,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Swing'
   },
   { 
     id: 6,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Ballet'
   },
   { 
     id: 7,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Contemporary'
   },
   { 
     id: 8,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'K-pop'
   },
   { 
     id: 9,
     name: 'XX', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Latin'
   },
   { 
     id: 10,
     name: 'BADA', 
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     style: 'Street'
   }
 ])

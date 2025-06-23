@@ -83,7 +83,7 @@
             <view class="contact-buttons">
                 <button class="contact-btn email-btn" @tap="showWechatQR">
                     <text class="icon">👋</text>
-                    <text>加我微信</text>
+                    <text>加我QQ</text>
                 </button>
             </view>
         </view>
@@ -108,7 +108,7 @@
 
         <!-- 在联系区域后添加微信群区域 -->
         <view class="wechat-section animate-fade-in">
-            <text class="section-title">加入微信群</text>
+            <text class="section-title">加入QQ群</text>
             <text class="section-subtitle">与开发者和其他用户交流</text>
             <view class="qrcode-container">
                 <image class="qrcode" :src="wechatQunQr" mode="aspectFit" @tap="previewQRCode"/>
@@ -130,7 +130,7 @@
         <uni-popup ref="wechatPopup" type="center">
             <view class="qr-popup">
                 <image class="qr-code" :src="wechatQr" mode="aspectFit" />
-                <text class="qr-tip">扫码加微信</text>
+                <text class="qr-tip">扫码加QQ</text>
             </view>
         </uni-popup>
     </view>

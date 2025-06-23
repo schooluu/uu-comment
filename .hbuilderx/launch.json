@@ -16,7 +16,7 @@
             "mp-toutiao" : {
                 "launchtype" : "local"
             },
-            "provider" : "alipay",
+            "provider" : "aliyun",
             "type" : "uniCloud"
         }
     ]

@@ -128,7 +128,7 @@ const dates = ref([
 const courses = ref([
   {
     teacherName: 'FAFA',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ',
     level: 3,
     count: '1',
@@ -138,7 +138,7 @@ const courses = ref([
   },
   {
     teacherName: '宝宝babo',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/aa57670d0d25d0c6f02772495e6cd5d3.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ 身体开发',
     level: 1,
     count: '1',
@@ -149,7 +149,7 @@ const courses = ref([
   },
   {
     teacherName: '大圆',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'MV DANCE',
     level: 2,
     count: '1',
@@ -159,7 +159,7 @@ const courses = ref([
   },
   {
     teacherName: 'Lynn',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ',
     level: 3,
     count: '1',
@@ -170,7 +170,7 @@ const courses = ref([
   },
   {
     teacherName: 'Wantina',
-    avatar: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/rain.png',
+    avatar: 'https://img0.baidu.com/it/u=212230986,3555547834&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
     title: 'JAZZ 基础',
     level: 1,
     count: '1',
@@ -320,21 +320,21 @@ onMounted(() => {
 // 轮播图数据
 const banners = ref([
   {
-    image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120131438.png',
+    image: 'https://qcloud.dpfile.com/pc/Gda7kgbxJs7238XaBo6mxM0gj3xuSl0yco8VUpkOEJFMKGl33CQ-_7ixUcHgXC9-.jpg',
     title: 'DOPAMINE',
     subtitle: '万圣开篇，酷炫装扮等你来COS',
     date: 'November 2024',
     theme: 'Passionate Freedom /AFRO.'
   },
   {
-    image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120131438.png',
+    image: 'https://qcloud.dpfile.com/pc/XDJGru5vr1L5BSF3oePTsBc_l60q0_UwCMLaVA_59wOSOsdagRDO-IEWlGb8IfF2.jpg',
     title: 'JAZZ NIGHT',
     subtitle: '爵士之夜，感受律动的魅力',
     date: 'December 2024',
     theme: 'Rhythm & Soul /JAZZ.'
   },
   {
-    image: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120131438.png',
+    image: 'https://qcloud.dpfile.com/pc/s6tJIKnf46riziVlB5nHBCjJfAWAGJWDO90BTJVXbK5uNATpsHqI-QSz8IMrusCh.jpg',
     title: 'STREET DANCE',
     subtitle: '街舞派对，展现你的态度',
     date: 'January 2025',

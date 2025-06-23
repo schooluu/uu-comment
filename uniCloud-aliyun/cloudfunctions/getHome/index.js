@@ -27,25 +27,10 @@ exports.main = async (event, context) => {
 					image: 'https://env-00jxtfbgd5dl.normal.cloudstatic.cn/微信图片_20241120114537.png?expire_at=1747497189&er_sign=208848dd037776c9a4fb75803f6e5f8a',
 					tags: ['Vue3', 'uniapp'],
 					path: '/pages/wx/home/index'
-				},
-				{
-					id: 4,
-					title: '门店模板',
-					description: '门店模板，方便门店提供给用户点单功能',
-					image: 'https://env-00jxtfbgd5dl.normal.cloudstatic.cn/微信图片_20241120131438.png?expire_at=1747497201&er_sign=4e3263fd9db54d9efe5f4ca09c4d4bf5',
-					tags: ['Vue3', 'uniapp'],
-					path: '/pages/shop/home/index'
-				}, {
-					id: 7,
-					title: '同城生活模板',
-					description: '同城生活模板，本地生活',
-					image: 'https://img1.baidu.com/it/u=2297377264,1459357291&fm=253&fmt=auto&app=138&f=JPG?w=265&h=380',
-					tags: ['Vue3', 'uniapp'],
-					path: '/pages/city/home/index'
 				}
 			],
-			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/微信图片_20241120134411.png',
-			wechatQunQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-uu-img/23687d9f2f602d31317e1af279f1e0b.jpg'
+			wechatQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-xr-im/1b29f2859000024a54da3f1854593d5f.jpeg',
+			wechatQunQr: 'https://objectstorageapi.bja.sealos.run/ppny09lg-xr-im/7060a41f08bc0a068442f8b5bde52631.jpeg'
 		}
 
 		return {

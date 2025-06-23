@@ -11,7 +11,7 @@
     <!-- 关于我们 -->
     <view class="about-card animate-slide-down">
       <view class="header">
-        <image class="logo pulse" src="/static/images/logo.png" mode="aspectFit"></image>
+        <image class="logo pulse" src="https://iknow-pic.cdn.bcebos.com/2fdda3cc7cd98d10322c0cb1333fb80e7aec90b1" mode="aspectFit"></image>
         <text class="title">关于FancyFancy</text>
         <text class="expand-btn" @tap="toggleExpand">
           {{ isExpanded ? '收起' : '展开' }}
@@ -96,29 +96,29 @@ const videos = ref([
   {
     id: 1,
     title: '饭团 - 舞娘',
-    url: '/static/videos/dance1.mp4',
-    poster: '/static/images/video-poster1.jpg',
+    url: 'https://www.bilibili.com/video/BV1SvSEYvE7U?t=11.9',
+    poster: 'https://qcloud.dpfile.com/pc/mhn9S5lPNsMBwyDy4IQ0iv5qiyqequ3mZ67rh4ZcdkCWuNpRCk5lQzhHOkJFKAf8.jpg',
     tags: ['JAZZ', 'FancyFancy舞室金鹰店', 'KIER饭团']
   },
   {
     id: 2,
     title: '金金 - Mirrors',
     url: '/static/videos/dance2.mp4',
-    poster: '/static/images/video-poster2.jpg',
+    poster: 'https://qcloud.dpfile.com/pc/Tc9Vqj9bruQKwORJcL7_EeTjh35o2640h8Sqls9HUkruTEUwe6AXdZIGa6qWVvsc.jpg',
     tags: ['现代舞', 'FancyFancy舞室金鹰店']
   },
   {
     id: 1,
     title: '饭团 - 舞娘',
     url: '/static/videos/dance1.mp4',
-    poster: '/static/images/video-poster1.jpg',
+    poster: 'https://qcloud.dpfile.com/pc/hW3D6Eg1UIB7fz8kvtNVTo1iqxT4LNEIjzkpB-wW6RD1JqNcWwFU-9phykgJcvQC.jpg',
     tags: ['JAZZ', 'FancyFancy舞室金鹰店', 'KIER饭团']
   },
   {
     id: 2,
     title: '金金 - Mirrors',
     url: '/static/videos/dance2.mp4',
-    poster: '/static/images/video-poster2.jpg',
+    poster: 'https://qcloud.dpfile.com/pc/s6tJIKnf46riziVlB5nHBCjJfAWAGJWDO90BTJVXbK5uNATpsHqI-QSz8IMrusCh.jpg',
     tags: ['现代舞', 'FancyFancy舞室金鹰店']
   }
 ])

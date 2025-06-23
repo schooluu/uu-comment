@@ -42,8 +42,8 @@ import { ref } from 'vue'
 const teacherInfo = ref({
   name: 'APHRODITE',
   title: '明星导师',
-  avatar: '/static/images/teachers/aphrodite.jpg',
-  videoUrl: '/static/videos/dance-demo.mp4'
+  avatar: 'https://iknow-pic.cdn.bcebos.com/2fdda3cc7cd98d10322c0cb1333fb80e7aec90b1',
+  videoUrl: 'https://iknow-pic.cdn.bcebos.com/2fdda3cc7cd98d10322c0cb1333fb80e7aec90b1'
 })
 
 const isFavorite = ref(false)
