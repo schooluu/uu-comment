@@ -1,23 +1,34 @@
 <template>
   <view class="publish-container">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar">
+    <!-- 顶部渐变导航栏 -->
+    <view class="nav-bar gradient-bar">
       <text class="cancel" @tap="handleCancel">取消</text>
-      <text class="publish" :class="{ active: canPublish }" @tap="handlePublish">发表</text>
+      <view class="publish-btn-wrap">
+        <text class="publish" :class="{ active: canPublish }" @tap="handlePublish">
+          <view class="publish-btn-glow"></view>
+          发表
+        </text>
+      </view>
     </view>
-
     <!-- 内容输入区 -->
     <view class="content-area">
       <textarea
         class="content-input"
         v-model="content"
-        placeholder="这一刻的想法..."
+        placeholder="这一刻的想法...支持表情😊"
         placeholder-style="color: #999;"
         maxlength="1000"
         auto-height
       />
+      <view class="emoji-toolbar">
+        <text class="emoji-btn" @tap="toggleEmojiPanel">😊</text>
+      </view>
+      <view class="emoji-panel" v-if="showEmojiPanel">
+        <scroll-view scroll-x class="emoji-list">
+          <text v-for="(emoji, i) in emojiList" :key="i" class="emoji-item" @tap="insertEmoji(emoji)">{{ emoji }}</text>
+        </scroll-view>
+      </view>
     </view>
-
     <!-- 图片/视频展示区 -->
     <view class="media-area">
       <view class="media-grid">
@@ -26,13 +37,16 @@
             v-if="item.type === 'image'"
             :src="item.url" 
             mode="aspectFill"
+            class="media-img"
             @tap="previewImage(index)"
           />
-          <video 
-            v-else-if="item.type === 'video'"
-            :src="item.url"
-            class="video-preview"
-          />
+          <view v-else-if="item.type === 'video'" class="video-preview-wrap">
+            <video 
+              :src="item.url"
+              class="video-preview video-radius"
+            />
+            <view class="video-play-icon">▶</view>
+          </view>
           <view class="delete-btn" @tap="deleteMedia(index)">×</view>
         </view>
         <!-- 添加按钮 -->
@@ -41,7 +55,6 @@
         </view>
       </view>
     </view>
-
     <!-- 底部选项区 -->
     <view class="bottom-options">
       <view class="option-item" @tap="togglePrivacy">
@@ -57,6 +70,11 @@
         <text class="value">{{ mentionList.length ? `已选${mentionList.length}人` : '添加' }}</text>
       </view>
     </view>
+    <!-- 科技感加载动画 -->
+    <view class="tech-loading" v-if="loading">
+      <view class="dot" v-for="i in 4" :key="i"></view>
+      <text class="loading-text">发布中...</text>
+    </view>
   </view>
 </template>
 
@@ -69,6 +87,7 @@ const mediaList = ref([])
 const location = ref('')
 const privacyMode = ref('public')
 const mentionList = ref([])
+const loading = ref(false)
 
 // 计算属性
 const privacyText = computed(() => {
@@ -84,6 +103,23 @@ const canPublish = computed(() => {
   return content.value.trim() || mediaList.value.length > 0
 })
 
+// 匿名头像
+const anonymousAvatar = 'https://img1.imgtp.com/2023/07/10/0Qv6Qw4w.png'
+// 表情列表
+const emojiList = [
+  '😊', '😂', '🤣', '❤️', '😍', '🤔', '😒', '👍', '👎', 
+  '😳', '🥺', '😭', '😘', '🤗', '🙄', '😴', '🤮', '🤧',
+  '😷', '🤒', '🤕', '😈', '👻', '👽', '🤖', '💩', '😺',
+  '💪', '👊', '✌️', '🤞', '🙏', '👏', '🙌', '👐', '🤲'
+]
+const showEmojiPanel = ref(false)
+const insertEmoji = (emoji) => {
+  content.value += emoji
+}
+const toggleEmojiPanel = () => {
+  showEmojiPanel.value = !showEmojiPanel.value
+}
+
 // 方法
 const handleCancel = () => {
   uni.navigateBack()
@@ -92,6 +128,7 @@ const handleCancel = () => {
 const handlePublish = async () => {
   if (!canPublish.value) return
   
+  loading.value = true
   try {
     uni.showLoading({
       title: '发布中...'
@@ -127,6 +164,7 @@ const handlePublish = async () => {
     })
   } finally {
     uni.hideLoading()
+    loading.value = false
   }
 }
 
@@ -224,207 +262,277 @@ const toggleLocation = () => {
 </script>
 
 <style lang="scss" scoped>
+$primary-gradient: linear-gradient(90deg, #5A8FFF 0%, #7F5AFF 100%);
+$card-radius: 20rpx;
+$shadow: 0 8rpx 32rpx rgba(90, 143, 255, 0.08);
+$background-color: #f7f9fb;
+$action-color: #5A8FFF;
 .publish-container {
   min-height: 100vh;
-  background-color: #fff;
+  background: $background-color;
   animation: slideUp 0.3s ease-out;
 }
-
+.gradient-bar {
+  background: $primary-gradient;
+  color: #fff;
+  box-shadow: 0 2rpx 12rpx #5A8FFF22;
+}
 .nav-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20rpx 32rpx;
   border-bottom: 1rpx solid #eee;
-  
+  position: relative;
   .cancel {
     font-size: 32rpx;
-    color: #333;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 2rpx;
+    padding: 0 12rpx;
+    background: transparent;
+    border-radius: 24rpx;
+    transition: background 0.2s;
+    &:active { background: #e0e6f6; color: #7F5AFF; }
   }
-  
-  .publish {
-    font-size: 32rpx;
-    color: #999;
-    
-    &.active {
-      color: #07c160;
-    }
-  }
-  
-  .cancel, .publish {
-    transition: all 0.2s ease;
-    
-    &:active {
-      opacity: 0.6;
-      transform: scale(0.95);
-    }
-  }
-  
-  .publish.active {
-    color: #07c160;
-    animation: bounce 0.3s ease;
-  }
-}
-
-.content-area {
-  padding: 32rpx;
-  
-  .content-input {
-    width: 100%;
-    min-height: 200rpx;
-    font-size: 32rpx;
-    line-height: 1.5;
-  }
-}
-
-.media-area {
-  padding: 0 32rpx;
-  
-  .media-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16rpx;
-  }
-  
-  .media-item {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1;
-    
-    image, video {
-      width: 100%;
-      height: 100%;
-      border-radius: 8rpx;
-    }
-    
-    .delete-btn {
-      position: absolute;
-      top: -20rpx;
-      right: -20rpx;
-      width: 40rpx;
-      height: 40rpx;
-      line-height: 40rpx;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      border-radius: 50%;
-      font-size: 32rpx;
-    }
-  }
-  
-  .add-btn {
+  .publish-btn-wrap {
+    flex: none;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 100%;
-    aspect-ratio: 1;
-    background: #f7f7f7;
-    border-radius: 8rpx;
-    
-    .iconfont {
-      font-size: 60rpx;
-      color: #999;
-    }
-  }
-  
-  .media-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16rpx;
-    
-    .media-item, .add-btn {
-      opacity: 0;
-      animation: gridItemIn 0.3s ease-out forwards;
-      
-      @for $i from 1 through 9 {
-        &:nth-child(#{$i}) {
-          animation-delay: $i * 0.05s;
-        }
+    justify-content: flex-end;
+    .publish {
+      position: relative;
+      font-size: 36rpx;
+      font-weight: 700;
+      color: #fff;
+      background: $primary-gradient;
+      border-radius: 40rpx;
+      padding: 0 48rpx;
+      height: 80rpx;
+      line-height: 80rpx;
+      box-shadow: 0 4rpx 16rpx #5A8FFF44;
+      margin-left: 24rpx;
+      letter-spacing: 4rpx;
+      overflow: hidden;
+      transition: all 0.2s;
+      z-index: 2;
+      .publish-btn-glow {
+        position: absolute;
+        left: 50%; top: 50%;
+        width: 180rpx; height: 80rpx;
+        background: $primary-gradient;
+        border-radius: 40rpx;
+        opacity: 0.18;
+        transform: translate(-50%, -50%);
+        animation: breathe 2s infinite;
+        z-index: -1;
+      }
+      &.active {
+        background: $primary-gradient;
+        color: #fff;
+        box-shadow: 0 6rpx 24rpx #7F5AFF55;
+      }
+      &:active {
+        transform: scale(0.97);
+        box-shadow: 0 2rpx 8rpx #7F5AFF44;
       }
     }
   }
-  
-  @keyframes gridItemIn {
-    from {
-      opacity: 0;
-      transform: translateY(20rpx);
+}
+@keyframes breathe {
+  0% { transform: scale(1); opacity: 0.25; }
+  50% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.25; }
+}
+.anon-header {
+  display: flex;
+  align-items: center;
+  margin: 32rpx 0 0 32rpx;
+  .anon-avatar {
+    width: 80rpx; height: 80rpx;
+    border-radius: 50%;
+    box-shadow: 0 0 16rpx #5A8FFF, 0 0 32rpx #7F5AFF;
+    background: #fff;
+    border: 2rpx solid #fff;
+  }
+  .anon-nickname {
+    margin-left: 24rpx;
+    font-size: 32rpx;
+    color: #5A8FFF;
+    font-weight: 600;
+    letter-spacing: 2rpx;
+  }
+}
+.content-area {
+  margin: 32rpx 32rpx 0 32rpx;
+  background: #fff;
+  border-radius: $card-radius;
+  box-shadow: $shadow;
+  padding: 24rpx;
+  position: relative;
+  .content-input {
+    width: 100%;
+    min-height: 120rpx;
+    font-size: 30rpx;
+    color: #222;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    margin-bottom: 12rpx;
+  }
+  .emoji-toolbar {
+    display: flex;
+    align-items: center;
+    margin-top: 8rpx;
+    .emoji-btn {
+      font-size: 40rpx;
+      color: #7F5AFF;
+      cursor: pointer;
+      &:active { opacity: 0.7; }
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+  }
+  .emoji-panel {
+    margin-top: 8rpx;
+    background: #f4f7ff;
+    border-radius: 12rpx;
+    padding: 8rpx 0;
+    .emoji-list {
+      display: flex;
+      flex-direction: row;
+      gap: 8rpx;
+      padding: 0 8rpx;
+      .emoji-item {
+        font-size: 36rpx;
+        padding: 8rpx;
+        border-radius: 8rpx;
+        &:active { background: #e0e6f6; }
+      }
     }
   }
 }
-
+.media-area {
+  margin: 32rpx 32rpx 0 32rpx;
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16rpx;
+    .media-item {
+      position: relative;
+      .media-img {
+        width: 100%; height: 180rpx;
+        border-radius: 16rpx;
+        object-fit: cover;
+        box-shadow: 0 2rpx 8rpx #5A8FFF22;
+      }
+      .video-preview-wrap {
+        position: relative;
+        .video-preview {
+          width: 100%; height: 180rpx;
+          border-radius: 16rpx;
+          object-fit: cover;
+        }
+        .video-play-icon {
+          position: absolute;
+          left: 50%; top: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 48rpx;
+          color: #fff;
+          text-shadow: 0 2rpx 8rpx #5A8FFF;
+          pointer-events: none;
+        }
+      }
+      .delete-btn {
+        position: absolute;
+        top: 8rpx; right: 8rpx;
+        width: 36rpx; height: 36rpx;
+        background: #fff;
+        color: #7F5AFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32rpx;
+        box-shadow: 0 2rpx 8rpx #5A8FFF22;
+        z-index: 2;
+        &:active { background: #e0e6f6; }
+      }
+    }
+    .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%; height: 180rpx;
+      background: #f4f7ff;
+      border-radius: 16rpx;
+      color: #7F5AFF;
+      font-size: 48rpx;
+      cursor: pointer;
+      box-shadow: 0 2rpx 8rpx #5A8FFF22;
+      &:active { background: #e0e6f6; }
+    }
+  }
+}
 .bottom-options {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #fff;
-  border-top: 1rpx solid #eee;
-  animation: slideUpBottom 0.3s ease-out;
-  
+  margin: 32rpx 32rpx 0 32rpx;
   .option-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 32rpx;
+    background: #fff;
+    border-radius: 16rpx;
+    box-shadow: 0 2rpx 8rpx #5A8FFF11;
+    padding: 24rpx 32rpx;
     font-size: 28rpx;
-    border-bottom: 1rpx solid #eee;
-    transition: background-color 0.2s ease;
-    
-    &:last-child {
-      border-bottom: none;
-    }
-    
+    color: #666;
+    margin-bottom: 16rpx;
     .value {
-      color: #999;
-    }
-    
-    &:active {
-      background-color: #f5f5f5;
-    }
-    
-    &:active .value {
-      transform: translateX(-6rpx);
+      color: #5A8FFF;
+      font-weight: 500;
     }
   }
 }
-
-@keyframes slideUpBottom {
-  from {
-    transform: translateY(100%);
+.tech-loading {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+  background: rgba(255,255,255,0.96);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  backdrop-filter: blur(10px);
+  .dot {
+    width: 20rpx; height: 20rpx;
+    background: $primary-gradient;
+    border-radius: 50%;
+    margin: 0 8rpx;
+    animation: techDot 1s infinite alternate;
+    display: inline-block;
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+    &:nth-child(4) { animation-delay: 0.6s; }
   }
-  to {
-    transform: translateY(0);
+  .loading-text {
+    margin-top: 30rpx;
+    font-size: 28rpx;
+    color: #666;
+    letter-spacing: 2rpx;
+    animation: textPulse 1.5s ease-in-out infinite;
   }
 }
-
-@keyframes bounce {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+@keyframes techDot {
+  0% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.5); }
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+@keyframes textPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
-
-.content-input {
-  transition: all 0.3s ease;
-  
-  &:focus {
-    background: #f8f8f8;
-    padding: 20rpx;
-    border-radius: 12rpx;
-  }
+@keyframes slideUp {
+  from { transform: translateY(30rpx); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 </style>
