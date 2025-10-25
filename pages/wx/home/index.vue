@@ -1,5 +1,21 @@
 <template>
-  <view :class="['moments-container', themeClass]">
+  <view :class="['moments-container', themeClass, { 'disclaimer-hidden': !showDisclaimer }]">
+    <!-- 免责声明顶部横幅 -->
+    <view class="disclaimer-banner" v-if="showDisclaimer">
+      <view class="disclaimer-banner-content">
+        <view class="disclaimer-banner-left">
+          <text class="disclaimer-banner-icon">⚠️</text>
+          <text class="disclaimer-banner-text">
+            本网站仅供编程学习交流使用，非商业网站，所有内容均为学习演示，真实性无法保证。请理性对待，切勿轻信。严禁发布违法违规内容，用户需对发布内容负责。
+          </text>
+        </view>
+        <view class="disclaimer-banner-right">
+          <text class="disclaimer-banner-timer">{{ countdown }}s</text>
+          <text class="disclaimer-banner-close" @tap="closeDisclaimer">✕</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 顶部背景与Figma风格头部 -->
     <view class="header">
       <image class="bg-image" :src="headerBg" mode="aspectFill" :style="{ transform: `translateY(${parallaxY}px) scale(1.06)` }"></image>
@@ -144,6 +160,10 @@
                 <text class="action-text">评论</text>
                 <text class="action-count">{{ (item.comments && item.comments.length) || 0 }}</text>
               </view>
+              <view class="action-btn report-btn" @tap="handleReport(index)">
+                <text class="icon iconfont">🚨</text>
+                <text class="action-text">举报</text>
+              </view>
             </view>
           </view>
           <!-- 点赞列表 -->
@@ -282,6 +302,7 @@
         <view v-for="n in 12" :key="n" :class="['fw-p', 'p' + n, f.theme]"></view>
       </view>
     </view>
+
   </view>
 </template>
 
@@ -391,6 +412,8 @@ function startTypingSlogan() {
 onMounted(() => {
   startTypingSlogan()
   setInterval(() => { showCursor.value = !showCursor.value }, 500)
+  // 启动免责声明倒计时
+  startCountdown()
 })
 // 评论相关的响应式变量
 const showCommentPopup = ref(false)
@@ -1069,6 +1092,107 @@ const emojiList = [
   '😷', '🤒', '🤕', '😈', '👻', '👽', '🤖', '💩', '😺',
   '💪', '👊', '✌️', '🤞', '🙏', '👏', '🙌', '👐', '🤲'
 ]
+
+// 免责声明弹窗相关
+const showDisclaimer = ref(true)
+const countdown = ref(30)
+let disclaimerTimer = null
+
+// 关闭免责声明
+const closeDisclaimer = () => {
+  showDisclaimer.value = false
+  if (disclaimerTimer) {
+    clearInterval(disclaimerTimer)
+    disclaimerTimer = null
+  }
+}
+
+// 启动倒计时
+const startCountdown = () => {
+  disclaimerTimer = setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0) {
+      closeDisclaimer()
+    }
+  }, 1000)
+}
+
+// 举报功能
+const handleReport = (index) => {
+  const moment = moments.value[index]
+  uni.showActionSheet({
+    title: '举报内容',
+    itemList: [
+      '色情低俗',
+      '暴力血腥', 
+      '政治敏感',
+      '诈骗信息',
+      '垃圾广告',
+      '其他违规'
+    ],
+    success: (res) => {
+      const reportTypes = [
+        '色情低俗',
+        '暴力血腥', 
+        '政治敏感',
+        '诈骗信息',
+        '垃圾广告',
+        '其他违规'
+      ]
+      const reportType = reportTypes[res.tapIndex]
+      
+      // 显示举报确认
+      uni.showModal({
+        title: '确认举报',
+        content: `确定要举报此内容为"${reportType}"吗？`,
+        success: (modalRes) => {
+          if (modalRes.confirm) {
+            // 执行举报逻辑
+            submitReport(index, reportType)
+          }
+        }
+      })
+    }
+  })
+}
+
+// 提交举报
+const submitReport = async (index, reportType) => {
+  try {
+    uni.showLoading({ title: '处理中...' })
+    
+    const moment = moments.value[index]
+    
+    // 调用删除接口
+    const { result } = await uniCloud.callFunction({
+      name: 'wx_del',
+      data: {
+        momentId: moment._id
+      }
+    })
+    
+    if (result.code === 0) {
+      // 删除成功，从本地列表中移除
+      moments.value.splice(index, 1)
+      
+      uni.hideLoading()
+      uni.showToast({
+        title: '举报已成功',
+        icon: 'none',
+        duration: 2000
+      })
+    } else {
+      throw new Error(result.msg || '删除失败')
+    }
+    
+  } catch (error) {
+    uni.hideLoading()
+    uni.showToast({
+      title: error.message || '操作失败，请重试',
+      icon: 'none'
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -1084,6 +1208,13 @@ $action-color: #5A8FFF;
   min-height: 100vh;
   background: $background-color;
   position: relative;
+  padding-top: 120rpx; // 为顶部横幅留出空间
+  transition: padding-top 0.3s ease;
+  
+  // 免责声明隐藏时的样式
+  &.disclaimer-hidden {
+    padding-top: 0;
+  }
   
   // 动态背景光晕（低透明不干扰内容）
   &::before {
@@ -1809,13 +1940,13 @@ $action-color: #5A8FFF;
         .actions {
           display: flex;
           align-items: center;
-          gap: 30rpx;
+          gap: 20rpx;
 
           .action-btn {
             display: flex;
             align-items: center;
-            padding: 12rpx 20rpx;
-            border-radius: 30rpx;
+            padding: 8rpx 16rpx;
+            border-radius: 24rpx;
             background: rgba(90, 143, 255, 0.06);
             border: 1rpx solid rgba(90, 143, 255, 0.18);
             position: relative;
@@ -1832,20 +1963,20 @@ $action-color: #5A8FFF;
             }
 
             .icon {
-              font-size: 32rpx;
-              margin-right: 8rpx;
+              font-size: 28rpx;
+              margin-right: 6rpx;
               color: $action-color;
               transition: transform 0.2s, color 0.2s;
             }
 
             .action-text {
-              font-size: 24rpx;
+              font-size: 22rpx;
               color: #666;
             }
 
             .action-count {
-              margin-left: 6rpx;
-              font-size: 22rpx;
+              margin-left: 4rpx;
+              font-size: 20rpx;
               color: #9aa3af;
             }
 
@@ -1875,20 +2006,35 @@ $action-color: #5A8FFF;
             &.animating .icon {
               animation: likeBounce 0.4s;
             }
+          }
 
-            .like-burst {
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              width: 40rpx;
-              height: 40rpx;
-              pointer-events: none;
-              transform: translate(-50%, -50%);
-              background: radial-gradient(circle, #7F5AFF 0%, #5A8FFF 60%, transparent 100%);
-              opacity: 0.5;
-              animation: burst 0.5s;
-              border-radius: 50%;
+          .report-btn {
+            &:active {
+              background: rgba(255, 87, 34, 0.12);
+              transform: scale(0.95);
             }
+
+            .icon {
+              color: #ff5722;
+            }
+
+            .action-text {
+              color: #ff5722;
+            }
+          }
+
+          .like-burst {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 40rpx;
+            height: 40rpx;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #7F5AFF 0%, #5A8FFF 60%, transparent 100%);
+            opacity: 0.5;
+            animation: burst 0.5s;
+            border-radius: 50%;
           }
         }
       }
@@ -2711,6 +2857,109 @@ $action-color: #5A8FFF;
   0% { opacity: 0; filter: blur(8rpx); }
   100% { opacity: 1; filter: blur(0); }
 }
+// 免责声明顶部横幅样式
+.disclaimer-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  box-shadow: 0 4rpx 12rpx rgba(255, 152, 0, 0.3);
+  animation: disclaimerSlideDown 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.disclaimer-banner-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  min-height: 100rpx;
+}
+
+.disclaimer-banner-left {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  gap: 12rpx;
+  margin-right: 16rpx;
+
+  .disclaimer-banner-icon {
+    font-size: 32rpx;
+    animation: warningPulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .disclaimer-banner-text {
+    font-size: 24rpx;
+    color: #fff;
+    line-height: 1.4;
+    font-weight: 500;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1);
+  }
+}
+
+.disclaimer-banner-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex-shrink: 0;
+  margin-top: 8rpx;
+
+  .disclaimer-banner-timer {
+    font-size: 22rpx;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6rpx 12rpx;
+    border-radius: 12rpx;
+    font-weight: 600;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1);
+    min-width: 60rpx;
+    text-align: center;
+  }
+
+  .disclaimer-banner-close {
+    width: 48rpx;
+    height: 48rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    color: #fff;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1);
+
+    &:active {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(0.95);
+    }
+  }
+}
+
+@keyframes disclaimerSlideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes warningPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
 // 移动端收紧留白并提升模块高度
 @media screen and (max-width: 750rpx) {
   .banner-topics { margin: 24rpx; }
@@ -2726,5 +2975,15 @@ $action-color: #5A8FFF;
   .moments-list { margin: 24rpx; padding: 0; }
   .moments-list .moment-item { padding: 24rpx 18rpx; }
   .moments-list .media-content .video-content { height: 420rpx; }
+  .moments-list .actions { gap: 16rpx; }
+  .moments-list .action-btn { padding: 6rpx 12rpx; border-radius: 20rpx; }
+  .moments-list .action-btn .icon { font-size: 24rpx; margin-right: 4rpx; }
+  .moments-list .action-btn .action-text { font-size: 20rpx; }
+  .moments-list .action-btn .action-count { font-size: 18rpx; margin-left: 3rpx; }
+
+  .disclaimer-banner-content { padding: 16rpx 20rpx; min-height: 90rpx; }
+  .disclaimer-banner-left .disclaimer-banner-text { font-size: 20rpx; line-height: 1.3; }
+  .disclaimer-banner-right .disclaimer-banner-timer { font-size: 18rpx; padding: 4rpx 8rpx; }
+  .disclaimer-banner-right .disclaimer-banner-close { width: 40rpx; height: 40rpx; font-size: 24rpx; }
 }
 </style>
