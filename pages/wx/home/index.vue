@@ -148,17 +148,21 @@
         </view>
       </view>
     </view>
-    <!-- 发布按钮 -->
-    <view class="publish-btn" @tap="handleCamera">
+    <!-- <view class="publish-btn" @tap="handleCamera">
       <view class="icon-wrapper">
         <text class="iconfont">+</text>
       </view>
-    </view>
+    </view> -->
     <!-- 科技感加载动画 -->
     <!-- <view class="tech-loading" v-if="loading">
       <view class="dot" v-for="i in 4" :key="i"></view>
       <text class="loading-text">加载中...</text>
     </view> -->
+
+    <!-- 背景音乐控制（H5） -->
+    <view class="music-btn" :class="{ playing: isBgmPlaying }" @tap="toggleBgm">
+      <text class="music-icon">♪</text>
+    </view>
 
     <!-- 烟花特效层（轻量DOM动画） -->
     <view class="fireworks" v-if="showFireworks">
@@ -196,20 +200,28 @@ function getRandomName() {
 }
 // 匿名头像（随机池）
 const anonymousAvatars = [
+  // 现有
   'https://qcloud.dpfile.com/pc/pawK4KeJSDNVINhfwh9CoLJPFluB-tnHSd3heJ_jybtNIYslSlGEPeQVyA4hZRCP.jpg',
+  // 高质量头像素材
   'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=256&q=60',
   'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=60',
   'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=256&q=60',
-  'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=256&q=60'
+  'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=60'
 ]
 const anonymousAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)];
 // 首屏背景图列表（随机挑选一张）
 const headerBgList = [
+  // 现有
   'https://img1.imgtp.com/2023/07/10/0Qv6Qw4w.png',
-  'https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1200&q=60',
-  'https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1200&q=60',
-  'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1200&q=60',
-  'https://images.unsplash.com/photo-1520975693411-0010e4aeba47?auto=format&fit=crop&w=1200&q=60'
+  // 高质量渐变/自然/城市感背景
+  'https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1520975693411-0010e4aeba47?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=60'
 ]
 const headerBg = headerBgList[Math.floor(Math.random() * headerBgList.length)]; // 新科技感头像/背景（随机）
 const defaultAvatar = anonymousAvatar
@@ -359,14 +371,18 @@ onShow(() => {
   setTimeout(() => {
     getMomentsList(true)
   }, 3000)
+  // 尝试自动播放背景音乐（静音启动，随后淡入）
+  tryAutoPlay()
 })
 
 onHide(() => {
   stopFireworksLoop()
+  pauseBgm()
 })
 
 onUnload(() => {
   stopFireworksLoop()
+  pauseBgm()
 })
 // 触底加载
 onReachBottom(() => {
@@ -658,6 +674,110 @@ const handleMore = (index) => {
         uni.showToast({ title: '将减少类似内容', icon: 'none' })
       }
     }
+  })
+}
+
+// 背景音乐（H5，使用原生 HTMLAudio；带多源与故障切换，避免 403/CORS 问题）
+const isBgmPlaying = ref(false)
+let bgmInstance = null
+const bgmUrlList = [
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+]
+let bgmIndex = Math.floor(Math.random() * bgmUrlList.length)
+const currentBgm = () => bgmUrlList[bgmIndex % bgmUrlList.length]
+const nextBgm = () => { bgmIndex = (bgmIndex + 1) % bgmUrlList.length; return currentBgm() }
+
+const ensureBgm = () => {
+  if (typeof Audio === 'undefined') return null
+  if (!bgmInstance) {
+    bgmInstance = new Audio(currentBgm())
+    bgmInstance.loop = true
+    bgmInstance.preload = 'auto'
+    bgmInstance.volume = 0.6
+    bgmInstance.onerror = () => {
+      // 发生 403/跨域等错误时，切换到下一个音源
+      try {
+        const src = nextBgm()
+        bgmInstance.src = src
+        if (isBgmPlaying.value) {
+          bgmInstance.play().catch(() => {
+            isBgmPlaying.value = false
+            uni.showToast({ title: '背景音乐需手动播放', icon: 'none' })
+          })
+        }
+      } catch (e) {
+        // 忽略，保持静音状态
+      }
+    }
+  }
+  return bgmInstance
+}
+
+const pauseBgm = () => {
+  if (bgmInstance) {
+    try { bgmInstance.pause() } catch (e) {}
+  }
+  isBgmPlaying.value = false
+}
+
+const toggleBgm = () => {
+  const el = ensureBgm()
+  if (!el) return
+  if (isBgmPlaying.value) {
+    pauseBgm()
+  } else {
+    el.play().then(() => { isBgmPlaying.value = true }).catch(() => {
+      uni.showToast({ title: '需手动点击播放', icon: 'none' })
+    })
+  }
+}
+
+// 自动播放（尽力而为）：尝试静音播放，再淡入音量；若失败则等待首次用户手势
+const fadeVolume = (to = 0.6, durationMs = 1200) => {
+  const el = bgmInstance
+  if (!el) return
+  const from = el.volume || 0
+  const steps = Math.max(1, Math.floor(durationMs / 80))
+  let i = 0
+  const timer = setInterval(() => {
+    i++
+    el.volume = from + (to - from) * (i / steps)
+    if (i >= steps) clearInterval(timer)
+  }, 80)
+}
+
+let autoPlayBound = false
+const onFirstUserGesture = () => { tryAutoPlay() }
+const bindAutoPlayListeners = () => {
+  if (typeof document === 'undefined' || autoPlayBound) return
+  ;['touchstart', 'click', 'wheel', 'keydown'].forEach(evt => {
+    try { document.addEventListener(evt, onFirstUserGesture, { once: true, passive: true }) } catch (_) {}
+  })
+  autoPlayBound = true
+}
+const unbindAutoPlayListeners = () => {
+  if (typeof document === 'undefined') return
+  ;['touchstart', 'click', 'wheel', 'keydown'].forEach(evt => {
+    try { document.removeEventListener(evt, onFirstUserGesture) } catch (_) {}
+  })
+  autoPlayBound = false
+}
+
+const tryAutoPlay = () => {
+  const el = ensureBgm()
+  if (!el) return
+  el.muted = true
+  el.volume = 0
+  el.play().then(() => {
+    isBgmPlaying.value = true
+    el.muted = false
+    fadeVolume(0.6, 1200)
+    unbindAutoPlayListeners()
+  }).catch(() => {
+    // 等待用户手势
+    bindAutoPlayListeners()
   })
 }
 
@@ -1074,7 +1194,7 @@ $action-color: #5A8FFF;
       left: 0;
       right: 0;
       height: 4rpx;
-      background: $primary-gradient;
+     
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.25s ease;
@@ -1380,7 +1500,7 @@ $action-color: #5A8FFF;
           right: 16rpx;
           top: 0;
           height: 2rpx;
-          background: $primary-gradient;
+       
           border-radius: 1rpx;
         }
 
@@ -1670,7 +1790,7 @@ $action-color: #5A8FFF;
     position: absolute;
     inset: -8rpx;
     border-radius: 50%;
-    background: $primary-gradient;
+    // background: $primary-gradient;
     opacity: 0.18;
     animation: pulseRing 2.2s ease-in-out infinite;
   }
@@ -1698,6 +1818,36 @@ $action-color: #5A8FFF;
     opacity: 0.4;
     transform: scale(1);
     animation: breathe 2s ease-in-out infinite;
+  }
+}
+
+// 背景音乐按钮
+.music-btn {
+  position: fixed;
+  right: 24rpx;
+  bottom: 240rpx;
+  z-index: 98;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.18);
+  border: 1rpx solid rgba(255,255,255,0.35);
+  backdrop-filter: blur(8rpx);
+  -webkit-backdrop-filter: blur(8rpx);
+  box-shadow: 0 6rpx 16rpx rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+
+  &:active { transform: scale(0.95); }
+
+  &.playing { box-shadow: 0 0 18rpx rgba(127,90,255,0.35); }
+
+  .music-icon {
+    font-size: 44rpx;
+    color: #fff;
+    text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.2);
   }
 }
 
