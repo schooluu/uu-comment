@@ -1,17 +1,55 @@
 <template>
-  <view class="moments-container">
-    <!-- 顶部背景图和宣言区域 -->
+  <view :class="['moments-container', themeClass]">
+    <!-- 顶部背景与Figma风格头部 -->
     <view class="header">
-      <image class="bg-image" :src="headerBg" mode="aspectFill"></image>
+      <image class="bg-image" :src="headerBg" mode="aspectFill" :style="{ transform: `translateY(${parallaxY}px) scale(1.06)` }"></image>
       <view class="header-gradient"></view>
       <view class="header-blur"></view>
       <view class="header-glow"></view>
-      <view class="slogan-area">
-        <text class="slogan-typing">
-          <span v-html="typedSlogan"></span><span class="cursor" :class="{ blink: showCursor }">|</span>
-        </text>
-        <text class="signature">{{ todayMood }}</text>
+
+      <view class="header-topbar">
+        <text class="brand">匿名圈</text>
+        <view class="top-actions">
+          <text class="top-icon" @tap="handleSearch">🔍</text>
+          <text class="top-icon" @tap="handleSettings">⋯</text>
+        </view>
       </view>
+
+      <view class="hero-card">
+        <image class="hero-avatar" :src="defaultAvatar" mode="aspectFill" />
+        <view class="hero-text">
+          <text class="hero-title">{{ todayMood }}</text>
+          <text class="hero-sub">匿名 · 温暖 · 真实</text>
+          <view class="hero-chips">
+            <text class="chip active">推荐</text>
+            <text class="chip">关注</text>
+            <text class="chip">附近</text>
+          </view>
+        </view>
+        <view class="hero-cta" @tap="handleCamera">
+          <text class="cta-plus">+</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 首屏 Banner 话题轮播 -->
+    <view class="banner-topics">
+      <swiper class="banner-swiper" circular autoplay interval="4000">
+        <swiper-item v-for="(t, i) in bannerTopics" :key="i">
+          <view class="topic-card" @tap="handleBannerTap(t)">
+            <view class="topic-tag">{{ t.tag }}</view>
+            <text class="topic-title">{{ t.title }}</text>
+            <text class="topic-sub">{{ t.sub }}</text>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 分段控制（推荐 / 关注 / 附近） -->
+    <view class="segmented-tabs">
+      <view class="seg-pill active" @tap="handleTabSelect('recommend')">推荐</view>
+      <view class="seg-pill" @tap="handleTabSelect('follow')">关注</view>
+      <view class="seg-pill" @tap="handleTabSelect('nearby')">附近</view>
     </view>
     <!-- 朋友圈内容列表 -->
     <view class="moments-list">
@@ -19,9 +57,21 @@
         <!-- 用户信息 -->
         <image class="user-avatar avatar-glow" :src="item.avatar" mode="aspectFill"></image>
         <view class="content-area">
-          <view class="username">{{ item.username }}</view>
-          <!-- 文本内容 -->
-          <text class="text-content">{{ item.content }}</text>
+          <view class="meta-row">
+            <text class="username">{{ item.username }}</text>
+           
+          </view>
+          <view class="chip-row">
+            <text class="chip">匿名</text>
+            <text v-if="item.mediaType" class="chip ghost">图文</text>
+          </view>
+          <!-- 文本内容（可展开/收起） -->
+          <view class="text-block" :class="{ clamped: !isExpanded[index] }">
+            <text class="text-content">{{ item.content }}</text>
+          </view>
+          <view v-if="item.content && item.content.length > 60" class="expand-btn" @tap="toggleExpand(index)">
+            {{ isExpanded[index] ? '收起' : '展开' }}
+          </view>
           <!-- 图片/视频内容 -->
           <view class="media-content" v-if="item.mediaType">
             <video v-if="item.mediaType === 'video'" :src="item.mediaUrl" :poster="item.poster"
@@ -31,15 +81,23 @@
               <image v-for="(url, imgIndex) in item.mediaUrls" :key="imgIndex" :src="url" mode="aspectFill"
                 class="image-content image-radius" @tap="previewImage(item.mediaUrls, url)"></image>
             </view>
+            <!-- 浏览量 / 热度 小徽标 -->
+            <view class="media-badges">
+              <view class="badge ghost">
+                <text class="b-ic">🔥</text>
+                <text class="b-txt">{{ formatCount(getHeatScore(item)) }}</text>
+              </view>
+            </view>
           </view>
           <!-- 底部信息 -->
           <view class="bottom-info">
             <text class="time">{{ item.time }}</text>
             <view class="actions">
               <view class="action-btn like-btn" :class="{ 'liked': item.isLiked, 'animating': isLikeAnimating[index] }"
-                @tap="handleLike(index)">
+                @tap="handleLikeWithFW(index)">
                 <text class="icon iconfont">{{ item.isLiked ? '❤️' : '🤍' }}</text>
                 <text class="action-text">{{ item.isLiked ? '已赞' : '点赞' }}</text>
+                <text class="action-count">{{ (item.likes && item.likes.length) || 0 }}</text>
                 <view v-if="isLikeAnimating[index]" class="like-burst-particles">
                   <view v-for="n in 8" :key="n" :class="['particle', 'p' + n]"></view>
                 </view>
@@ -47,6 +105,7 @@
               <view class="action-btn comment-btn" @tap="handleComment(index)">
                 <text class="icon iconfont">💬</text>
                 <text class="action-text">评论</text>
+                <text class="action-count">{{ (item.comments && item.comments.length) || 0 }}</text>
               </view>
             </view>
           </view>
@@ -63,6 +122,7 @@
             </view>
           </view>
         </view>
+        <view class="more-btn" @tap="handleMore(index)">⋯</view>
       </view>
     </view>
     <!-- 评论弹窗 -->
@@ -95,9 +155,21 @@
       </view>
     </view>
     <!-- 科技感加载动画 -->
-    <view class="tech-loading" v-if="loading">
+    <!-- <view class="tech-loading" v-if="loading">
       <view class="dot" v-for="i in 4" :key="i"></view>
       <text class="loading-text">加载中...</text>
+    </view> -->
+
+    <!-- 烟花特效层（轻量DOM动画） -->
+    <view class="fireworks" v-if="showFireworks">
+      <view
+        v-for="f in fireworks"
+        :key="f.id"
+        class="fw"
+        :style="{ left: f.x + '%', top: f.y + '%'}"
+      >
+        <view v-for="n in 12" :key="n" :class="['fw-p', 'p' + n, f.theme]"></view>
+      </view>
     </view>
   </view>
 </template>
@@ -109,7 +181,9 @@ import {
   onShow,
   onReachBottom,
   onPullDownRefresh,
-  onPageScroll
+  onPageScroll,
+  onHide,
+  onUnload
 } from '@dcloudio/uni-app';
 // 匿名昵称池
 const anonymousNames = [
@@ -231,10 +305,14 @@ const getMomentsList = async (isRefresh = false) => {
         likes: (item.likes || []).map(() => getRandomName())
       }))
       if (isRefresh) {
+        // 刷新：重置为第一页数据，并把下一页准备为第2页，避免重复请求第1页
         moments.value = list
-        page.value = 1
+        page.value = 2
       } else {
-        moments.value = [...moments.value, ...list]
+        // 追加：根据 _id 去重，避免后端分页交叠导致重复
+        const existingIds = new Set((moments.value || []).map(i => i._id))
+        const append = list.filter(i => !existingIds.has(i._id))
+        moments.value = [...(moments.value || []), ...append]
         page.value++
       }
       hasMore.value = result.data.hasMore
@@ -255,11 +333,27 @@ const getMomentsList = async (isRefresh = false) => {
 }
 
 onShow(() => {
-  getMomentsList(true)
+  // 持续烟花循环
+  stopFireworksLoop() // 防重启
+  startFireworksLoop()
+  // 3秒后自动获取列表（刷新）
+  setTimeout(() => {
+    getMomentsList(true)
+  }, 3000)
+})
+
+onHide(() => {
+  stopFireworksLoop()
+})
+
+onUnload(() => {
+  stopFireworksLoop()
 })
 // 触底加载
 onReachBottom(() => {
-  getMomentsList()
+  if (!loading.value && hasMore.value) {
+    getMomentsList()
+  }
 })
 
 // 点赞/取消点赞
@@ -390,6 +484,164 @@ const handleVideoError = () => {
   })
 }
 
+// 顶部操作
+const handleSearch = () => {
+  uni.showToast({ title: '搜索即将上线', icon: 'none' })
+}
+const handleSettings = () => {
+  uni.showActionSheet({
+    itemList: ['切换主题', '内容偏好', '帮助与反馈'],
+    success: (res) => {
+      const t = res.tapIndex
+      if (t === 0) uni.showToast({ title: '已切换主题', icon: 'none' })
+      if (t === 1) uni.showToast({ title: '偏好设置暂未开放', icon: 'none' })
+      if (t === 2) uni.showToast({ title: '感谢你的反馈', icon: 'none' })
+    }
+  })
+}
+
+// 头图视差
+const parallaxY = ref(0)
+onPageScroll((e) => {
+  const y = e.scrollTop || 0
+  parallaxY.value = Math.min(30, y * 0.2)
+})
+
+// 全局主题（晨/昼/夜 - 背景渐变）
+const themeClass = ref('theme-day')
+const updateThemeByTime = () => {
+  const hour = new Date().getHours()
+  if (hour >= 6 && hour < 11) themeClass.value = 'theme-morning'
+  else if (hour >= 11 && hour < 18) themeClass.value = 'theme-day'
+  else themeClass.value = 'theme-night'
+}
+onMounted(() => {
+  updateThemeByTime()
+  setInterval(updateThemeByTime, 10 * 60 * 1000) // 每10分钟检查一次
+})
+
+// 烟花特效 - 轻量演示
+const showFireworks = ref(false)
+const fireworks = ref([])
+let fwId = 0
+const removeFireworkById = (id) => {
+  const idx = fireworks.value.findIndex(f => f.id === id)
+  if (idx !== -1) fireworks.value.splice(idx, 1)
+}
+// 连续绽放：在给定时间窗内按次序依次发射，避免同一时刻全部出现
+const launchFireworks = (bursts = 4, spreadMs = 1000) => {
+  showFireworks.value = true
+  const steps = Math.max(1, bursts)
+  const stepGap = Math.floor(spreadMs / steps)
+  for (let i = 0; i < steps; i++) {
+    const delay = i * stepGap
+    setTimeout(() => {
+      const id = fwId++
+      fireworks.value.push({
+        id,
+        x: Math.floor(10 + Math.random() * 80),
+        y: Math.floor(18 + Math.random() * 54),
+        theme: ['t-blue','t-violet','t-gold','t-mint','t-pink'][Math.floor(Math.random()*5)]
+      })
+      // 单枚烟花在动画结束后清理（与 CSS 动画时长匹配，略有冗余）
+      setTimeout(() => {
+        removeFireworkById(id)
+        if (fireworks.value.length === 0) showFireworks.value = false
+      }, 2200)
+    }, delay)
+  }
+}
+
+// 点赞达到一定阈值时触发烟花（演示：任意点赞触发一次）
+const _origHandleLike = handleLike
+const handleLikeWithFW = async (index) => {
+  await _origHandleLike(index)
+  launchFireworks(3)
+}
+
+// 持续烟花：定时发射
+let fwTimer = null
+const startFireworksLoop = () => {
+  if (fwTimer) return
+  showFireworks.value = true
+  // 随机间隔发射，且每次在1.0~1.6s的时间窗内分散绽放，制造“连续感”
+  fwTimer = setInterval(() => {
+    const groups = 3 + Math.floor(Math.random() * 3) // 3~5组
+    const spread = 1000 + Math.floor(Math.random() * 600) // 1.0s~1.6s
+    launchFireworks(groups, spread)
+  }, 1500 + Math.floor(Math.random() * 900)) // 1.5s~2.4s 间隔
+}
+const stopFireworksLoop = () => {
+  clearInterval(fwTimer)
+  fwTimer = null
+  showFireworks.value = false
+  fireworks.value = []
+}
+
+// 浏览量/热度（演示计算）
+const formatCount = (n) => {
+  if (!n && n !== 0) return '0'
+  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + 'w'
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+  return String(n)
+}
+
+const getViews = (item, index) => {
+  const base = 120 + (index % 7) * 37
+  const mediaFactor = item.mediaType === 'video' ? 1.6 : item.mediaType === 'image' ? 1.2 : 1
+  const likes = (item.likes && item.likes.length) || 0
+  const comments = (item.comments && item.comments.length) || 0
+  return Math.floor(base * mediaFactor + likes * 9 + comments * 7)
+}
+
+const getHeatScore = (item) => {
+  const likes = (item.likes && item.likes.length) || 0
+  const comments = (item.comments && item.comments.length) || 0
+  const isVideo = item.mediaType === 'video'
+  return Math.floor(likes * 3 + comments * 5 + (isVideo ? 18 : 8))
+}
+
+// 分段控制（演示态）
+const currentTab = ref('recommend')
+const handleTabSelect = (key) => {
+  currentTab.value = key
+  uni.showToast({ title: key === 'recommend' ? '推荐' : key === 'follow' ? '关注' : '附近', icon: 'none' })
+}
+
+// 文本展开/收起（演示）
+const isExpanded = ref({})
+const toggleExpand = (index) => {
+  isExpanded.value[index] = !isExpanded.value[index]
+}
+
+// Banner 话题数据
+const bannerTopics = ref([
+  { tag: '# 热议', title: '今天你匿名表白了吗？', sub: '真实表达让世界更温柔' },
+  { tag: '# 附近', title: '城市树洞：说说你的小烦恼', sub: '有人正经历着同样的心情' },
+  { tag: '# 推荐', title: '三件让你快乐的小事', sub: '记录微光，让生活发亮' },
+])
+
+const handleBannerTap = (t) => {
+  uni.showToast({ title: t.tag + ' · ' + t.title, icon: 'none' })
+}
+
+// 更多操作（Figma风格）
+const handleMore = (index) => {
+  uni.showActionSheet({
+    itemList: ['举报', '拉黑', '不感兴趣'],
+    success: (res) => {
+      const tap = res.tapIndex
+      if (tap === 0) {
+        uni.showToast({ title: '已收到举报', icon: 'none' })
+      } else if (tap === 1) {
+        uni.showToast({ title: '已拉黑该用户', icon: 'none' })
+      } else if (tap === 2) {
+        uni.showToast({ title: '将减少类似内容', icon: 'none' })
+      }
+    }
+  })
+}
+
 
 // 表情列表
 const emojiList = [
@@ -412,16 +664,50 @@ $action-color: #5A8FFF;
 .moments-container {
   min-height: 100vh;
   background: $background-color;
+  position: relative;
+  
+  // 动态背景光晕（低透明不干扰内容）
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 60% at 15% 20%, rgba(90,143,255,0.10) 0%, rgba(90,143,255,0) 70%),
+      radial-gradient(50% 50% at 85% 80%, rgba(127,90,255,0.10) 0%, rgba(127,90,255,0) 70%);
+    background-size: 200% 200%, 200% 200%;
+    animation: bgFloat 22s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 .header {
   position: relative;
   height: 400rpx;
+  overflow: hidden;
+  border-bottom-left-radius: $card-radius;
+  border-bottom-right-radius: $card-radius;
+
+  // 装饰性流光
+  &::after {
+    content: '';
+    position: absolute;
+    right: -120rpx;
+    bottom: -120rpx;
+    width: 260rpx;
+    height: 260rpx;
+    background: radial-gradient(circle, rgba(127, 90, 255, 0.25) 0%, rgba(90, 143, 255, 0.0) 70%);
+    border-radius: 50%;
+    animation: headerFloat 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
 
   .bg-image {
     width: 100%;
-    height: 100%;
-    filter: blur(2px) brightness(0.9);
+    height: 110%;
+    filter: blur(1px) brightness(0.92) saturate(1.05);
+    transition: transform 0.2s ease-out;
   }
 
   .header-gradient {
@@ -432,6 +718,8 @@ $action-color: #5A8FFF;
     z-index: 1;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    background-size: 300% 300%;
+    animation: gradientShift 20s ease infinite;
   }
 
   .header-blur {
@@ -456,6 +744,135 @@ $action-color: #5A8FFF;
     pointer-events: none;
   }
 
+  .header-topbar {
+    position: absolute;
+    top: 24rpx;
+    left: 24rpx;
+    right: 24rpx;
+    height: 72rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 4;
+
+    .brand {
+      font-size: 34rpx;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 2rpx;
+      text-shadow: 0 2rpx 10rpx rgba(0,0,0,0.18);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16rpx;
+
+      .top-icon {
+        width: 64rpx;
+        height: 64rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36rpx;
+        color: #fff;
+        background: rgba(255,255,255,0.18);
+        border: 1rpx solid rgba(255,255,255,0.35);
+        border-radius: 50%;
+        backdrop-filter: blur(6rpx);
+        -webkit-backdrop-filter: blur(6rpx);
+
+        &:active {
+          background: rgba(255,255,255,0.26);
+        }
+      }
+    }
+  }
+
+  .hero-card {
+    position: absolute;
+    left: 24rpx;
+    right: 24rpx;
+    bottom: 24rpx;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+    padding: 18rpx 20rpx;
+    background: rgba(255,255,255,0.16);
+    border: 1rpx solid rgba(255,255,255,0.35);
+    border-radius: 20rpx;
+    box-shadow: 0 8rpx 28rpx rgba(0,0,0,0.08), 0 2rpx 12rpx rgba(90,143,255,0.18);
+    backdrop-filter: blur(10rpx);
+    -webkit-backdrop-filter: blur(10rpx);
+
+    .hero-avatar {
+      width: 88rpx;
+      height: 88rpx;
+      border-radius: 50%;
+      border: 2rpx solid #fff;
+      box-shadow: 0 0 16rpx rgba(90,143,255,0.45);
+      background: #fff;
+    }
+
+    .hero-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6rpx;
+
+      .hero-title {
+        color: #fff;
+        font-size: 32rpx;
+        font-weight: 700;
+        text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.18);
+      }
+
+      .hero-sub {
+        color: #e9edff;
+        font-size: 24rpx;
+        opacity: 0.9;
+      }
+
+      .hero-chips {
+        margin-top: 4rpx;
+        display: flex;
+        gap: 10rpx;
+
+        .chip {
+          padding: 4rpx 16rpx;
+          font-size: 22rpx;
+          color: #e9edff;
+          background: rgba(255, 255, 255, 0.12);
+          border: 1rpx solid rgba(255, 255, 255, 0.3);
+          border-radius: 999rpx;
+        }
+
+        .active {
+          color: #fff;
+          background: rgba(127, 90, 255, 0.35);
+          border-color: rgba(127, 90, 255, 0.65);
+        }
+      }
+    }
+
+    .hero-cta {
+      width: 88rpx;
+      height: 88rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: $primary-gradient;
+      box-shadow: 0 6rpx 16rpx rgba(90, 143, 255, 0.35);
+
+      .cta-plus {
+        color: #fff;
+        font-size: 48rpx;
+        line-height: 1;
+      }
+    }
+  }
   .slogan-area {
     position: absolute;
     left: 0;
@@ -465,15 +882,23 @@ $action-color: #5A8FFF;
     flex-direction: column;
     align-items: center;
     z-index: 3;
+    padding: 20rpx 28rpx;
+    margin: 0 32rpx;
+    border-radius: 16rpx;
+    background: linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 100%);
+    border: 1rpx solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 10rpx 32rpx rgba(90,143,255,0.16), 0 2rpx 12rpx rgba(0,0,0,0.08);
+    backdrop-filter: blur(10rpx);
+    -webkit-backdrop-filter: blur(10rpx);
     .slogan-typing {
       color: #fff;
-      font-size: 44rpx;
+      font-size: 42rpx;
       font-weight: 700;
-      text-shadow: 0 2rpx 8rpx rgba(90,143,255,0.3);
-      letter-spacing: 4rpx;
-      margin-bottom: 18rpx;
-      min-height: 60rpx;
-      transition: color 0.3s;
+      text-shadow: 0 2rpx 10rpx rgba(0,0,0,0.18);
+      letter-spacing: 2rpx;
+      margin-bottom: 14rpx;
+      min-height: 58rpx;
+      transition: color 0.3s, letter-spacing 0.2s;
       display: flex;
       align-items: center;
       .cursor {
@@ -490,17 +915,22 @@ $action-color: #5A8FFF;
         }
       }
       span {
-        background: linear-gradient(90deg, #5A8FFF 0%, #7F5AFF 100%);
+        background: linear-gradient(90deg, #fff 0%, #e6e9ff 40%, #7F5AFF 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: sloganFadeIn 0.7s cubic-bezier(0.23, 1.2, 0.32, 1);
       }
     }
     .signature {
-      color: #e0e6f6;
-      font-size: 28rpx;
+      color: #e9edff;
+      font-size: 26rpx;
       font-style: italic;
-      opacity: 0.85;
+      opacity: 0.9;
+      padding: 6rpx 14rpx;
+      border-radius: 999rpx;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1rpx solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 2rpx 8rpx rgba(90,143,255,0.18);
     }
   }
   // 顶部宣言渐变切换动画
@@ -523,8 +953,89 @@ $action-color: #5A8FFF;
   }
 }
 
+.banner-topics {
+  margin: 24rpx 20rpx 8rpx 20rpx;
+
+  .banner-swiper {
+    height: 180rpx;
+    border-radius: 16rpx;
+    overflow: hidden;
+  }
+
+  .topic-card {
+    height: 180rpx;
+    padding: 22rpx 22rpx 22rpx 24rpx;
+    border-radius: 16rpx;
+    background: linear-gradient(90deg, rgba(90,143,255,0.12) 0%, rgba(127,90,255,0.10) 100%);
+    border: 1rpx solid rgba(90,143,255,0.16);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -20rpx;
+      top: -20rpx;
+      width: 120rpx;
+      height: 120rpx;
+      background: radial-gradient(circle, rgba(127,90,255,0.22) 0%, rgba(127,90,255,0) 70%);
+      border-radius: 50%;
+    }
+  }
+
+  .topic-tag {
+    display: inline-block;
+    padding: 4rpx 12rpx;
+    font-size: 22rpx;
+    color: #5A8FFF;
+    background: rgba(90,143,255,0.10);
+    border: 1rpx solid rgba(90,143,255,0.28);
+    border-radius: 999rpx;
+  }
+
+  .topic-title {
+    margin-top: 8rpx;
+    font-size: 34rpx;
+    color: $font-color-dark;
+    font-weight: 700;
+  }
+
+  .topic-sub {
+    margin-top: 4rpx;
+    font-size: 24rpx;
+    color: $font-color-light;
+  }
+}
+
+.segmented-tabs {
+  margin: 20rpx 20rpx 16rpx 20rpx;
+  display: flex;
+  gap: 12rpx;
+
+  .seg-pill {
+    flex: 1;
+    text-align: center;
+    height: 64rpx;
+    line-height: 64rpx;
+    font-size: 26rpx;
+    color: #5A8FFF;
+    background: rgba(90,143,255,0.08);
+    border: 1rpx solid rgba(90,143,255,0.28);
+    border-radius: 999rpx;
+
+    &.active {
+      color: #fff;
+      background: $primary-gradient;
+      border-color: transparent;
+      box-shadow: 0 6rpx 16rpx rgba(90, 143, 255, 0.2);
+    }
+  }
+}
+
 .moments-list {
-  padding: 40rpx 20rpx 0 20rpx;
+  padding: 20rpx 20rpx 0 20rpx;
 
   .moment-item {
     display: flex;
@@ -533,6 +1044,31 @@ $action-color: #5A8FFF;
     background: #fff;
     border-radius: $card-radius;
     box-shadow: $shadow;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4rpx;
+      background: $primary-gradient;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    &:hover {
+      transform: translateY(-2rpx);
+      box-shadow: 0 12rpx 36rpx rgba(90, 143, 255, 0.12);
+
+      &::before {
+        transform: scaleX(1);
+      }
+    }
 
     .user-avatar {
       width: 80rpx;
@@ -542,28 +1078,114 @@ $action-color: #5A8FFF;
       border: 2rpx solid #5A8FFF;
       box-shadow: 0 0 12rpx #7F5AFF;
       background: #fff;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+
+      &:hover {
+        box-shadow: 0 0 16rpx rgba(127, 90, 255, 0.55), 0 0 28rpx rgba(90, 143, 255, 0.35);
+        transform: translateY(-2rpx);
+      }
     }
 
     .content-area {
       flex: 1;
+
+        .meta-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+        }
 
       .username {
         font-size: 30rpx;
         font-weight: 600;
         color: $font-color-dark;
         margin-bottom: 10rpx;
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -4rpx;
+          width: 0;
+          height: 4rpx;
+          background: $primary-gradient;
+          border-radius: 4rpx;
+          transition: width 0.25s ease;
+        }
+
+        &:hover::after {
+          width: 80rpx;
+        }
       }
+
+        .meta-time {
+          display: block;
+          margin-top: 10rpx;
+          font-size: 22rpx;
+          color: #9aa3af;
+        }
+
+        .chip-row {
+          display: flex;
+          gap: 10rpx;
+          margin: 2rpx 0 16rpx 0;
+
+          .chip {
+            padding: 4rpx 14rpx;
+            font-size: 22rpx;
+            color: #5a6fff;
+            background: rgba(90, 143, 255, 0.08);
+            border: 1rpx solid rgba(90, 143, 255, 0.28);
+            border-radius: 999rpx;
+          }
+
+          .ghost {
+            color: #7f5aff;
+            background: rgba(127, 90, 255, 0.08);
+            border-color: rgba(127, 90, 255, 0.28);
+          }
+        }
 
       .text-content {
         font-size: 28rpx;
         color: $font-color-light;
-        margin-bottom: 24rpx;
-        line-height: 1.5;
+        margin-bottom: 0;
+        line-height: 1.7;
+      }
+
+      .text-block {
+        margin-bottom: 12rpx;
+        position: relative;
+
+        &.clamped {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      }
+
+      .expand-btn {
+        display: inline-block;
+        font-size: 24rpx;
+        color: $action-color;
+        padding: 6rpx 12rpx;
+        border-radius: 999rpx;
+        background: rgba(90, 143, 255, 0.08);
+        border: 1rpx solid rgba(90, 143, 255, 0.18);
+        margin-bottom: 12rpx;
+
+        &:active {
+          background: rgba(90, 143, 255, 0.16);
+        }
       }
 
       .media-content {
         margin-bottom: 16rpx;
         margin-top: 20rpx;
+        border-radius: 12rpx;
+        overflow: hidden;
 
         .video-content {
           width: 100%;
@@ -575,10 +1197,53 @@ $action-color: #5A8FFF;
         .image-gallery {
           display: grid;
           gap: 12rpx;
+
+          .image-content {
+            transition: transform 0.25s ease;
+
+            &:hover {
+              transform: scale(1.02);
+            }
+          }
         }
 
         .image-radius {
           border-radius: 12rpx;
+        }
+
+        .media-badges {
+          position: absolute;
+          right: 12rpx;
+          top: 12rpx;
+          display: flex;
+          gap: 8rpx;
+          z-index: 5;
+
+          .badge {
+            display: inline-flex;
+            align-items: center;
+            height: 40rpx;
+            padding: 0 12rpx;
+            border-radius: 999rpx;
+            background: rgba(0,0,0,0.42);
+            color: #fff;
+            backdrop-filter: blur(6rpx);
+            -webkit-backdrop-filter: blur(6rpx);
+
+            .b-ic {
+              font-size: 24rpx;
+              margin-right: 6rpx;
+            }
+            .b-txt {
+              font-size: 22rpx;
+            }
+          }
+
+          .ghost {
+            background: rgba(255,255,255,0.18);
+            color: #222;
+            border: 1rpx solid rgba(0,0,0,0.08);
+          }
         }
       }
 
@@ -604,7 +1269,19 @@ $action-color: #5A8FFF;
             padding: 12rpx 20rpx;
             border-radius: 30rpx;
             background: rgba(90, 143, 255, 0.06);
+            border: 1rpx solid rgba(90, 143, 255, 0.18);
+            position: relative;
+            overflow: hidden;
             transition: all 0.3s;
+
+            &::before {
+              content: '';
+              position: absolute;
+              inset: 0;
+              background: $primary-gradient;
+              opacity: 0;
+              transition: opacity 0.2s ease;
+            }
 
             .icon {
               font-size: 32rpx;
@@ -618,9 +1295,19 @@ $action-color: #5A8FFF;
               color: #666;
             }
 
+            .action-count {
+              margin-left: 6rpx;
+              font-size: 22rpx;
+              color: #9aa3af;
+            }
+
             &:active {
               transform: scale(0.95);
               background: rgba(127, 90, 255, 0.12);
+              
+              &::before {
+                opacity: 0.06;
+              }
             }
           }
 
@@ -664,6 +1351,19 @@ $action-color: #5A8FFF;
         padding: 16rpx;
         border-radius: 12rpx;
         margin-top: 16rpx;
+        border: 1rpx solid rgba(90, 143, 255, 0.12);
+        position: relative;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 16rpx;
+          right: 16rpx;
+          top: 0;
+          height: 2rpx;
+          background: $primary-gradient;
+          border-radius: 1rpx;
+        }
 
         .like-users {
           font-size: 26rpx;
@@ -695,6 +1395,25 @@ $action-color: #5A8FFF;
             color: $font-color-dark;
           }
         }
+      }
+    }
+
+    .more-btn {
+      position: absolute;
+      right: 16rpx;
+      top: 12rpx;
+      width: 64rpx;
+      height: 64rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9aa3af;
+      font-size: 48rpx;
+      border-radius: 50%;
+      transition: background 0.2s ease;
+
+      &:active {
+        background: rgba(0,0,0,0.04);
       }
     }
   }
@@ -729,6 +1448,28 @@ $action-color: #5A8FFF;
   height: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  transition: transform 0.25s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+
+  // 预览提示
+  &::after {
+    content: '🔍';
+    position: absolute;
+    right: 8rpx;
+    bottom: 8rpx;
+    font-size: 28rpx;
+    opacity: 0;
+    transform: translateY(6rpx);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  &:hover::after {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
 }
 
 .video-radius {
@@ -905,6 +1646,16 @@ $action-color: #5A8FFF;
   justify-content: center;
   transition: all 0.3s;
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -8rpx;
+    border-radius: 50%;
+    background: $primary-gradient;
+    opacity: 0.18;
+    animation: pulseRing 2.2s ease-in-out infinite;
+  }
+
   .icon-wrapper {
     display: flex;
     align-items: center;
@@ -931,6 +1682,68 @@ $action-color: #5A8FFF;
   }
 }
 
+// 烟花特效样式
+.fireworks {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+
+  .fw {
+    position: absolute;
+    width: 0;
+    height: 0;
+    transform: translate(-50%, -50%);
+    animation: fw-pop 360ms ease-out;
+  }
+
+  .fw-p {
+    position: absolute;
+    width: 8rpx;
+    height: 8rpx;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    animation: fw-burst 1600ms ease-out forwards;
+  }
+
+  // 12个方向发散
+  @for $i from 1 through 12 {
+    .p#{$i} { animation-delay: #{($i - 1) * 60}ms; }
+  }
+
+  // 位移向量（rpx）- 扩大10%
+  .p1  { --tx:    0rpx;  --ty: -132rpx; }
+  .p2  { --tx:   66rpx;  --ty: -114rpx; }
+  .p3  { --tx:  114rpx;  --ty:  -66rpx; }
+  .p4  { --tx:  132rpx;  --ty:    0rpx; }
+  .p5  { --tx:  114rpx;  --ty:   66rpx; }
+  .p6  { --tx:   66rpx;  --ty:  114rpx; }
+  .p7  { --tx:    0rpx;  --ty:  132rpx; }
+  .p8  { --tx:  -66rpx;  --ty:  114rpx; }
+  .p9  { --tx: -114rpx;  --ty:   66rpx; }
+  .p10 { --tx: -132rpx;  --ty:    0rpx; }
+  .p11 { --tx: -114rpx;  --ty:  -66rpx; }
+  .p12 { --tx:  -66rpx;  --ty: -114rpx; }
+
+  // 主题色
+  .t-blue { background: #5A8FFF; box-shadow: 0 0 8rpx rgba(90,143,255,0.8); }
+  .t-violet { background: #7F5AFF; box-shadow: 0 0 8rpx rgba(127,90,255,0.8); }
+  .t-gold { background: #f59e0b; box-shadow: 0 0 8rpx rgba(245,158,11,0.8); }
+  .t-mint { background: #10b981; box-shadow: 0 0 8rpx rgba(16,185,129,0.8); }
+  .t-pink { background: #ec4899; box-shadow: 0 0 8rpx rgba(236,72,153,0.8); }
+}
+
+@keyframes fw-pop {
+  from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes fw-burst {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx, 0), var(--ty, 0)) scale(1.2); }
+}
 @keyframes breathe {
   0% {
     transform: scale(1);
@@ -946,6 +1759,30 @@ $action-color: #5A8FFF;
     transform: scale(1);
     opacity: 0.4;
   }
+}
+
+// 背景渐变与光晕动画
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes bgFloat {
+  0% { transform: translate3d(0,0,0) scale(1); opacity: 1; }
+  50% { transform: translate3d(0,-6rpx,0) scale(1.02); opacity: 0.98; }
+  100% { transform: translate3d(0,0,0) scale(1); opacity: 1; }
+}
+// 头部浮动与按钮环动效
+@keyframes headerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12rpx); }
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.18; }
+  70% { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
 }
 
 // 科技感加载动画

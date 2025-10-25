@@ -36,7 +36,10 @@ const emptyData = [{
 
 exports.main = async (event, context) => {
   const { page = 1, pageSize = 10 } = event
-  
+  // return {
+  //   code: -1,
+  //   msg: '网站被攻击，恢复时间请关注我们官方网站schooluu.cn'
+  // }
   try {
     const { total } = await db.collection('wx-moments').count()
     
