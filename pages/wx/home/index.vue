@@ -58,9 +58,13 @@
             <text v-else class="hot-thumb-emoji">{{ h.emoji }}</text>
           </view>
           <view class="hot-content">
-            <text class="hot-text">{{ h.text }}</text>
-            <text class="hot-meta">{{ h.views }} 次浏览 · {{ h.posts }} 条讨论</text>
+            <view class="hot-row">
+              <text class="hot-text">{{ h.text }}</text>
+              <text v-if="h.badge" class="hot-badge" :class="h.badgeType || 'badge-hot'">{{ h.badge }}</text>
+            </view>
+            <text class="hot-meta">{{ h.views }} 次浏览 · {{ h.posts }} 条讨论 · {{ h.mood || '讨论正热' }}</text>
           </view>
+          <view class="hot-cta" @tap.stop="handleHotTap(h)">{{ h.cta || '去看看' }}</view>
           <text class="hot-arrow">›</text>
         </view>
       </view>
@@ -379,6 +383,7 @@ const getMomentsList = async (isRefresh = false) => {
 
 onShow(() => {
   // 持续烟花循环
+  getMomentsList(true)
   stopFireworksLoop() // 防重启
   startFireworksLoop()
   // 3秒后自动获取列表（刷新）
@@ -693,10 +698,9 @@ const handleMore = (index) => {
 
 // 今日热榜（示例数据）
 const hotTopics = ref([
-  { text: '# 今天你匿名表白了吗', views: '12.3w', posts: '2.1k', emoji: '💌' },
-  { text: '# 城市树洞：说说你的小烦恼', views: '8.7w', posts: '1.2k', emoji: '🌆' },
-  { text: '# 三件让你快乐的小事', views: '6.5w', posts: '980', emoji: '✨' },
- 
+  { text: '# 今天你匿名表白了吗', views: '12.3w', posts: '2.1k', emoji: '💌', badge: '热议', badgeType: 'badge-hot', cta: '参与' },
+  { text: '# 城市树洞：说说你的小烦恼', views: '8.7w', posts: '1.2k', emoji: '🌆', badge: '同城', badgeType: 'badge-near', cta: '去看看', mood: '氛围很暖' },
+  { text: '# 三件让你快乐的小事', views: '6.5w', posts: '980', emoji: '✨', badge: '精选', badgeType: 'badge-new', cta: '我也分享' }
 ])
 const handleHotTap = (h) => {
   uni.showToast({ title: h.text, icon: 'none' })
@@ -1217,7 +1221,7 @@ $action-color: #5A8FFF;
   .hot-list {
     padding: 6rpx 6rpx 6rpx 12rpx;
 
-    .hot-item {
+      .hot-item {
       display: flex;
       align-items: center;
       padding: 14rpx 14rpx;
@@ -1257,11 +1261,17 @@ $action-color: #5A8FFF;
         flex-direction: column;
         margin: 0 8rpx;
 
+        .hot-row { display: flex; align-items: center; gap: 8rpx; }
         .hot-text { font-size: 26rpx; color: $font-color-dark; }
+        .hot-badge { font-size: 20rpx; padding: 2rpx 10rpx; border-radius: 999rpx; }
+        .badge-hot { background: rgba(255,126,107,0.12); color: #ff7e6b; border: 1rpx solid rgba(255,126,107,0.35); }
+        .badge-new { background: rgba(90,143,255,0.12); color: #5A8FFF; border: 1rpx solid rgba(90,143,255,0.35); }
+        .badge-near { background: rgba(127,90,255,0.12); color: #7F5AFF; border: 1rpx solid rgba(127,90,255,0.35); }
         .hot-meta { margin-top: 4rpx; font-size: 22rpx; color: #9aa3af; }
       }
 
       .hot-arrow { font-size: 32rpx; color: #c4c9d1; }
+      .hot-cta { margin-left: 10rpx; font-size: 22rpx; color: #5A8FFF; padding: 6rpx 12rpx; border-radius: 999rpx; background: rgba(90,143,255,0.08); }
     }
   }
 }
