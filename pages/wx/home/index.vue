@@ -45,11 +45,25 @@
       </swiper>
     </view>
 
-    <!-- 分段控制（推荐 / 关注 / 附近） -->
-    <view class="segmented-tabs">
-      <view class="seg-pill active" @tap="handleTabSelect('recommend')">推荐</view>
-      <view class="seg-pill" @tap="handleTabSelect('follow')">关注</view>
-      <view class="seg-pill" @tap="handleTabSelect('nearby')">附近</view>
+
+
+    <!-- 今日热榜 / 话题墙 -->
+    <view class="hot-board">
+      <view class="hot-title">今日热榜</view>
+      <view class="hot-list">
+        <view class="hot-item" v-for="(h, i) in hotTopics" :key="i" @tap="handleHotTap(h)">
+          <text class="hot-rank" :class="{ top: i < 3 }">{{ i + 1 }}</text>
+          <view class="hot-thumb">
+            <image v-if="h.thumb" class="hot-thumb-img" :src="h.thumb" mode="aspectFill" />
+            <text v-else class="hot-thumb-emoji">{{ h.emoji }}</text>
+          </view>
+          <view class="hot-content">
+            <text class="hot-text">{{ h.text }}</text>
+            <text class="hot-meta">{{ h.views }} 次浏览 · {{ h.posts }} 条讨论</text>
+          </view>
+          <text class="hot-arrow">›</text>
+        </view>
+      </view>
     </view>
     <!-- 朋友圈内容列表 -->
     <view class="moments-list">
@@ -370,7 +384,7 @@ onShow(() => {
   // 3秒后自动获取列表（刷新）
   setTimeout(() => {
     getMomentsList(true)
-  }, 3000)
+  }, 33000)
   // 尝试自动播放背景音乐（静音启动，随后淡入）
   tryAutoPlay()
 })
@@ -651,9 +665,9 @@ const toggleExpand = (index) => {
 
 // Banner 话题数据
 const bannerTopics = ref([
-  { tag: '# 热议', title: '今天你匿名表白了吗？', sub: '真实表达让世界更温柔' },
-  { tag: '# 附近', title: '城市树洞：说说你的小烦恼', sub: '有人正经历着同样的心情' },
-  { tag: '# 推荐', title: '三件让你快乐的小事', sub: '记录微光，让生活发亮' },
+  { tag: '# 精选', title: '今日热聊：匿名也要有态度', sub: '来一条走心的分享吧' },
+  { tag: '# 新鲜', title: '你的小确幸，值得被看到', sub: '记录当下，温暖一整天' },
+  { tag: '# 附近', title: '发现身边的美好瞬间', sub: '同城热点，马上加入' },
 ])
 
 const handleBannerTap = (t) => {
@@ -675,6 +689,17 @@ const handleMore = (index) => {
       }
     }
   })
+}
+
+// 今日热榜（示例数据）
+const hotTopics = ref([
+  { text: '# 今天你匿名表白了吗', views: '12.3w', posts: '2.1k', emoji: '💌' },
+  { text: '# 城市树洞：说说你的小烦恼', views: '8.7w', posts: '1.2k', emoji: '🌆' },
+  { text: '# 三件让你快乐的小事', views: '6.5w', posts: '980', emoji: '✨' },
+ 
+])
+const handleHotTap = (h) => {
+  uni.showToast({ title: h.text, icon: 'none' })
 }
 
 // 背景音乐（H5，使用原生 HTMLAudio；带多源与故障切换，避免 403/CORS 问题）
@@ -822,7 +847,7 @@ $action-color: #5A8FFF;
 
 .header {
   position: relative;
-  height: 400rpx;
+  height: 360rpx;
   overflow: hidden;
   border-bottom-left-radius: $card-radius;
   border-bottom-right-radius: $card-radius;
@@ -1173,8 +1198,76 @@ $action-color: #5A8FFF;
   }
 }
 
+.hot-board {
+  margin: 10rpx 20rpx 12rpx 20rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
+  border: 1rpx solid rgba(0,0,0,0.04);
+  overflow: hidden;
+
+  .hot-title {
+    padding: 18rpx 20rpx;
+    font-size: 28rpx;
+    font-weight: 700;
+    color: $font-color-dark;
+    background: linear-gradient(180deg, rgba(247,249,251,1) 0%, rgba(247,249,251,0) 100%);
+  }
+
+  .hot-list {
+    padding: 6rpx 6rpx 6rpx 12rpx;
+
+    .hot-item {
+      display: flex;
+      align-items: center;
+      padding: 14rpx 14rpx;
+      border-radius: 12rpx;
+      transition: background 0.2s ease;
+
+      &:active { background: rgba(90,143,255,0.06); }
+
+      .hot-rank {
+        width: 40rpx;
+        text-align: center;
+        font-size: 26rpx;
+        color: #9aa3af;
+
+        &.top { color: #ff7e6b; font-weight: 800; }
+      }
+
+      .hot-thumb {
+        width: 60rpx;
+        height: 60rpx;
+        border-radius: 12rpx;
+        background: #f4f7ff;
+        margin: 0 10rpx 0 6rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1rpx solid #eef1f7;
+
+        .hot-thumb-img { width: 100%; height: 100%; }
+        .hot-thumb-emoji { font-size: 36rpx; }
+      }
+
+      .hot-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin: 0 8rpx;
+
+        .hot-text { font-size: 26rpx; color: $font-color-dark; }
+        .hot-meta { margin-top: 4rpx; font-size: 22rpx; color: #9aa3af; }
+      }
+
+      .hot-arrow { font-size: 32rpx; color: #c4c9d1; }
+    }
+  }
+}
+
 .moments-list {
-  padding: 20rpx 20rpx 0 20rpx;
+  padding: 12rpx 16rpx 0 16rpx;
 
   .moment-item {
     display: flex;
