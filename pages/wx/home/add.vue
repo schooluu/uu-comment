@@ -97,7 +97,7 @@
       <view class="options-header">
         <text class="options-title">发布设置</text>
       </view>
-      <view class="option-item" @tap="togglePrivacy">
+      <!-- <view class="option-item" @tap="togglePrivacy">
         <view class="option-left">
           <text class="option-icon">👁️</text>
           <text class="option-label">谁可以看</text>
@@ -106,8 +106,8 @@
           <text class="option-value">{{ privacyText }}</text>
           <text class="option-arrow">›</text>
         </view>
-      </view>
-      <view class="option-item" @tap="toggleLocation">
+      </view> -->
+      <!-- <view class="option-item" @tap="toggleLocation">
         <view class="option-left">
           <text class="option-icon">📍</text>
           <text class="option-label">所在位置</text>
@@ -116,7 +116,7 @@
           <text class="option-value">{{ location || '添加位置' }}</text>
           <text class="option-arrow">›</text>
         </view>
-      </view>
+      </view> -->
       <view class="option-item" @tap="toggleContactPanel">
         <view class="option-left">
           <text class="option-icon">📞</text>
@@ -127,7 +127,7 @@
           <text class="option-arrow">›</text>
         </view>
       </view>
-      <view class="option-item">
+      <!-- <view class="option-item">
         <view class="option-left">
           <text class="option-icon">@</text>
           <text class="option-label">提醒谁看</text>
@@ -136,7 +136,7 @@
           <text class="option-value">{{ mentionList.length ? `已选${mentionList.length}人` : '添加' }}</text>
           <text class="option-arrow">›</text>
         </view>
-      </view>
+      </view> -->
     </view>
     <!-- 联系方式编辑面板 -->
     <view v-if="showContactPanel" class="contact-panel">

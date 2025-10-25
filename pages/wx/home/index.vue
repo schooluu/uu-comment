@@ -26,7 +26,7 @@
           </view>
         </view>
         <view class="hero-cta" @tap="handleCamera">
-          <text class="cta-plus">+</text>
+          <image class="cta-icon" src="https://img.icons8.com/fluency/48/plus.png" mode="aspectFit" />
         </view>
       </view>
     </view>
@@ -34,7 +34,7 @@
     <!-- 精选照片 -->
     <view class="photo-showcase" v-if="photoShowcase.length">
       <view class="ps-header">
-        <text class="ps-title">精选照片</text>
+        <text class="ps-title">最美照片</text>
         <text class="ps-action" @tap="shufflePhotos">换一换</text>
       </view>
       <view class="ps-row">
@@ -155,6 +155,34 @@
             <text class="contact-icon">📞</text>
             <text class="contact-text">{{ contactLabel(item.contactType) }}：{{ item.contactValue }}</text>
           </view>
+          <!-- 评分选项展示 -->
+          <view class="rating-section" v-if="item.ratingType">
+            <view class="rating-header">
+              <text class="rating-icon">⭐</text>
+              <text class="rating-title">{{ ratingTypeLabel(item.ratingType) }}</text>
+              <text class="rating-range">({{ item.ratingMin }}-{{ item.ratingMax }}分)</text>
+            </view>
+            <view class="rating-stats" v-if="item.ratingStats">
+              <view class="rating-avg">
+                <text class="avg-score">{{ item.ratingStats.average.toFixed(1) }}</text>
+                <text class="avg-label">平均分</text>
+              </view>
+              <view class="rating-count">
+                <text class="count-num">{{ item.ratingStats.count }}</text>
+                <text class="count-label">人评分</text>
+              </view>
+            </view>
+            <view class="rating-actions">
+              <view class="rating-btn" @tap="showRatingModal(index)">
+                <text class="rating-btn-icon">⭐</text>
+                <text class="rating-btn-text">评分</text>
+              </view>
+              <view class="rating-btn" @tap="viewRatingDetails(index)">
+                <text class="rating-btn-icon">📊</text>
+                <text class="rating-btn-text">详情</text>
+              </view>
+            </view>
+          </view>
           <!-- 评论列表 -->
           <view class="comments-section" v-if="item.comments && item.comments.length !== 0">
             <view class="comment-item" v-for="(comment, cIndex) in item.comments" :key="cIndex">
@@ -190,6 +218,43 @@
         </view>
       </view>
     </view>
+    
+    <!-- 评分弹窗 -->
+    <view class="rating-popup" v-if="showRatingPopup" @tap="closeRatingPopup">
+      <view class="rating-box animated-popup" @tap.stop>
+        <view class="rating-header">
+          <text class="rating-title">{{ ratingTypeLabel(currentRatingItem?.ratingType) }}</text>
+          <text class="rating-close" @tap="closeRatingPopup">✕</text>
+        </view>
+        <view class="rating-content">
+          <view class="rating-stars">
+            <text 
+              v-for="i in 10" 
+              :key="i" 
+              :class="['star', { active: i <= currentRating }]"
+              @tap="setRating(i)"
+            >⭐</text>
+          </view>
+          <view class="rating-score">
+            <text class="score-text">{{ currentRating }}/10</text>
+          </view>
+          <view class="rating-comment">
+            <textarea 
+              class="comment-input" 
+              v-model="ratingComment" 
+              placeholder="说说你的看法...（可选）"
+              maxlength="100"
+            />
+          </view>
+        </view>
+        <view class="rating-actions">
+          <button class="rating-submit-btn" :class="{ active: currentRating > 0 }" @tap="submitRating">
+            提交评分
+          </button>
+        </view>
+      </view>
+    </view>
+    
     <!-- <view class="publish-btn" @tap="handleCamera">
       <view class="icon-wrapper">
         <text class="iconfont">+</text>
@@ -253,16 +318,16 @@ const anonymousAvatars = [
   'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=60'
 ]
 const anonymousAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)];
-// 中国风/生活感美女照片池（用于背景与精选补位）
+// 生活化美女照片池（用于背景与精选补位）
 const cnBeautyPool = [
-  'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1400&q=60',
   'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1400&q=60',
   'https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=1400&q=60',
   'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?auto=format&fit=crop&w=1400&q=60',
   'https://images.unsplash.com/photo-1542202229-7d93c33f5d07?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1400&q=60'
+  'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1400&q=60'
 ]
 // 首屏背景图列表（随机挑选一张）
 const headerBgList = cnBeautyPool
@@ -702,8 +767,15 @@ const bannerTopics = ref([
   { tag: '# 附近', title: '发现身边的美好瞬间', sub: '同城热点，马上加入' },
 ])
 
+const goHotWithParams = (params) => {
+  const qs = Object.keys(params || {})
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k] == null ? '' : params[k]))
+    .join('&')
+  uni.navigateTo({ url: '/pages/wx/photos/add' + (qs ? ('?' + qs) : '') })
+}
+
 const handleBannerTap = (t) => {
-  uni.showToast({ title: t.tag + ' · ' + t.title, icon: 'none' })
+  goHotWithParams({ tag: t.tag, title: t.title, sub: t.sub })
 }
 
 // 更多操作（Figma风格）
@@ -723,23 +795,90 @@ const handleMore = (index) => {
   })
 }
 
+// 评分相关方法
+const showRatingModal = (index) => {
+  currentRatingIndex.value = index
+  currentRatingItem.value = moments.value[index]
+  currentRating.value = 0
+  ratingComment.value = ''
+  showRatingPopup.value = true
+}
+
+const closeRatingPopup = () => {
+  showRatingPopup.value = false
+  currentRatingItem.value = null
+  currentRating.value = 0
+  ratingComment.value = ''
+  currentRatingIndex.value = -1
+}
+
+const setRating = (score) => {
+  currentRating.value = score
+}
+
+const submitRating = async () => {
+  if (currentRating.value === 0) {
+    uni.showToast({ title: '请选择评分', icon: 'none' })
+    return
+  }
+  
+  try {
+    uni.showLoading({ title: '提交中...' })
+    
+    const { result } = await uniCloud.callFunction({
+      name: 'wx_add_rating',
+      data: {
+        momentId: currentRatingItem.value._id,
+        rating: currentRating.value,
+        comment: ratingComment.value,
+        ratingType: currentRatingItem.value.ratingType
+      }
+    })
+    
+    if (result.code === 0) {
+      uni.showToast({ title: '评分成功', icon: 'success' })
+      // 更新本地数据
+      if (!moments.value[currentRatingIndex.value].ratingStats) {
+        moments.value[currentRatingIndex.value].ratingStats = { average: 0, count: 0 }
+      }
+      // 这里可以更新评分统计，实际应该从服务器重新获取
+      closeRatingPopup()
+    } else {
+      throw new Error(result.msg)
+    }
+  } catch (error) {
+    uni.showToast({ title: error.message || '评分失败', icon: 'none' })
+  } finally {
+    uni.hideLoading()
+  }
+}
+
+const viewRatingDetails = (index) => {
+  const item = moments.value[index]
+  uni.showModal({
+    title: `${ratingTypeLabel(item.ratingType)}详情`,
+    content: `平均分：${item.ratingStats?.average?.toFixed(1) || 0}分\n评分人数：${item.ratingStats?.count || 0}人\n评分范围：${item.ratingMin}-${item.ratingMax}分`,
+    showCancel: false
+  })
+}
+
 // 今日热榜（示例数据）
 const hotTopics = ref([
   { text: '# 今天你匿名表白了吗', views: '12.3w', posts: '2.1k', emoji: '💌', badge: '热议', badgeType: 'badge-hot', cta: '参与' },
-  { text: '# 城市树洞：说说你的小烦恼', views: '8.7w', posts: '1.2k', emoji: '🌆', badge: '同城', badgeType: 'badge-near', cta: '去看看', mood: '氛围很暖' },
+  { text: '# 城市树洞：你的小烦恼', views: '8.7w', posts: '1.2k', emoji: '🌆', badge: '同城', badgeType: 'badge-near', cta: '去看看', mood: '氛围很暖' },
   { text: '# 三件让你快乐的小事', views: '6.5w', posts: '980', emoji: '✨', badge: '精选', badgeType: 'badge-new', cta: '我也分享' }
 ])
 const handleHotTap = (h) => {
-  uni.showToast({ title: h.text, icon: 'none' })
+  goHotWithParams({ text: h.text, views: h.views, posts: h.posts, emoji: h.emoji, badge: h.badge, badgeType: h.badgeType })
 }
 
 // 背景音乐（H5，使用原生 HTMLAudio；带多源与故障切换，避免 403/CORS 问题）
 const isBgmPlaying = ref(false)
 let bgmInstance = null
 const bgmUrlList = [
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+  // 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  // 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+  // 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
 ]
 let bgmIndex = Math.floor(Math.random() * bgmUrlList.length)
 const currentBgm = () => bgmUrlList[bgmIndex % bgmUrlList.length]
@@ -815,10 +954,46 @@ const previewPhoto = (idx) => {
 // 联系方式标签
 const contactLabel = (t) => ({ wechat: '微信', phone: '手机', qq: 'QQ', email: '邮箱' }[t] || '联系')
 
+// 评分类型标签
+const ratingTypeLabel = (t) => ({ beauty: '颜值评分', style: '穿搭评分', photo: '照片评分' }[t] || '评分')
+
+// 评分相关状态
+const showRatingPopup = ref(false)
+const currentRatingItem = ref(null)
+const currentRating = ref(0)
+const ratingComment = ref('')
+const currentRatingIndex = ref(-1)
+
 // 首次加载和每次刷新列表后重建精选照片
 onShow(() => {
   setTimeout(() => rebuildPhotoShowcase(), 400)
+  // 定时更换精选照片（每5秒）
+  startPhotoRotation()
 })
+
+onHide(() => {
+  stopPhotoRotation()
+})
+
+onUnload(() => {
+  stopPhotoRotation()
+})
+
+// 定时更换精选照片
+let photoRotationTimer = null
+const startPhotoRotation = () => {
+  if (photoRotationTimer) return
+  photoRotationTimer = setInterval(() => {
+    rebuildPhotoShowcase()
+  }, 5000) // 每5秒更换一次
+}
+
+const stopPhotoRotation = () => {
+  if (photoRotationTimer) {
+    clearInterval(photoRotationTimer)
+    photoRotationTimer = null
+  }
+}
 
 const pauseBgm = () => {
   if (bgmInstance) {
@@ -1110,10 +1285,9 @@ $action-color: #5A8FFF;
       background: $primary-gradient;
       box-shadow: 0 6rpx 16rpx rgba(90, 143, 255, 0.35);
 
-      .cta-plus {
-        color: #fff;
-        font-size: 48rpx;
-        line-height: 1;
+      .cta-icon {
+        width: 48rpx;
+        height: 48rpx;
       }
     }
   }
@@ -1198,7 +1372,7 @@ $action-color: #5A8FFF;
 }
 
 .banner-topics {
-  margin: 24rpx 20rpx 8rpx 20rpx;
+  margin: 24rpx;
 
   .banner-swiper {
     height: 180rpx;
@@ -1208,7 +1382,7 @@ $action-color: #5A8FFF;
 
   .topic-card {
     height: 180rpx;
-    padding: 22rpx 22rpx 22rpx 24rpx;
+    padding: 20rpx;
     border-radius: 16rpx;
     background: linear-gradient(90deg, rgba(90,143,255,0.12) 0%, rgba(127,90,255,0.10) 100%);
     border: 1rpx solid rgba(90,143,255,0.16);
@@ -1279,7 +1453,7 @@ $action-color: #5A8FFF;
 }
 
 .hot-board {
-  margin: 10rpx 20rpx 12rpx 20rpx;
+  margin: 24rpx;
   background: #fff;
   border-radius: 16rpx;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
@@ -1287,7 +1461,7 @@ $action-color: #5A8FFF;
   overflow: hidden;
 
   .hot-title {
-    padding: 18rpx 20rpx;
+    padding: 20rpx;
     font-size: 28rpx;
     font-weight: 700;
     color: $font-color-dark;
@@ -1295,7 +1469,7 @@ $action-color: #5A8FFF;
   }
 
   .hot-list {
-    padding: 6rpx 6rpx 6rpx 12rpx;
+    padding: 20rpx;
 
       .hot-item {
       display: flex;
@@ -1353,7 +1527,7 @@ $action-color: #5A8FFF;
 }
 
 .photo-showcase {
-  margin: 10rpx 16rpx 8rpx 16rpx;
+  margin: 24rpx;
   background: #fff;
   border-radius: 16rpx;
   border: 1rpx solid rgba(0,0,0,0.04);
@@ -1364,13 +1538,13 @@ $action-color: #5A8FFF;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16rpx 16rpx 8rpx 16rpx;
+    padding: 20rpx;
     .ps-title { font-size: 28rpx; font-weight: 700; color: $font-color-dark; }
     .ps-action { font-size: 24rpx; color: #5A8FFF; padding: 8rpx 12rpx; background: rgba(90,143,255,0.08); border-radius: 999rpx; }
   }
 
   .ps-row {
-    padding: 8rpx 8rpx 14rpx 8rpx;
+    padding: 20rpx;
     display: flex;
     gap: 12rpx;
     overflow-x: auto;
@@ -1408,12 +1582,13 @@ $action-color: #5A8FFF;
 }
 
 .moments-list {
-  padding: 12rpx 16rpx 0 16rpx;
+  margin: 24rpx;
+  padding: 0;
 
   .moment-item {
     display: flex;
     margin-bottom: 32rpx;
-    padding: 32rpx 24rpx;
+    padding: 20rpx;
     background: #fff;
     border-radius: $card-radius;
     box-shadow: $shadow;
@@ -2535,5 +2710,21 @@ $action-color: #5A8FFF;
 @keyframes sloganFadeIn {
   0% { opacity: 0; filter: blur(8rpx); }
   100% { opacity: 1; filter: blur(0); }
+}
+// 移动端收紧留白并提升模块高度
+@media screen and (max-width: 750rpx) {
+  .banner-topics { margin: 24rpx; }
+  .banner-topics .banner-swiper { height: 200rpx; }
+  .banner-topics .topic-card { height: 200rpx; padding: 18rpx; }
+
+  .photo-showcase { margin: 24rpx; }
+  .photo-showcase .ps-row { gap: 10rpx; }
+  .photo-showcase .ps-item { width: 240rpx; height: 200rpx; }
+
+  .hot-board { margin: 24rpx; }
+
+  .moments-list { margin: 24rpx; padding: 0; }
+  .moments-list .moment-item { padding: 24rpx 18rpx; }
+  .moments-list .media-content .video-content { height: 420rpx; }
 }
 </style>
