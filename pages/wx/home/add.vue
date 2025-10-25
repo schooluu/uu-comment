@@ -57,7 +57,7 @@
     <!-- 图片/视频展示区 -->
     <view class="media-area" v-if="mediaList.length > 0 || true">
       <view class="media-header">
-        <text class="media-title">媒体内容</text>
+        <text class="media-title">照片</text>
         <text class="media-count">{{ mediaList.length }}/9</text>
       </view>
       <view class="media-grid">
@@ -117,6 +117,16 @@
           <text class="option-arrow">›</text>
         </view>
       </view>
+      <view class="option-item" @tap="toggleContactPanel">
+        <view class="option-left">
+          <text class="option-icon">📞</text>
+          <text class="option-label">联系方式</text>
+        </view>
+        <view class="option-right">
+          <text class="option-value">{{ contactText }}</text>
+          <text class="option-arrow">›</text>
+        </view>
+      </view>
       <view class="option-item">
         <view class="option-left">
           <text class="option-icon">@</text>
@@ -126,6 +136,26 @@
           <text class="option-value">{{ mentionList.length ? `已选${mentionList.length}人` : '添加' }}</text>
           <text class="option-arrow">›</text>
         </view>
+      </view>
+    </view>
+    <!-- 联系方式编辑面板 -->
+    <view v-if="showContactPanel" class="contact-panel">
+      <view class="cp-row">
+        <text class="cp-label">方式</text>
+        <view class="cp-types">
+          <text :class="['cp-type', contactType==='wechat'?'active':'']" @tap="setContactType('wechat')">微信</text>
+          <text :class="['cp-type', contactType==='phone'?'active':'']" @tap="setContactType('phone')">手机</text>
+          <text :class="['cp-type', contactType==='qq'?'active':'']" @tap="setContactType('qq')">QQ</text>
+          <text :class="['cp-type', contactType==='email'?'active':'']" @tap="setContactType('email')">邮箱</text>
+        </view>
+      </view>
+      <view class="cp-row">
+        <text class="cp-label">号码/账号</text>
+        <input class="cp-input" v-model="contactValue" :placeholder="contactPlaceholder" />
+      </view>
+      <view class="cp-actions">
+        <text class="cp-btn ghost" @tap="clearContact">清空</text>
+        <text class="cp-btn primary" @tap="saveContact">完成</text>
       </view>
     </view>
     <!-- 科技感加载动画 -->
@@ -198,7 +228,9 @@ const handlePublish = async () => {
         content: content.value,
         mediaList: mediaList.value,
         location: location.value,
-        privacy: privacyMode.value
+        privacy: privacyMode.value,
+        contactType: contactType.value,
+        contactValue: contactValue.value
       }
     })
     
@@ -317,6 +349,27 @@ const toggleLocation = () => {
     }
   })
 }
+
+// 联系方式
+const showContactPanel = ref(false)
+const contactType = ref('wechat')
+const contactValue = ref('')
+const contactMap = {
+  wechat: '请输入微信号',
+  phone: '请输入手机号',
+  qq: '请输入QQ号',
+  email: '请输入邮箱'
+}
+const contactPlaceholder = computed(() => contactMap[contactType.value])
+const contactText = computed(() => {
+  if (!contactValue.value) return '未填写'
+  const label = { wechat: '微信', phone: '手机', qq: 'QQ', email: '邮箱' }[contactType.value]
+  return `${label}: ${contactValue.value}`
+})
+const toggleContactPanel = () => { showContactPanel.value = !showContactPanel.value }
+const setContactType = (t) => { contactType.value = t }
+const saveContact = () => { showContactPanel.value = false }
+const clearContact = () => { contactValue.value = '' }
 </script>
 
 <style lang="scss" scoped>
@@ -899,6 +952,26 @@ $smooth: cubic-bezier(0.4, 0, 0.2, 1);
       }
     }
   }
+}
+
+.contact-panel {
+  margin: $space-lg;
+  padding: $space-lg;
+  background: $surface-color;
+  border-radius: $card-radius;
+  border: 1rpx solid $border-color;
+  box-shadow: $shadow-light;
+
+  .cp-row { display: flex; align-items: center; margin-bottom: $space-md; }
+  .cp-label { width: 140rpx; font-size: $font-sm; color: $text-secondary; }
+  .cp-types { display: flex; gap: $space-sm; flex-wrap: wrap; }
+  .cp-type { padding: 8rpx 16rpx; border-radius: 999rpx; font-size: $font-sm; color: $action-color; background: rgba(102, 126, 234, 0.08); border: 1rpx solid rgba(102, 126, 234, 0.2); }
+  .cp-type.active { background: $success-gradient; color: #fff; border-color: transparent; }
+  .cp-input { flex: 1; height: 72rpx; background: #fff; border: 1rpx solid $border-color; border-radius: 12rpx; padding: 0 $space-md; font-size: $font-sm; }
+  .cp-actions { display: flex; justify-content: flex-end; gap: $space-sm; margin-top: $space-sm; }
+  .cp-btn { padding: 10rpx 22rpx; border-radius: 999rpx; font-size: $font-sm; }
+  .cp-btn.ghost { color: $text-secondary; background: #f3f6fb; border: 1rpx solid $border-color; }
+  .cp-btn.primary { color: #fff; background: $primary-gradient; box-shadow: $shadow-light; }
 }
 .tech-loading {
   position: fixed;

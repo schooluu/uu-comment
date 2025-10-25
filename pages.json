@@ -200,6 +200,12 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "我要发布"
       }
+    }, {
+      "path": "pages/wx/hot/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "话题热榜"
+      }
     },{
       "path": "pages/wx/agreement/terms",
       "style": {

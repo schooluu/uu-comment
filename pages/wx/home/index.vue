@@ -10,7 +10,6 @@
       <view class="header-topbar">
         <text class="brand">匿名圈</text>
         <view class="top-actions">
-          <text class="top-icon" @tap="handleSearch">🔍</text>
           <text class="top-icon" @tap="handleSettings">⋯</text>
         </view>
       </view>
@@ -28,6 +27,26 @@
         </view>
         <view class="hero-cta" @tap="handleCamera">
           <text class="cta-plus">+</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 精选照片 -->
+    <view class="photo-showcase" v-if="photoShowcase.length">
+      <view class="ps-header">
+        <text class="ps-title">精选照片</text>
+        <text class="ps-action" @tap="shufflePhotos">换一换</text>
+      </view>
+      <view class="ps-row">
+        <view class="ps-item" v-for="(p, i) in photoShowcase" :key="i" @tap="previewPhoto(i)">
+          <image class="ps-img" :src="p.url" mode="aspectFill" />
+          <view class="ps-overlay">
+            <view class="ps-cap">
+              <text class="ps-emoji">{{ p.emoji }}</text>
+              <text class="ps-text">{{ p.caption }}</text>
+            </view>
+            <text class="ps-like">❤ {{ formatCount(p.likes) }}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -131,6 +150,11 @@
           <view class="likes-section" v-if="item.likes && item.likes.length">
             <text class="like-users">{{ item.likes.join('、') }}</text>
           </view>
+          <!-- 联系方式展示 -->
+          <view class="contact-section" v-if="item.contactValue">
+            <text class="contact-icon">📞</text>
+            <text class="contact-text">{{ contactLabel(item.contactType) }}：{{ item.contactValue }}</text>
+          </view>
           <!-- 评论列表 -->
           <view class="comments-section" v-if="item.comments && item.comments.length !== 0">
             <view class="comment-item" v-for="(comment, cIndex) in item.comments" :key="cIndex">
@@ -229,19 +253,20 @@ const anonymousAvatars = [
   'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=60'
 ]
 const anonymousAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)];
-// 首屏背景图列表（随机挑选一张）
-const headerBgList = [
-  // 现有
-  'https://img1.imgtp.com/2023/07/10/0Qv6Qw4w.png',
-  // 高质量渐变/自然/城市感背景
-  'https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1520975693411-0010e4aeba47?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=60'
+// 中国风/生活感美女照片池（用于背景与精选补位）
+const cnBeautyPool = [
+  'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1542202229-7d93c33f5d07?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=1400&q=60',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1400&q=60'
 ]
-const headerBg = headerBgList[Math.floor(Math.random() * headerBgList.length)]; // 新科技感头像/背景（随机）
+// 首屏背景图列表（随机挑选一张）
+const headerBgList = cnBeautyPool
+const headerBg = headerBgList[Math.floor(Math.random() * headerBgList.length)]; // 随机中国风美女/生活感背景
 const defaultAvatar = anonymousAvatar
 // 今日心情文案
 const moodList = [
@@ -365,6 +390,8 @@ const getMomentsList = async (isRefresh = false) => {
         page.value++
       }
       hasMore.value = result.data.hasMore
+      // 列表更新后重建精选照片（仅使用动态中的图片）
+      try { rebuildPhotoShowcase() } catch (_) {}
     } else {
       throw new Error(result.msg)
     }
@@ -743,6 +770,55 @@ const ensureBgm = () => {
   }
   return bgmInstance
 }
+
+// 精选照片（美女生活风格示例）
+// 从动态中提取图片作为精选照片
+const extractPhotoPool = () => {
+  const pool = []
+  ;(moments.value || []).forEach(m => {
+    // 支持 image 类型的 media
+    if (m.mediaType === 'image' && Array.isArray(m.mediaUrls)) {
+      m.mediaUrls.forEach(u => { if (u) pool.push({ url: u }) })
+    }
+    // 支持无 mediaType 但存在 mediaList 的情形（兼容其他结构）
+    if (Array.isArray(m.mediaList)) {
+      m.mediaList.filter(x => x && (x.type === 'image') && x.url).forEach(x => pool.push({ url: x.url }))
+    }
+  })
+  return pool
+}
+const insCaptions = [
+  'today vibes', 'mood on', 'little joy', 'city walk',
+  'coffee o’clock', 'soft light', 'daily look', 'slow life'
+]
+const randomCaption = () => insCaptions[Math.floor(Math.random()*insCaptions.length)]
+const photoShowcase = ref([])
+const rebuildPhotoShowcase = () => {
+  const pool = extractPhotoPool()
+  if (!pool.length) { photoShowcase.value = []; return }
+  const mixed = pool.sort(() => Math.random() - 0.5).slice(0, 8)
+  photoShowcase.value = mixed.map(p => ({
+    ...p,
+    likes: Math.floor(100 + Math.random()*9000),
+    emoji: ['💖','🌸','📸','😊','☕','👗','🧋','✨'][Math.floor(Math.random()*8)],
+    caption: randomCaption()
+  }))
+}
+const shufflePhotos = () => {
+  rebuildPhotoShowcase()
+}
+const previewPhoto = (idx) => {
+  const urls = photoShowcase.value.map(p => p.url)
+  uni.previewImage({ urls, current: urls[idx] })
+}
+
+// 联系方式标签
+const contactLabel = (t) => ({ wechat: '微信', phone: '手机', qq: 'QQ', email: '邮箱' }[t] || '联系')
+
+// 首次加载和每次刷新列表后重建精选照片
+onShow(() => {
+  setTimeout(() => rebuildPhotoShowcase(), 400)
+})
 
 const pauseBgm = () => {
   if (bgmInstance) {
@@ -1276,6 +1352,61 @@ $action-color: #5A8FFF;
   }
 }
 
+.photo-showcase {
+  margin: 10rpx 16rpx 8rpx 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(0,0,0,0.04);
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
+  overflow: hidden;
+
+  .ps-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16rpx 16rpx 8rpx 16rpx;
+    .ps-title { font-size: 28rpx; font-weight: 700; color: $font-color-dark; }
+    .ps-action { font-size: 24rpx; color: #5A8FFF; padding: 8rpx 12rpx; background: rgba(90,143,255,0.08); border-radius: 999rpx; }
+  }
+
+  .ps-row {
+    padding: 8rpx 8rpx 14rpx 8rpx;
+    display: flex;
+    gap: 12rpx;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+
+    .ps-item {
+      position: relative;
+      width: 260rpx;
+      height: 180rpx;
+      border-radius: 14rpx;
+      overflow: hidden;
+      flex: 0 0 auto;
+      box-shadow: 0 6rpx 18rpx rgba(0,0,0,0.08);
+      scroll-snap-align: start;
+
+      .ps-img { width: 100%; height: 100%; }
+
+      .ps-overlay {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        padding: 8rpx 12rpx;
+        background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+        color: #fff;
+        .ps-cap { display: flex; align-items: center; gap: 8rpx; min-width: 0; }
+        .ps-emoji { font-size: 30rpx; flex: none; }
+        .ps-text { font-size: 22rpx; color: #f8fafc; opacity: 0.92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ps-like { font-size: 22rpx; }
+      }
+    }
+  }
+}
+
 .moments-list {
   padding: 12rpx 16rpx 0 16rpx;
 
@@ -1637,6 +1768,18 @@ $action-color: #5A8FFF;
             color: $font-color-dark;
           }
         }
+      }
+
+      .contact-section {
+        margin-top: 8rpx;
+        display: inline-flex;
+        align-items: center;
+        padding: 8rpx 12rpx;
+        border-radius: 999rpx;
+        background: rgba(90,143,255,0.08);
+        border: 1rpx solid rgba(90,143,255,0.18);
+        .contact-icon { font-size: 24rpx; margin-right: 6rpx; }
+        .contact-text { font-size: 22rpx; color: #5A8FFF; }
       }
     }
 
