@@ -116,7 +116,7 @@
           <!-- 评论列表 -->
           <view class="comments-section" v-if="item.comments && item.comments.length !== 0">
             <view class="comment-item" v-for="(comment, cIndex) in item.comments" :key="cIndex">
-              <image class="comment-anon-icon" :src="anonymousAvatar" />
+              <image class="comment-anon-icon" :src="comment.avatar || anonymousAvatar" />
               <text class="comment-user">{{ comment.username }}：</text>
               <text class="comment-content">{{ comment.content }}</text>
             </view>
@@ -194,9 +194,24 @@ const anonymousNames = [
 function getRandomName() {
   return anonymousNames[Math.floor(Math.random() * anonymousNames.length)]
 }
-// 匿名头像
-const anonymousAvatar = 'https://qcloud.dpfile.com/pc/pawK4KeJSDNVINhfwh9CoLJPFluB-tnHSd3heJ_jybtNIYslSlGEPeQVyA4hZRCP.jpg';
-const headerBg = 'https://img1.imgtp.com/2023/07/10/0Qv6Qw4w.png'; // 新科技感头像/背景
+// 匿名头像（随机池）
+const anonymousAvatars = [
+  'https://qcloud.dpfile.com/pc/pawK4KeJSDNVINhfwh9CoLJPFluB-tnHSd3heJ_jybtNIYslSlGEPeQVyA4hZRCP.jpg',
+  'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=256&q=60'
+]
+const anonymousAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)];
+// 首屏背景图列表（随机挑选一张）
+const headerBgList = [
+  'https://img1.imgtp.com/2023/07/10/0Qv6Qw4w.png',
+  'https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1200&q=60',
+  'https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1200&q=60',
+  'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1200&q=60',
+  'https://images.unsplash.com/photo-1520975693411-0010e4aeba47?auto=format&fit=crop&w=1200&q=60'
+]
+const headerBg = headerBgList[Math.floor(Math.random() * headerBgList.length)]; // 新科技感头像/背景（随机）
 const defaultAvatar = anonymousAvatar
 // 今日心情文案
 const moodList = [
@@ -296,12 +311,16 @@ const getMomentsList = async (isRefresh = false) => {
     ])
 
     if (result.code === 0) {
-      // 匿名处理：每条动态分配一个随机昵称
+      // 匿名处理：每条动态与评论分配随机昵称与随机头像
       const list = result.data.list.map(item => ({
         ...item,
         username: getRandomName(),
-        avatar: anonymousAvatar,
-        comments: (item.comments || []).map(c => ({ ...c, username: getRandomName() })),
+        avatar: anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)],
+        comments: (item.comments || []).map(c => ({
+          ...c,
+          username: getRandomName(),
+          avatar: anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)]
+        })),
         likes: (item.likes || []).map(() => getRandomName())
       }))
       if (isRefresh) {
