@@ -41,9 +41,15 @@
             <text class="chip">附近</text>
           </view>
         </view>
-        <view class="hero-cta" @tap="handleCamera">
-          <image class="cta-icon" src="https://img.icons8.com/fluency/48/plus.png" mode="aspectFit" />
+      </view>
+      
+      <!-- 悬浮按钮 -->
+      <view class="floating-btn" @tap="handleCamera">
+        <view class="floating-btn-pulse"></view>
+        <view class="floating-btn-inner">
+          <image class="floating-btn-icon" src="https://img.icons8.com/fluency/48/plus.png" mode="aspectFit" />
         </view>
+        <text class="floating-btn-label">发布</text>
       </view>
     </view>
 
@@ -63,44 +69,6 @@
             </view>
             <text class="ps-like">❤ {{ formatCount(p.likes) }}</text>
           </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- 首屏 Banner 话题轮播 -->
-    <view class="banner-topics">
-      <swiper class="banner-swiper" circular autoplay interval="4000">
-        <swiper-item v-for="(t, i) in bannerTopics" :key="i">
-          <view class="topic-card" @tap="handleBannerTap(t)">
-            <view class="topic-tag">{{ t.tag }}</view>
-            <text class="topic-title">{{ t.title }}</text>
-            <text class="topic-sub">{{ t.sub }}</text>
-          </view>
-        </swiper-item>
-      </swiper>
-    </view>
-
-
-
-    <!-- 今日热榜 / 话题墙 -->
-    <view class="hot-board">
-      <view class="hot-title">今日热榜</view>
-      <view class="hot-list">
-        <view class="hot-item" v-for="(h, i) in hotTopics" :key="i" @tap="handleHotTap(h)">
-          <text class="hot-rank" :class="{ top: i < 3 }">{{ i + 1 }}</text>
-          <view class="hot-thumb">
-            <image v-if="h.thumb" class="hot-thumb-img" :src="h.thumb" mode="aspectFill" />
-            <text v-else class="hot-thumb-emoji">{{ h.emoji }}</text>
-          </view>
-          <view class="hot-content">
-            <view class="hot-row">
-              <text class="hot-text">{{ h.text }}</text>
-              <text v-if="h.badge" class="hot-badge" :class="h.badgeType || 'badge-hot'">{{ h.badge }}</text>
-            </view>
-            <text class="hot-meta">{{ h.views }} 次浏览 · {{ h.posts }} 条讨论 · {{ h.mood || '讨论正热' }}</text>
-          </view>
-          <view class="hot-cta" @tap.stop="handleHotTap(h)">{{ h.cta || '去看看' }}</view>
-          <text class="hot-arrow">›</text>
         </view>
       </view>
     </view>
@@ -239,41 +207,7 @@
       </view>
     </view>
     
-    <!-- 评分弹窗 -->
-    <view class="rating-popup" v-if="showRatingPopup" @tap="closeRatingPopup">
-      <view class="rating-box animated-popup" @tap.stop>
-        <view class="rating-header">
-          <text class="rating-title">{{ ratingTypeLabel(currentRatingItem?.ratingType) }}</text>
-          <text class="rating-close" @tap="closeRatingPopup">✕</text>
-        </view>
-        <view class="rating-content">
-          <view class="rating-stars">
-            <text 
-              v-for="i in 10" 
-              :key="i" 
-              :class="['star', { active: i <= currentRating }]"
-              @tap="setRating(i)"
-            >⭐</text>
-          </view>
-          <view class="rating-score">
-            <text class="score-text">{{ currentRating }}/10</text>
-          </view>
-          <view class="rating-comment">
-            <textarea 
-              class="comment-input" 
-              v-model="ratingComment" 
-              placeholder="说说你的看法...（可选）"
-              maxlength="100"
-            />
-          </view>
-        </view>
-        <view class="rating-actions">
-          <button class="rating-submit-btn" :class="{ active: currentRating > 0 }" @tap="submitRating">
-            提交评分
-          </button>
-        </view>
-      </view>
-    </view>
+  
     
     <!-- <view class="publish-btn" @tap="handleCamera">
       <view class="icon-wrapper">
@@ -285,11 +219,6 @@
       <view class="dot" v-for="i in 4" :key="i"></view>
       <text class="loading-text">加载中...</text>
     </view> -->
-
-    <!-- 背景音乐控制（H5） -->
-    <view class="music-btn" :class="{ playing: isBgmPlaying }" @tap="toggleBgm">
-      <text class="music-icon">♪</text>
-    </view>
 
     <!-- 烟花特效层（轻量DOM动画） -->
     <view class="fireworks" v-if="showFireworks">
@@ -341,14 +270,16 @@ const anonymousAvatars = [
 const anonymousAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)];
 // 生活化美女照片池（用于背景与精选补位）
 const cnBeautyPool = [
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1542202229-7d93c33f5d07?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1400&q=60',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1400&q=60'
+  'https://images.unsplash.com/photo-1557672172-298e090bd0f1?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=80',
+  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80'
 ]
 // 首屏背景图列表（随机挑选一张）
 const headerBgList = cnBeautyPool
@@ -1204,6 +1135,131 @@ $font-color-light: #666;
 $background-color: #f7f9fb;
 $action-color: #5A8FFF;
 
+// 悬浮按钮样式
+.floating-btn {
+  position: fixed;
+  right: 32rpx;
+  bottom: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  &:active {
+    transform: scale(0.92) translateY(2rpx);
+    
+    .floating-btn-inner {
+      box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.35);
+    }
+  }
+
+  // 脉冲动画背景
+  .floating-btn-pulse {
+    position: absolute;
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.3;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  // 主按钮容器
+  .floating-btn-inner {
+    position: relative;
+    width: 100rpx;
+    height: 100rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 12rpx 40rpx rgba(102, 126, 234, 0.5),
+                0 0 0 4rpx rgba(255, 255, 255, 0.3),
+                inset 0 -4rpx 12rpx rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    
+    // 光晕效果
+    &::before {
+      content: '';
+      position: absolute;
+      top: -4rpx;
+      left: -4rpx;
+      right: -4rpx;
+      bottom: -4rpx;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      opacity: 0.6;
+      filter: blur(12rpx);
+      z-index: -1;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    // 内部高光
+    &::after {
+      content: '';
+      position: absolute;
+      top: 8rpx;
+      left: 16rpx;
+      width: 40rpx;
+      height: 20rpx;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      filter: blur(8rpx);
+    }
+  }
+
+  .floating-btn-icon {
+    width: 52rpx;
+    height: 52rpx;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.2));
+  }
+
+  // 文字标签
+  .floating-btn-label {
+    margin-top: 12rpx;
+    font-size: 24rpx;
+    color: #667eea;
+    font-weight: 600;
+    text-shadow: 0 2rpx 8rpx rgba(255, 255, 255, 0.8);
+    letter-spacing: 1rpx;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 6rpx 16rpx;
+    border-radius: 32rpx;
+    box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.15);
+    backdrop-filter: blur(10rpx);
+    border: 1rpx solid rgba(102, 126, 234, 0.1);
+  }
+}
+
+// 脉冲动画
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.15;
+  }
+}
+
+// 光晕动画
+@keyframes glow {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
 .moments-container {
   min-height: 100vh;
   background: $background-color;
@@ -1406,21 +1462,6 @@ $action-color: #5A8FFF;
       }
     }
 
-    .hero-cta {
-      width: 88rpx;
-      height: 88rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: $primary-gradient;
-      box-shadow: 0 6rpx 16rpx rgba(90, 143, 255, 0.35);
-
-      .cta-icon {
-        width: 48rpx;
-        height: 48rpx;
-      }
-    }
   }
   .slogan-area {
     position: absolute;
