@@ -18,14 +18,14 @@
     </view>
 
     <!-- 顶部背景与Figma风格头部 -->
-    <view class="header" :style="{ background: currentTheme.background }">
+    <view class="header">
       <image class="bg-image" :src="headerBg" mode="aspectFill" :style="{ transform: `translateY(${parallaxY}px) scale(1.06)` }"></image>
-      <view class="header-gradient" :style="{ background: currentTheme.primary, opacity: 0.15 }"></view>
+      <view class="header-gradient"></view>
       <view class="header-blur"></view>
       <view class="header-glow"></view>
 
       <view class="header-topbar">
-        <text class="brand" :style="{ color: currentTheme.primaryColor }">匿名圈</text>
+        <text class="brand">匿名圈</text>
         <view class="top-actions">
           <text class="top-icon" @tap="handleSettings">⋯</text>
         </view>
@@ -34,10 +34,10 @@
       <view class="hero-card">
         <image class="hero-avatar" :src="defaultAvatar" mode="aspectFill" />
         <view class="hero-text">
-          <text class="hero-title" :style="{ color: currentTheme.primaryColor }">{{ todayMood }}</text>
+          <text class="hero-title">{{ todayMood }}</text>
           <text class="hero-sub">匿名 · 温暖 · 真实</text>
           <view class="hero-chips">
-            <text class="chip active" :style="{ background: currentTheme.primary }">推荐</text>
+            <text class="chip active">推荐</text>
             <text class="chip">关注</text>
             <text class="chip">附近</text>
           </view>
@@ -46,19 +46,19 @@
       
       <!-- 悬浮按钮 -->
       <view class="floating-btn" @tap="handleCamera">
-        <view class="floating-btn-pulse" :style="{ background: currentTheme.primary }"></view>
-        <view class="floating-btn-inner" :style="{ background: currentTheme.primary }">
+        <view class="floating-btn-pulse"></view>
+        <view class="floating-btn-inner">
         <image class="floating-btn-icon" src="https://img.icons8.com/fluency/48/plus.png" mode="aspectFit" />
         </view>
-        <text class="floating-btn-label" :style="{ color: currentTheme.primaryColor }">发布</text>
+        <text class="floating-btn-label">发布</text>
       </view>
     </view>
 
     <!-- 精选照片 -->
     <view class="photo-showcase" v-if="photoShowcase.length">
       <view class="ps-header">
-        <text class="ps-title" :style="{ color: currentTheme.primaryColor }">最美照片</text>
-        <text class="ps-action" :style="{ color: currentTheme.primaryColor, borderColor: currentTheme.primaryColor }" @tap="shufflePhotos">换一换</text>
+        <text class="ps-title">最美照片</text>
+        <text class="ps-action" @tap="shufflePhotos">换一换</text>
       </view>
       <view class="ps-row">
         <view class="ps-item" v-for="(p, i) in photoShowcase" :key="i" @tap="previewPhoto(i)">
@@ -73,6 +73,42 @@
         </view>
       </view>
     </view>
+
+    <!-- 直播模块 -->
+    <view class="live-section" v-if="liveStream.isLive">
+    
+      <view class="live-video-wrapper">
+        <video 
+          :src="liveStream.url" 
+          class="live-video"
+          controls
+          autoplay
+          :muted="liveStream.muted"
+          show-center-play-btn
+          enable-play-gesture
+          show-fullscreen-btn
+          show-play-btn
+          object-fit="contain"
+          :initial-time="0"
+          :enable-auto-rotation="true"
+          :show-mute-btn="true"
+          direction="0"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          x5-video-orientation="portraint"
+          @error="handleLiveError"
+          @play="handleLivePlay"
+        />
+        
+        <!-- 音量控制按钮 -->
+        <view class="live-mute-btn" @tap="toggleMute" v-if="liveStream.muted">
+          <text class="mute-icon">🔇</text>
+          <text class="mute-text">点击开启声音</text>
+        </view>
+      
+      </view>
+    </view>
+
     <!-- 朋友圈内容列表 -->
     <view class="moments-list">
       <view class="moment-item" v-for="(item, index) in moments" :key="index">
@@ -80,18 +116,18 @@
         <image class="user-avatar avatar-glow" :src="item.avatar" mode="aspectFill"></image>
         <view class="content-area">
           <view class="meta-row">
-            <text class="username" :style="{ color: currentTheme.primaryColor }">{{ item.username }}</text>
+            <text class="username">{{ item.username }}</text>
            
           </view>
           <view class="chip-row">
-            <text class="chip" :style="{ background: currentTheme.primary }">匿名</text>
-            <text v-if="item.mediaType" class="chip ghost" :style="{ color: currentTheme.primaryColor, borderColor: currentTheme.primaryColor }">图文</text>
+            <text class="chip">匿名</text>
+            <text v-if="item.mediaType" class="chip ghost">图文</text>
           </view>
           <!-- 文本内容（可展开/收起） -->
           <view class="text-block" :class="{ clamped: !isExpanded[index] }">
             <text class="text-content">{{ item.content }}</text>
           </view>
-          <view v-if="item.content && item.content.length > 60" class="expand-btn" :style="{ color: currentTheme.primaryColor }" @tap="toggleExpand(index)">
+          <view v-if="item.content && item.content.length > 60" class="expand-btn" @tap="toggleExpand(index)">
             {{ isExpanded[index] ? '收起' : '展开' }}
           </view>
           <!-- 图片/视频内容 -->
@@ -116,19 +152,18 @@
             <text class="time">{{ item.time }}</text>
             <view class="actions">
               <view class="action-btn like-btn" :class="{ 'liked': item.isLiked, 'animating': isLikeAnimating[index] }"
-                :style="item.isLiked ? { color: currentTheme.primaryColor, background: `${currentTheme.primaryColor}15` } : {}"
-                @tap="handleLikeWithFW(index)">
+                @tap="handleLike(index)">
                 <text class="icon iconfont">{{ item.isLiked ? '❤️' : '🤍' }}</text>
                 <text class="action-text">{{ item.isLiked ? '已赞' : '点赞' }}</text>
                 <text class="action-count">{{ (item.likes && item.likes.length) || 0 }}</text>
                 <view v-if="isLikeAnimating[index]" class="like-burst-particles">
-                  <view v-for="n in 8" :key="n" :class="['particle', 'p' + n]" :style="{ background: currentTheme.primaryColor }"></view>
+                  <view v-for="n in 8" :key="n" :class="['particle', 'p' + n]"></view>
                 </view>
               </view>
               <view class="action-btn comment-btn" @tap="handleComment(index)">
                 <text class="icon iconfont">💬</text>
                 <text class="action-text">评论</text>
-                <text class="action-count" :style="{ color: currentTheme.primaryColor }">{{ (item.comments && item.comments.length) || 0 }}</text>
+                <text class="action-count">{{ (item.comments && item.comments.length) || 0 }}</text>
               </view>
               <view class="action-btn report-btn" @tap="handleReport(index)">
                 <text class="icon iconfont">🚨</text>
@@ -138,12 +173,12 @@
           </view>
           <!-- 点赞列表 -->
           <view class="likes-section" v-if="item.likes && item.likes.length">
-            <text class="like-users" :style="{ color: currentTheme.primaryColor }">{{ item.likes.join('、') }}</text>
+            <text class="like-users">{{ item.likes.join('、') }}</text>
           </view>
           <!-- 联系方式展示 -->
           <view class="contact-section" v-if="item.contactValue">
             <text class="contact-icon">📞</text>
-            <text class="contact-text" :style="{ color: currentTheme.primaryColor }">{{ contactLabel(item.contactType) }}：{{ item.contactValue }}</text>
+            <text class="contact-text">{{ contactLabel(item.contactType) }}：{{ item.contactValue }}</text>
           </view>
           <!-- 评分选项展示 -->
           <view class="rating-section" v-if="item.ratingType">
@@ -163,11 +198,11 @@
               </view>
             </view>
             <view class="rating-actions">
-              <view class="rating-btn" :style="{ borderColor: currentTheme.primaryColor, color: currentTheme.primaryColor }" @tap="showRatingModal(index)">
+              <view class="rating-btn" @tap="showRatingModal(index)">
                 <text class="rating-btn-icon">⭐</text>
                 <text class="rating-btn-text">评分</text>
               </view>
-              <view class="rating-btn" :style="{ borderColor: currentTheme.primaryColor, color: currentTheme.primaryColor }" @tap="viewRatingDetails(index)">
+              <view class="rating-btn" @tap="viewRatingDetails(index)">
                 <text class="rating-btn-icon">📊</text>
                 <text class="rating-btn-text">详情</text>
               </view>
@@ -179,7 +214,7 @@
               <image class="comment-anon-icon" :src="comment.avatar || anonymousAvatar" />
               <view class="comment-content-wrapper">
                 <view class="comment-text-line">
-                  <text class="comment-user" :style="{ color: currentTheme.primaryColor }">{{ comment.username }}：</text>
+              <text class="comment-user">{{ comment.username }}：</text>
               <text class="comment-content">{{ comment.content }}</text>
                 </view>
                 <!-- 评论图片 -->
@@ -216,20 +251,19 @@
           </view>
           <view class="toolbar">
             <view class="toolbar-left">
-              <view class="toolbar-icon emoji-btn" :style="{ borderColor: `${currentTheme.primaryColor}20` }" @tap="toggleEmojiPanel">
+              <view class="toolbar-icon emoji-btn" @tap="toggleEmojiPanel">
                 <text class="icon-emoji">😊</text>
               </view>
-              <view class="toolbar-icon image-btn" :style="{ borderColor: `${currentTheme.primaryColor}30`, background: `${currentTheme.primaryColor}08` }" @tap="chooseCommentImage">
+              <view class="toolbar-icon image-btn" @tap="chooseCommentImage">
                 <view class="icon-wrapper">
                   <text class="icon-camera">📸</text>
                 </view>
-                <text class="icon-label" :style="{ background: currentTheme.primary }" v-if="commentImages.length > 0">{{ commentImages.length }}</text>
+                <text class="icon-label" v-if="commentImages.length > 0">{{ commentImages.length }}</text>
               </view>
             </view>
             <button 
               class="submit-btn" 
               :class="{ active: commentText.trim() || commentImages.length > 0 }" 
-              :style="(commentText.trim() || commentImages.length > 0) ? { background: currentTheme.primary } : {}"
               @tap="submitComment">发送</button>
           </view>
         </view>
@@ -258,44 +292,6 @@
       <text class="loading-text">加载中...</text>
     </view> -->
 
-    <!-- 烟花特效层（轻量DOM动画） -->
-    <view class="fireworks" v-if="showFireworks">
-      <view
-        v-for="f in fireworks"
-        :key="f.id"
-        class="fw"
-        :style="{ left: f.x + '%', top: f.y + '%'}"
-      >
-        <view v-for="n in 12" :key="n" :class="['fw-p', 'p' + n, f.theme]"></view>
-      </view>
-    </view>
-
-    <!-- 祝福文字烟花特效 -->
-    <view class="blessing-text-wrapper" v-if="showBlessingText" @tap="toggleBlessingText">
-      <view class="blessing-text" :class="{ 'text-zooming': isTextZooming }">
-        <text class="blessing-char" v-for="(char, idx) in blessingChars" :key="idx" :style="{ 
-          animationDelay: `${idx * 0.2}s, ${idx * 0.2 + 0.6}s, ${idx * 0.2 + 1}s, ${idx * 0.2 + 1.5}s` 
-        }">
-          {{ char }}
-        </text>
-      </view>
-      <!-- 文字周围的烟花粒子 -->
-      <view class="text-particles">
-        <view 
-          v-for="p in textParticles" 
-          :key="p.id" 
-          class="text-particle"
-          :style="{ 
-            left: p.x + '%', 
-            top: p.y + '%',
-            background: p.color,
-            animationDelay: p.delay + 's',
-            '--random-x': p.randomX,
-            '--random-y': p.randomY
-          }"
-        ></view>
-      </view>
-    </view>
 
   </view>
 </template>
@@ -427,67 +423,9 @@ let typingTimer = null
 let sloganTypingIndex = 0
 let charIndex = 0
 
-// 主题配色方案（5个主题）
-const themes = [
-  {
-    name: '紫罗兰梦境',
-    primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    primaryColor: '#667eea',
-    secondary: '#764ba2',
-    accent: '#a855f7',
-    background: '#f8fafc'
-  },
-  {
-    name: '樱花粉境',
-    primary: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    primaryColor: '#f093fb',
-    secondary: '#f5576c',
-    accent: '#ec4899',
-    background: '#fef2f2'
-  },
-  {
-    name: '海洋蓝调',
-    primary: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    primaryColor: '#4facfe',
-    secondary: '#00f2fe',
-    accent: '#06b6d4',
-    background: '#f0f9ff'
-  },
-  {
-    name: '翡翠森林',
-    primary: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    primaryColor: '#43e97b',
-    secondary: '#38f9d7',
-    accent: '#10b981',
-    background: '#f0fdf4'
-  },
-  {
-    name: '落日余晖',
-    primary: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    primaryColor: '#fa709a',
-    secondary: '#fee140',
-    accent: '#f59e0b',
-    background: '#fffbeb'
-  }
-]
-
-const currentThemeIndex = ref(0)
-const currentTheme = ref(themes[0])
-let themeTimer = null
-
-// 主题切换函数
-function switchTheme() {
-  currentThemeIndex.value = (currentThemeIndex.value + 1) % themes.length
-  currentTheme.value = themes[currentThemeIndex.value]
-  console.log('切换主题:', currentTheme.value.name)
-}
-
-// 启动主题自动切换
-function startThemeRotation() {
-  themeTimer = setInterval(() => {
-    switchTheme()
-  }, 3000) // 每3秒切换一次
-}
+// 默认主题色
+const defaultPrimaryColor = '#667eea'
+const defaultPrimaryGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
 function startTypingSlogan() {
   clearTimeout(typingTimer)
   const slogan = sloganList[sloganTypingIndex]
@@ -513,15 +451,10 @@ onMounted(() => {
   setInterval(() => { showCursor.value = !showCursor.value }, 500)
   // 启动免责声明倒计时
   startCountdown()
-  // 启动主题自动切换
-  startThemeRotation()
 })
 
 // 组件卸载时清除定时器
 onUnmounted(() => {
-  if (themeTimer) {
-    clearInterval(themeTimer)
-  }
   if (typingTimer) {
     clearTimeout(typingTimer)
   }
@@ -539,11 +472,76 @@ const pageSize = ref(10)
 const loading = ref(false)
 const hasMore = ref(true)
 const moments = ref([])
+
+// 直播相关数据
+const liveStream = ref({
+  isLive: true,
+  // 使用真实的 m3u8 直播流地址
+  url: 'https://gcalic.v.myalicdn.com/gc/zsslsjjfsd_1/index.m3u8',
+  title: '精彩直播',
+  host: '官方频道',
+  viewerCount: 12580,
+  muted: false, // 默认不静音，如果自动播放失败可以设为true
+  // 备用直播源
+  alternativeUrls: [
+    'https://gcalic.v.myalicdn.com/gc/zsslsjjfsd_1/index.m3u8',
+    'http://cctvalih5ca.v.myalicdn.com/live/cctv1_2/index.m3u8',
+    'http://cctvalih5ca.v.myalicdn.com/live/cctv2_2/index.m3u8'
+  ]
+})
 const handleLogin = () => {
   uni.navigateTo({
     url: '/pages/wx/login/login'
   })
 }
+
+// 直播相关方法
+let currentUrlIndex = 0
+
+const handleLiveError = (e) => {
+
+  
+  // 尝试切换到备用源
+  if (liveStream.value.alternativeUrls && currentUrlIndex < liveStream.value.alternativeUrls.length - 1) {
+    currentUrlIndex++
+    liveStream.value.url = liveStream.value.alternativeUrls[currentUrlIndex]
+    
+    uni.showToast({
+      title: `切换到备用源${currentUrlIndex + 1}`,
+      icon: 'none',
+      duration: 1500
+    })
+  } else {
+    // 所有源都失败了
+    uni.showModal({
+      title: '直播加载失败',
+      content: '无法加载直播流，请检查网络连接或联系管理员。\n\n提示：blob:// 协议的URL无法在移动端使用，需要使用 http/https 的流媒体地址（如 .m3u8）',
+      showCancel: false,
+      confirmText: '知道了'
+    })
+    
+    // 可以选择隐藏直播模块
+    // liveStream.value.isLive = false
+  }
+}
+
+const handleLivePlay = () => {
+
+  // 重置备用源索引
+  currentUrlIndex = liveStream.value.alternativeUrls.findIndex(url => url === liveStream.value.url)
+  if (currentUrlIndex === -1) currentUrlIndex = 0
+}
+
+// 切换静音/取消静音
+const toggleMute = () => {
+  liveStream.value.muted = !liveStream.value.muted
+  uni.showToast({
+    title: liveStream.value.muted ? '已静音' : '已开启声音',
+    icon: 'none',
+    duration: 1000
+  })
+}
+
 // 获取朋友圈列表
 const getMomentsList = async (isRefresh = false) => {
   if (loading.value || (!hasMore.value && !isRefresh)) return
@@ -566,21 +564,19 @@ const getMomentsList = async (isRefresh = false) => {
     ])
 
     if (result.code === 0) {
-      console.log('接收到的原始数据:', result.data.list[0])
+    
       
       // 匿名处理：每条动态与评论分配随机昵称与随机头像
       const list = result.data.list.map(item => {
-        console.log('处理动态，评论数量:', item.comments?.length)
-        if (item.comments && item.comments.length > 0) {
-          console.log('第一条评论:', item.comments[0])
-        }
+       
+       
         
         return {
         ...item,
         username: getRandomName(),
         avatar: anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)],
           comments: (item.comments || []).map(c => {
-            console.log('评论的images字段:', c.images)
+            
             return {
           ...c,
               images: c.images || [],  // 明确保留images字段
@@ -591,8 +587,7 @@ const getMomentsList = async (isRefresh = false) => {
         likes: (item.likes || []).map(() => getRandomName())
         }
       })
-      
-      console.log('处理后的数据:', list[0])
+
       if (isRefresh) {
         // 刷新：重置为第一页数据，并把下一页准备为第2页，避免重复请求第1页
         moments.value = list
@@ -624,20 +619,7 @@ const getMomentsList = async (isRefresh = false) => {
 }
 
 onShow(() => {
-  // 持续烟花循环
   getMomentsList(true)
-  stopFireworksLoop() // 防重启
-  startFireworksLoop()
-  
-  // 显示祝福文字
-  showBlessingText.value = true
-  // 启动祝福文字粒子
-  generateTextParticles()
-  
-  // 5秒后隐藏祝福文字
-  setTimeout(() => {
-    showBlessingText.value = false
-  }, 5000)
   
   // 3秒后自动获取列表（刷新）
   setTimeout(() => {
@@ -648,12 +630,10 @@ onShow(() => {
 })
 
 onHide(() => {
-  stopFireworksLoop()
   pauseBgm()
 })
 
 onUnload(() => {
-  stopFireworksLoop()
   pauseBgm()
 })
 // 触底加载
@@ -721,12 +701,6 @@ const submitComment = async () => {
     mask: true
   })
 
-  console.log('提交评论数据:', {
-    momentId: moments.value[currentMomentIndex.value]._id,
-    content: tempContent,
-    imagesCount: tempImages.length,
-    images: tempImages
-  })
 
   try {
     const { result } = await uniCloud.callFunction({
@@ -738,7 +712,7 @@ const submitComment = async () => {
       }
     })
 
-    console.log('云函数返回结果:', result)
+
 
     if (result.code === 0) {
       // 更新评论列表 - 立即显示在界面上
@@ -759,7 +733,7 @@ const submitComment = async () => {
         isNew: true  // 标记为新评论，用于动画
       })
       
-      console.log('评论已添加到列表，图片数量:', tempImages.length)
+    
       
       // 500ms后移除新评论标记
       setTimeout(() => {
@@ -779,12 +753,12 @@ const submitComment = async () => {
         duration: 1500
       })
       
-      console.log('评论成功:', successMsg)
+  
     } else {
       throw new Error(result.msg || '评论失败')
     }
   } catch (error) {
-    console.error('评论失败:', error)
+ 
     uni.hideLoading()
     uni.showToast({
       title: error.message || '评论失败',
@@ -947,129 +921,6 @@ onMounted(() => {
   setInterval(updateThemeByTime, 10 * 60 * 1000) // 每10分钟检查一次
 })
 
-// 烟花特效 - 轻量演示
-const showFireworks = ref(false)
-const fireworks = ref([])
-let fwId = 0
-const removeFireworkById = (id) => {
-  const idx = fireworks.value.findIndex(f => f.id === id)
-  if (idx !== -1) fireworks.value.splice(idx, 1)
-}
-// 连续绽放：在给定时间窗内按次序依次发射，避免同一时刻全部出现
-const launchFireworks = (bursts = 4, spreadMs = 1000) => {
-  showFireworks.value = true
-  const steps = Math.max(1, bursts)
-  const stepGap = Math.floor(spreadMs / steps)
-  for (let i = 0; i < steps; i++) {
-    const delay = i * stepGap
-    setTimeout(() => {
-      const id = fwId++
-      fireworks.value.push({
-        id,
-        x: Math.floor(10 + Math.random() * 80),
-        y: Math.floor(18 + Math.random() * 54),
-        theme: ['t-blue','t-violet','t-gold','t-mint','t-pink'][Math.floor(Math.random()*5)]
-      })
-      // 单枚烟花在动画结束后清理（与 CSS 动画时长匹配，略有冗余）
-      setTimeout(() => {
-        removeFireworkById(id)
-        // 给烟花容器添加淡出过渡
-        if (fireworks.value.length === 0) {
-          // 延迟关闭，让最后的烟花有时间淡出
-          setTimeout(() => {
-            showFireworks.value = false
-          }, 800)
-        }
-      }, 4000)
-    }, delay)
-  }
-}
-
-// 点赞达到一定阈值时触发烟花（演示：任意点赞触发一次）
-const _origHandleLike = handleLike
-const handleLikeWithFW = async (index) => {
-  await _origHandleLike(index)
-  showFireworks.value = true
-  // 点赞时触发更多烟花（6-9组）
-  launchFireworks(6 + Math.floor(Math.random() * 3), 1200)
-}
-
-// 持续烟花：定时发射
-let fwTimer = null
-const startFireworksLoop = () => {
-  if (fwTimer) return
-  showFireworks.value = true
-  // 舒缓版：更慢发射，优雅展示
-  fwTimer = setInterval(() => {
-    const groups = 3 + Math.floor(Math.random() * 3) // 3~5组（减少数量）
-    const spread = 1500 + Math.floor(Math.random() * 800) // 1.5s~2.3s（增加分散时间）
-    launchFireworks(groups, spread)
-  }, 2500 + Math.floor(Math.random() * 1500)) // 2.5s~4s 间隔（更舒缓）
-}
-const stopFireworksLoop = () => {
-  clearInterval(fwTimer)
-  fwTimer = null
-  showFireworks.value = false
-  fireworks.value = []
-}
-
-// 祝福文字烟花特效
-const showBlessingText = ref(true) // 默认显示
-const isTextZooming = ref(false) // 文字缩放效果
-const blessingChars = ['祝', '中', '国', '繁', '荣', '昌', '盛']
-const textParticles = ref([])
-let particleId = 0
-
-// 切换祝福文字显示
-const toggleBlessingText = () => {
-  isTextZooming.value = true
-  setTimeout(() => {
-    isTextZooming.value = false
-  }, 600)
-  
-  // 可选：3秒后淡出（如果用户想隐藏）
-  // setTimeout(() => {
-  //   showBlessingText.value = false
-  // }, 3000)
-}
-
-// 生成文字周围的粒子
-const generateTextParticles = () => {
-  const colors = [
-    '#ff00ff', '#ff33ff', '#ff66ff', '#ff99ff',  // 紫红色系
-    '#00ffff', '#33ffff', '#66ffff', '#99ffff',  // 青色系
-    '#ffff00', '#ffff33', '#ffff66', '#ffff99',  // 黄色系
-    '#00ff99', '#33ff99', '#66ff99', '#99ff99'   // 青绿色系
-  ]
-  const particles = []
-  
-  // 每隔3秒生成一批新粒子（更慢更优雅）
-  setInterval(() => {
-    // 每次生成20-30个粒子（减少数量）
-    const count = 20 + Math.floor(Math.random() * 10)
-    for (let i = 0; i < count; i++) {
-      const id = particleId++
-      const particle = {
-        id,
-        x: 30 + Math.random() * 40, // 30%-70% 文字中心区域（竖直文字更集中）
-        y: 25 + Math.random() * 50, // 25%-75% (竖直文字的上下范围)
-        color: colors[Math.floor(Math.random() * colors.length)],
-        delay: Math.random() * 1.2,
-        // 添加随机移动方向（用于CSS变量）
-        randomX: Math.random(),
-        randomY: Math.random()
-      }
-      particles.push(particle)
-      
-      // 5秒后移除粒子（更持久）
-      setTimeout(() => {
-        const idx = particles.findIndex(p => p.id === id)
-        if (idx !== -1) particles.splice(idx, 1)
-      }, 5000)
-    }
-    textParticles.value = [...particles]
-  }, 3000)
-}
 
 // 浏览量/热度（演示计算）
 const formatCount = (n) => {
@@ -2232,6 +2083,160 @@ $action-color: #5A8FFF;
   }
 }
 
+// 直播模块样式
+.live-section {
+  margin: 24rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+
+  .live-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20rpx;
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+
+    .live-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      flex: 1;
+
+      .live-badge {
+        display: flex;
+        align-items: center;
+        gap: 6rpx;
+        padding: 6rpx 12rpx;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20rpx;
+        backdrop-filter: blur(10rpx);
+
+        .live-dot {
+          width: 12rpx;
+          height: 12rpx;
+          background: #fff;
+          border-radius: 50%;
+          animation: livePulse 1.5s ease-in-out infinite;
+        }
+
+        .live-text {
+          font-size: 22rpx;
+          color: #fff;
+          font-weight: 600;
+        }
+      }
+
+      .live-title {
+        font-size: 28rpx;
+        font-weight: 700;
+        color: #fff;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .live-viewer-count {
+      display: flex;
+      align-items: center;
+      gap: 6rpx;
+      padding: 6rpx 12rpx;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20rpx;
+      backdrop-filter: blur(10rpx);
+
+      .viewer-icon {
+        font-size: 24rpx;
+      }
+
+      .viewer-count {
+        font-size: 22rpx;
+        color: #fff;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .live-video-wrapper {
+    position: relative;
+    width: 100%;
+    background: #000;
+
+    .live-video {
+      width: 100%;
+      height: 420rpx;
+      display: block;
+    }
+
+    .live-overlay-info {
+      position: absolute;
+      bottom: 20rpx;
+      left: 20rpx;
+      padding: 8rpx 16rpx;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20rpx;
+      backdrop-filter: blur(10rpx);
+
+      .live-host {
+        font-size: 22rpx;
+        color: #fff;
+        font-weight: 500;
+      }
+    }
+
+    .live-mute-btn {
+      position: absolute;
+      bottom: 20rpx;
+      right: 20rpx;
+      display: flex;
+      align-items: center;
+      gap: 8rpx;
+      padding: 10rpx 16rpx;
+      background: rgba(255, 87, 34, 0.9);
+      border-radius: 30rpx;
+      backdrop-filter: blur(10rpx);
+      box-shadow: 0 4rpx 12rpx rgba(255, 87, 34, 0.4);
+      animation: mutePulse 2s ease-in-out infinite;
+
+      .mute-icon {
+        font-size: 28rpx;
+      }
+
+      .mute-text {
+        font-size: 22rpx;
+        color: #fff;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes mutePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4rpx 12rpx rgba(255, 87, 34, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6rpx 16rpx rgba(255, 87, 34, 0.6);
+  }
+}
+
 .moments-list {
   margin: 24rpx;
   padding: 0;
@@ -3123,299 +3128,6 @@ $action-color: #5A8FFF;
   }
 }
 
-// 烟花特效样式
-.fireworks {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-
-  .fw {
-    position: absolute;
-    width: 0;
-    height: 0;
-    transform: translate(-50%, -50%);
-    animation: fw-pop 360ms ease-out;
-  }
-
-  .fw-p {
-    position: absolute;
-    width: 16rpx;
-    height: 16rpx;
-    border-radius: 50%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.2);
-    animation: fw-burst 3500ms ease-out forwards;
-  }
-
-  // 12个方向发散
-  @for $i from 1 through 12 {
-    .p#{$i} { animation-delay: #{($i - 1) * 80}ms; }
-  }
-
-  // 位移向量（rpx）- 扩大到2倍
-  .p1  { --tx:    0rpx;  --ty: -240rpx; }
-  .p2  { --tx:  120rpx;  --ty: -208rpx; }
-  .p3  { --tx:  208rpx;  --ty: -120rpx; }
-  .p4  { --tx:  240rpx;  --ty:    0rpx; }
-  .p5  { --tx:  208rpx;  --ty:  120rpx; }
-  .p6  { --tx:  120rpx;  --ty:  208rpx; }
-  .p7  { --tx:    0rpx;  --ty:  240rpx; }
-  .p8  { --tx: -120rpx;  --ty:  208rpx; }
-  .p9  { --tx: -208rpx;  --ty:  120rpx; }
-  .p10 { --tx: -240rpx;  --ty:    0rpx; }
-  .p11 { --tx: -208rpx;  --ty: -120rpx; }
-  .p12 { --tx: -120rpx;  --ty: -208rpx; }
-
-  // 主题色 - 增强发光效果
-  .t-blue { 
-    background: linear-gradient(135deg, #5A8FFF, #4facfe); 
-    box-shadow: 0 0 20rpx rgba(90,143,255,1), 0 0 40rpx rgba(90,143,255,0.6); 
-  }
-  .t-violet { 
-    background: linear-gradient(135deg, #7F5AFF, #a855f7); 
-    box-shadow: 0 0 20rpx rgba(127,90,255,1), 0 0 40rpx rgba(127,90,255,0.6); 
-  }
-  .t-gold { 
-    background: linear-gradient(135deg, #f59e0b, #fee140); 
-    box-shadow: 0 0 20rpx rgba(245,158,11,1), 0 0 40rpx rgba(245,158,11,0.6); 
-  }
-  .t-mint { 
-    background: linear-gradient(135deg, #10b981, #38f9d7); 
-    box-shadow: 0 0 20rpx rgba(16,185,129,1), 0 0 40rpx rgba(16,185,129,0.6); 
-  }
-  .t-pink { 
-    background: linear-gradient(135deg, #ec4899, #f093fb); 
-    box-shadow: 0 0 20rpx rgba(236,72,153,1), 0 0 40rpx rgba(236,72,153,0.6); 
-  }
-}
-
-@keyframes fw-pop {
-  from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-
-@keyframes fw-burst {
-  0% { 
-    opacity: 1; 
-    transform: translate(-50%, -50%) scale(0.6); 
-  }
-  20% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.4);
-  }
-  70% { 
-    opacity: 1; 
-  }
-  100% { 
-    opacity: 0; 
-    transform: translate(-50%, -50%) translate(var(--tx, 0), var(--ty, 0)) scale(1.8); 
-  }
-}
-
-// 祝福文字烟花特效样式
-.blessing-text-wrapper {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10000;
-  pointer-events: auto;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  animation: blessingFadeIn 0.8s ease-out;
-  
-  // 添加一个隐藏的提示，鼠标悬停时显示
-  &::after {
-    content: '点击文字放大';
-    position: absolute;
-    bottom: 35%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24rpx;
-    color: rgba(255, 255, 255, 0.6);
-    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.8);
-    opacity: 0;
-    animation: hintFadeInOut 4s ease-in-out infinite;
-    animation-delay: 2s;
-    pointer-events: none;
-  }
-}
-
-.blessing-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30rpx;
-  font-size: 120rpx;
-  font-weight: 900;
-  text-shadow: 
-    0 0 40rpx rgba(255, 100, 255, 1),
-    0 0 60rpx rgba(100, 200, 255, 0.8),
-    0 0 100rpx rgba(255, 215, 0, 0.6),
-    4rpx 4rpx 8rpx rgba(0, 0, 0, 0.9);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  &.text-zooming {
-    animation: textZoomPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-}
-
-.blessing-char {
-  display: inline-block;
-  background: linear-gradient(
-    135deg, 
-    #ff00ff 0%,
-    #00ffff 25%, 
-    #ffff00 50%, 
-    #ff00ff 75%,
-    #00ffff 100%
-  );
-  background-size: 400% 400%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  opacity: 0;
-  transform: translateY(-50rpx) scale(0);
-  animation: 
-    charAppear 0.6s ease-out forwards,
-    blessingFloat 5s ease-in-out infinite,
-    gradientShift 6s ease infinite,
-    blessingGlow 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 15rpx rgba(255, 100, 255, 0.9))
-          drop-shadow(0 0 25rpx rgba(100, 200, 255, 0.7));
-}
-
-.text-particles {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.text-particle {
-  position: absolute;
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  opacity: 0;
-  animation: textParticleBurst 5s ease-out forwards;
-  box-shadow: 
-    0 0 15rpx currentColor,
-    0 0 30rpx currentColor,
-    0 0 45rpx currentColor;
-}
-
-// 祝福文字淡入动画
-@keyframes blessingFadeIn {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-// 单个字符出现动画
-@keyframes charAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(-80rpx) scale(0) rotate(-15deg);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(10rpx) scale(1.2) rotate(5deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0);
-  }
-}
-
-// 提示淡入淡出动画
-@keyframes hintFadeInOut {
-  0%, 100% {
-    opacity: 0;
-    transform: translateX(-50%) translateY(10rpx);
-  }
-  20%, 80% {
-    opacity: 0.8;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-// 文字缩放脉冲动画
-@keyframes textZoomPulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.3);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-// 文字浮动动画
-@keyframes blessingFloat {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  25% {
-    transform: translateY(-15rpx) scale(1.05);
-  }
-  50% {
-    transform: translateY(0) scale(1);
-  }
-  75% {
-    transform: translateY(-10rpx) scale(1.03);
-  }
-}
-
-// 文字发光动画
-@keyframes blessingGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 15rpx rgba(255, 100, 255, 0.9))
-            drop-shadow(0 0 25rpx rgba(100, 200, 255, 0.7));
-  }
-  33% {
-    filter: drop-shadow(0 0 30rpx rgba(100, 200, 255, 1))
-            drop-shadow(0 0 50rpx rgba(255, 215, 0, 0.8));
-  }
-  66% {
-    filter: drop-shadow(0 0 30rpx rgba(255, 215, 0, 1))
-            drop-shadow(0 0 50rpx rgba(255, 100, 255, 0.8));
-  }
-}
-
-// 文字粒子爆发动画
-@keyframes textParticleBurst {
-  0% {
-    opacity: 0;
-    transform: translate(0, 0) scale(0.3);
-  }
-  10% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(
-      calc(-200rpx + var(--random-x, 0) * 400rpx),
-      calc(-200rpx + var(--random-y, 0) * 400rpx)
-    ) scale(0.2);
-  }
-}
 
 @keyframes breathe {
   0% {
