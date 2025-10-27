@@ -1,6 +1,5 @@
 'use strict';
 const db = uniCloud.database()
-const $ = db.command.aggregate
 
 // 定义默认的空数据
 const emptyData = [{
@@ -16,6 +15,7 @@ const emptyData = [{
     {
       user_id: 'system_1',
       content: '欢迎欢迎~',
+      images: [],
       create_time: Date.now() - 3600000,
       username: '小明',
       avatar: 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0'
@@ -23,6 +23,7 @@ const emptyData = [{
     {
       user_id: 'system_2',
       content: '期待你的分享！',
+      images: [],
       create_time: Date.now() - 1800000,
       username: '小红',
       avatar: 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0'
@@ -43,84 +44,57 @@ exports.main = async (event, context) => {
   try {
     const { total } = await db.collection('wx-moments').count()
     
-    const list = await db.collection('wx-moments')
-      .aggregate()
-      .lookup({
-        from: 'uni-id-users',
-        localField: 'user_id',
-        foreignField: '_id',
-        as: 'userInfo'
-      })
-      .unwind({
-        path: '$comments',
-        preserveNullAndEmptyArrays: true
-      })
-      .lookup({
-        from: 'uni-id-users',
-        localField: 'comments.user_id',
-        foreignField: '_id',
-        as: 'comments.userInfo'
-      })
-      .group({
-        _id: '$_id',
-        user_id: $.first('$user_id'),
-        content: $.first('$content'),
-        mediaType: $.first('$mediaType'),
-        mediaUrls: $.first('$mediaUrls'),
-        likes: $.first('$likes'),
-        create_time: $.first('$create_time'),
-        username: $.first($.arrayElemAt(['$userInfo.nickname', 0])),
-        avatar: $.first($.arrayElemAt(['$userInfo.avatar', 0])),
-        comments: {
-          $push: {
-            $cond: {
-              if: {
-                $and: [
-                  { $ne: ['$comments', null] },
-                  { $ne: ['$comments', ''] },
-                  { $ne: ['$comments.content', null] },
-                  { $ne: ['$comments.content', ''] }
-                ]
-              },
-              then: {
-                user_id: '$comments.user_id',
-                content: '$comments.content',
-                create_time: '$comments.create_time',
-                username: $.arrayElemAt(['$comments.userInfo.nickname', 0]),
-                avatar: $.arrayElemAt(['$comments.userInfo.avatar', 0])
-              },
-              else: '$$REMOVE'
-            }
-          }
-        }
-      })
-      .sort({
-        create_time: -1
-      })
+    // 直接查询，不使用聚合分组
+    const { data: list } = await db.collection('wx-moments')
+      .orderBy('create_time', 'desc')
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .end()
+      .get()
+    
+    console.log('直接查询到的数据（第一条）:', JSON.stringify(list[0], null, 2))
 
     // 处理数据
-    const processedList = page === 1 && list.data.length === 0 ? emptyData : list.data
+    const processedList = page === 1 && list.length === 0 ? emptyData : list
+    
+    // 调试日志：查看原始数据
+    console.log('处理后的列表数据（第一条）:', JSON.stringify(processedList[0], null, 2))
+    
     const currentUid = context.auth?.uid
-    const finalList = processedList.map(item => ({
-      ...item,
-      isLiked: currentUid ? item.likes?.includes(currentUid) : false,
-      time: formatTime(item.create_time),
-      avatar: item.avatar || 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-      username: item.username || '匿名用户',
-      comments: Array.isArray(item.comments) 
-        ? item.comments
-            .filter(comment => comment && typeof comment === 'object' && comment.content)
-            .map(comment => ({
-              ...comment,
-              time: formatTime(comment.create_time),
-              avatar: comment.avatar || 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
-              username: comment.username || '匿名用户'
-            }))
-        : []
-    }))
+    const finalList = processedList.map(item => {
+      // 调试日志：查看评论数据
+      if (item.comments && item.comments.length > 0) {
+        console.log('动态ID:', item._id, '评论数量:', item.comments.length)
+        console.log('第一条评论数据:', JSON.stringify(item.comments[0], null, 2))
+      }
+      
+      return {
+        ...item,
+        isLiked: currentUid ? item.likes?.includes(currentUid) : false,
+        time: formatTime(item.create_time),
+        avatar: item.avatar || 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
+        username: item.username || '匿名用户',
+        // 直接使用数据库返回的评论数据，包含完整的 images 字段
+        comments: Array.isArray(item.comments) 
+          ? item.comments
+              .filter(comment => {
+                // 过滤掉空评论：必须有内容或图片
+                return comment && (
+                  (comment.content && comment.content.trim()) || 
+                  (comment.images && comment.images.length > 0)
+                )
+              })
+              .map(comment => ({
+                ...comment,
+                images: comment.images || [],  // 确保 images 是数组
+                time: formatTime(comment.create_time),
+                avatar: comment.avatar || 'https://img0.baidu.com/it/u=1415523915,841919565&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1713286800&t=a9e21a0e5650a672fa2cbd3b133ed7e0',
+                username: comment.username || '匿名用户'
+              }))
+          : []
+      }
+    })
+    
+    console.log('最终返回的数据（第一条）:', JSON.stringify(finalList[0], null, 2))
     
     return {
       code: 0,

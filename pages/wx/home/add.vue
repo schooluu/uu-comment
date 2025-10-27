@@ -103,16 +103,6 @@
           <text class="option-arrow">›</text>
         </view>
       </view> -->
-      <view class="option-item" @tap="toggleContactPanel">
-        <view class="option-left">
-          <text class="option-icon">📞</text>
-          <text class="option-label">联系方式</text>
-        </view>
-        <view class="option-right">
-          <text class="option-value">{{ contactText }}</text>
-          <text class="option-arrow">›</text>
-        </view>
-      </view>
       <!-- <view class="option-item">
         <view class="option-left">
           <text class="option-icon">@</text>

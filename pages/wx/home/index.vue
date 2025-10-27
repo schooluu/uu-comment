@@ -1,5 +1,6 @@
 <template>
   <view :class="['moments-container', themeClass, { 'disclaimer-hidden': !showDisclaimer }]">
+
     <!-- 免责声明顶部横幅 -->
     <view class="disclaimer-banner" v-if="showDisclaimer">
       <view class="disclaimer-banner-content">
@@ -17,14 +18,14 @@
     </view>
 
     <!-- 顶部背景与Figma风格头部 -->
-    <view class="header">
+    <view class="header" :style="{ background: currentTheme.background }">
       <image class="bg-image" :src="headerBg" mode="aspectFill" :style="{ transform: `translateY(${parallaxY}px) scale(1.06)` }"></image>
-      <view class="header-gradient"></view>
+      <view class="header-gradient" :style="{ background: currentTheme.primary, opacity: 0.15 }"></view>
       <view class="header-blur"></view>
       <view class="header-glow"></view>
 
       <view class="header-topbar">
-        <text class="brand">匿名圈</text>
+        <text class="brand" :style="{ color: currentTheme.primaryColor }">匿名圈</text>
         <view class="top-actions">
           <text class="top-icon" @tap="handleSettings">⋯</text>
         </view>
@@ -33,10 +34,10 @@
       <view class="hero-card">
         <image class="hero-avatar" :src="defaultAvatar" mode="aspectFill" />
         <view class="hero-text">
-          <text class="hero-title">{{ todayMood }}</text>
+          <text class="hero-title" :style="{ color: currentTheme.primaryColor }">{{ todayMood }}</text>
           <text class="hero-sub">匿名 · 温暖 · 真实</text>
           <view class="hero-chips">
-            <text class="chip active">推荐</text>
+            <text class="chip active" :style="{ background: currentTheme.primary }">推荐</text>
             <text class="chip">关注</text>
             <text class="chip">附近</text>
           </view>
@@ -45,19 +46,19 @@
       
       <!-- 悬浮按钮 -->
       <view class="floating-btn" @tap="handleCamera">
-        <view class="floating-btn-pulse"></view>
-        <view class="floating-btn-inner">
-          <image class="floating-btn-icon" src="https://img.icons8.com/fluency/48/plus.png" mode="aspectFit" />
+        <view class="floating-btn-pulse" :style="{ background: currentTheme.primary }"></view>
+        <view class="floating-btn-inner" :style="{ background: currentTheme.primary }">
+        <image class="floating-btn-icon" src="https://img.icons8.com/fluency/48/plus.png" mode="aspectFit" />
         </view>
-        <text class="floating-btn-label">发布</text>
+        <text class="floating-btn-label" :style="{ color: currentTheme.primaryColor }">发布</text>
       </view>
     </view>
 
     <!-- 精选照片 -->
     <view class="photo-showcase" v-if="photoShowcase.length">
       <view class="ps-header">
-        <text class="ps-title">最美照片</text>
-        <text class="ps-action" @tap="shufflePhotos">换一换</text>
+        <text class="ps-title" :style="{ color: currentTheme.primaryColor }">最美照片</text>
+        <text class="ps-action" :style="{ color: currentTheme.primaryColor, borderColor: currentTheme.primaryColor }" @tap="shufflePhotos">换一换</text>
       </view>
       <view class="ps-row">
         <view class="ps-item" v-for="(p, i) in photoShowcase" :key="i" @tap="previewPhoto(i)">
@@ -79,18 +80,18 @@
         <image class="user-avatar avatar-glow" :src="item.avatar" mode="aspectFill"></image>
         <view class="content-area">
           <view class="meta-row">
-            <text class="username">{{ item.username }}</text>
+            <text class="username" :style="{ color: currentTheme.primaryColor }">{{ item.username }}</text>
            
           </view>
           <view class="chip-row">
-            <text class="chip">匿名</text>
-            <text v-if="item.mediaType" class="chip ghost">图文</text>
+            <text class="chip" :style="{ background: currentTheme.primary }">匿名</text>
+            <text v-if="item.mediaType" class="chip ghost" :style="{ color: currentTheme.primaryColor, borderColor: currentTheme.primaryColor }">图文</text>
           </view>
           <!-- 文本内容（可展开/收起） -->
           <view class="text-block" :class="{ clamped: !isExpanded[index] }">
             <text class="text-content">{{ item.content }}</text>
           </view>
-          <view v-if="item.content && item.content.length > 60" class="expand-btn" @tap="toggleExpand(index)">
+          <view v-if="item.content && item.content.length > 60" class="expand-btn" :style="{ color: currentTheme.primaryColor }" @tap="toggleExpand(index)">
             {{ isExpanded[index] ? '收起' : '展开' }}
           </view>
           <!-- 图片/视频内容 -->
@@ -115,18 +116,19 @@
             <text class="time">{{ item.time }}</text>
             <view class="actions">
               <view class="action-btn like-btn" :class="{ 'liked': item.isLiked, 'animating': isLikeAnimating[index] }"
+                :style="item.isLiked ? { color: currentTheme.primaryColor, background: `${currentTheme.primaryColor}15` } : {}"
                 @tap="handleLikeWithFW(index)">
                 <text class="icon iconfont">{{ item.isLiked ? '❤️' : '🤍' }}</text>
                 <text class="action-text">{{ item.isLiked ? '已赞' : '点赞' }}</text>
                 <text class="action-count">{{ (item.likes && item.likes.length) || 0 }}</text>
                 <view v-if="isLikeAnimating[index]" class="like-burst-particles">
-                  <view v-for="n in 8" :key="n" :class="['particle', 'p' + n]"></view>
+                  <view v-for="n in 8" :key="n" :class="['particle', 'p' + n]" :style="{ background: currentTheme.primaryColor }"></view>
                 </view>
               </view>
               <view class="action-btn comment-btn" @tap="handleComment(index)">
                 <text class="icon iconfont">💬</text>
                 <text class="action-text">评论</text>
-                <text class="action-count">{{ (item.comments && item.comments.length) || 0 }}</text>
+                <text class="action-count" :style="{ color: currentTheme.primaryColor }">{{ (item.comments && item.comments.length) || 0 }}</text>
               </view>
               <view class="action-btn report-btn" @tap="handleReport(index)">
                 <text class="icon iconfont">🚨</text>
@@ -136,12 +138,12 @@
           </view>
           <!-- 点赞列表 -->
           <view class="likes-section" v-if="item.likes && item.likes.length">
-            <text class="like-users">{{ item.likes.join('、') }}</text>
+            <text class="like-users" :style="{ color: currentTheme.primaryColor }">{{ item.likes.join('、') }}</text>
           </view>
           <!-- 联系方式展示 -->
           <view class="contact-section" v-if="item.contactValue">
             <text class="contact-icon">📞</text>
-            <text class="contact-text">{{ contactLabel(item.contactType) }}：{{ item.contactValue }}</text>
+            <text class="contact-text" :style="{ color: currentTheme.primaryColor }">{{ contactLabel(item.contactType) }}：{{ item.contactValue }}</text>
           </view>
           <!-- 评分选项展示 -->
           <view class="rating-section" v-if="item.ratingType">
@@ -161,11 +163,11 @@
               </view>
             </view>
             <view class="rating-actions">
-              <view class="rating-btn" @tap="showRatingModal(index)">
+              <view class="rating-btn" :style="{ borderColor: currentTheme.primaryColor, color: currentTheme.primaryColor }" @tap="showRatingModal(index)">
                 <text class="rating-btn-icon">⭐</text>
                 <text class="rating-btn-text">评分</text>
               </view>
-              <view class="rating-btn" @tap="viewRatingDetails(index)">
+              <view class="rating-btn" :style="{ borderColor: currentTheme.primaryColor, color: currentTheme.primaryColor }" @tap="viewRatingDetails(index)">
                 <text class="rating-btn-icon">📊</text>
                 <text class="rating-btn-text">详情</text>
               </view>
@@ -173,10 +175,25 @@
           </view>
           <!-- 评论列表 -->
           <view class="comments-section" v-if="item.comments && item.comments.length !== 0">
-            <view class="comment-item" v-for="(comment, cIndex) in item.comments" :key="cIndex">
+            <view class="comment-item" :class="{ 'new-comment': comment.isNew }" v-for="(comment, cIndex) in item.comments" :key="cIndex">
               <image class="comment-anon-icon" :src="comment.avatar || anonymousAvatar" />
-              <text class="comment-user">{{ comment.username }}：</text>
+              <view class="comment-content-wrapper">
+                <view class="comment-text-line">
+                  <text class="comment-user" :style="{ color: currentTheme.primaryColor }">{{ comment.username }}：</text>
               <text class="comment-content">{{ comment.content }}</text>
+                </view>
+                <!-- 评论图片 -->
+                <view class="comment-images" v-if="comment.images && comment.images.length > 0">
+                  <image 
+                    v-for="(img, imgIdx) in comment.images" 
+                    :key="imgIdx" 
+                    :src="img" 
+                    mode="aspectFill" 
+                    class="comment-image"
+                    @tap="previewImage(comment.images, img)"
+                  />
+                </view>
+              </view>
             </view>
           </view>
         </view>
@@ -190,9 +207,30 @@
         <view class="comment-input-area">
           <input class="comment-input" v-model="commentText" placeholder="@匿名用户 说点什么..." :focus="showCommentPopup"
             @confirm="submitComment" />
+          <!-- 评论图片预览 -->
+          <view class="comment-images-preview" v-if="commentImages.length > 0">
+            <view class="comment-preview-item" v-for="(img, idx) in commentImages" :key="idx">
+              <image :src="img" mode="aspectFill" class="comment-preview-img" />
+              <text class="comment-preview-delete" @tap="deleteCommentImage(idx)">✕</text>
+            </view>
+          </view>
           <view class="toolbar">
-            <text class="emoji-btn" @tap="toggleEmojiPanel">😊</text>
-            <button class="submit-btn" :class="{ active: commentText.trim() }" @tap="submitComment">发送</button>
+            <view class="toolbar-left">
+              <view class="toolbar-icon emoji-btn" :style="{ borderColor: `${currentTheme.primaryColor}20` }" @tap="toggleEmojiPanel">
+                <text class="icon-emoji">😊</text>
+              </view>
+              <view class="toolbar-icon image-btn" :style="{ borderColor: `${currentTheme.primaryColor}30`, background: `${currentTheme.primaryColor}08` }" @tap="chooseCommentImage">
+                <view class="icon-wrapper">
+                  <text class="icon-camera">📸</text>
+                </view>
+                <text class="icon-label" :style="{ background: currentTheme.primary }" v-if="commentImages.length > 0">{{ commentImages.length }}</text>
+              </view>
+            </view>
+            <button 
+              class="submit-btn" 
+              :class="{ active: commentText.trim() || commentImages.length > 0 }" 
+              :style="(commentText.trim() || commentImages.length > 0) ? { background: currentTheme.primary } : {}"
+              @tap="submitComment">发送</button>
           </view>
         </view>
         <!-- 表情面板 -->
@@ -232,11 +270,38 @@
       </view>
     </view>
 
+    <!-- 祝福文字烟花特效 -->
+    <view class="blessing-text-wrapper" v-if="showBlessingText" @tap="toggleBlessingText">
+      <view class="blessing-text" :class="{ 'text-zooming': isTextZooming }">
+        <text class="blessing-char" v-for="(char, idx) in blessingChars" :key="idx" :style="{ 
+          animationDelay: `${idx * 0.2}s, ${idx * 0.2 + 0.6}s, ${idx * 0.2 + 1}s, ${idx * 0.2 + 1.5}s` 
+        }">
+          {{ char }}
+        </text>
+      </view>
+      <!-- 文字周围的烟花粒子 -->
+      <view class="text-particles">
+        <view 
+          v-for="p in textParticles" 
+          :key="p.id" 
+          class="text-particle"
+          :style="{ 
+            left: p.x + '%', 
+            top: p.y + '%',
+            background: p.color,
+            animationDelay: p.delay + 's',
+            '--random-x': p.randomX,
+            '--random-y': p.randomY
+          }"
+        ></view>
+      </view>
+    </view>
+
   </view>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { nextTick } from 'vue'
 import {
   onShow,
@@ -255,17 +320,58 @@ const anonymousNames = [
 function getRandomName() {
   return anonymousNames[Math.floor(Math.random() * anonymousNames.length)]
 }
-// 匿名头像（随机池）
+// 匿名头像（随机池 - 50个）
 const anonymousAvatars = [
-  // 现有
-  'https://qcloud.dpfile.com/pc/pawK4KeJSDNVINhfwh9CoLJPFluB-tnHSd3heJ_jybtNIYslSlGEPeQVyA4hZRCP.jpg',
-  // 高质量头像素材
   'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=256&q=60',
   'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=60',
   'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=256&q=60',
   'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=256&q=60',
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=60',
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=60'
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1541271696563-3be2f555fc4e?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1542202229-7d93c33f5d07?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1546961329-78bef0414d7c?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1601455763557-db1bea8a9a5a?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1558898479-33c0057a5d12?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1522556189639-b150ed9c4330?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1463453091185-61582044d556?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1506919258185-6078bba55d2a?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1545996124-0501ebae84d0?auto=format&fit=crop&w=256&q=60',
+  'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?auto=format&fit=crop&w=256&q=60'
 ]
 const anonymousAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)];
 // 生活化美女照片池（用于背景与精选补位）
@@ -320,6 +426,68 @@ const showCursor = ref(true)
 let typingTimer = null
 let sloganTypingIndex = 0
 let charIndex = 0
+
+// 主题配色方案（5个主题）
+const themes = [
+  {
+    name: '紫罗兰梦境',
+    primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    primaryColor: '#667eea',
+    secondary: '#764ba2',
+    accent: '#a855f7',
+    background: '#f8fafc'
+  },
+  {
+    name: '樱花粉境',
+    primary: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    primaryColor: '#f093fb',
+    secondary: '#f5576c',
+    accent: '#ec4899',
+    background: '#fef2f2'
+  },
+  {
+    name: '海洋蓝调',
+    primary: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    primaryColor: '#4facfe',
+    secondary: '#00f2fe',
+    accent: '#06b6d4',
+    background: '#f0f9ff'
+  },
+  {
+    name: '翡翠森林',
+    primary: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    primaryColor: '#43e97b',
+    secondary: '#38f9d7',
+    accent: '#10b981',
+    background: '#f0fdf4'
+  },
+  {
+    name: '落日余晖',
+    primary: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    primaryColor: '#fa709a',
+    secondary: '#fee140',
+    accent: '#f59e0b',
+    background: '#fffbeb'
+  }
+]
+
+const currentThemeIndex = ref(0)
+const currentTheme = ref(themes[0])
+let themeTimer = null
+
+// 主题切换函数
+function switchTheme() {
+  currentThemeIndex.value = (currentThemeIndex.value + 1) % themes.length
+  currentTheme.value = themes[currentThemeIndex.value]
+  console.log('切换主题:', currentTheme.value.name)
+}
+
+// 启动主题自动切换
+function startThemeRotation() {
+  themeTimer = setInterval(() => {
+    switchTheme()
+  }, 3000) // 每3秒切换一次
+}
 function startTypingSlogan() {
   clearTimeout(typingTimer)
   const slogan = sloganList[sloganTypingIndex]
@@ -345,11 +513,24 @@ onMounted(() => {
   setInterval(() => { showCursor.value = !showCursor.value }, 500)
   // 启动免责声明倒计时
   startCountdown()
+  // 启动主题自动切换
+  startThemeRotation()
+})
+
+// 组件卸载时清除定时器
+onUnmounted(() => {
+  if (themeTimer) {
+    clearInterval(themeTimer)
+  }
+  if (typingTimer) {
+    clearTimeout(typingTimer)
+  }
 })
 // 评论相关的响应式变量
 const showCommentPopup = ref(false)
 const showEmojiPanel = ref(false)
 const commentText = ref('')
+const commentImages = ref([])
 const currentMomentIndex = ref(-1)
 const isLikeAnimating = ref({})
 // 分页相关变量
@@ -385,18 +566,33 @@ const getMomentsList = async (isRefresh = false) => {
     ])
 
     if (result.code === 0) {
+      console.log('接收到的原始数据:', result.data.list[0])
+      
       // 匿名处理：每条动态与评论分配随机昵称与随机头像
-      const list = result.data.list.map(item => ({
+      const list = result.data.list.map(item => {
+        console.log('处理动态，评论数量:', item.comments?.length)
+        if (item.comments && item.comments.length > 0) {
+          console.log('第一条评论:', item.comments[0])
+        }
+        
+        return {
         ...item,
         username: getRandomName(),
         avatar: anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)],
-        comments: (item.comments || []).map(c => ({
+          comments: (item.comments || []).map(c => {
+            console.log('评论的images字段:', c.images)
+            return {
           ...c,
+              images: c.images || [],  // 明确保留images字段
           username: getRandomName(),
           avatar: anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)]
-        })),
+            }
+          }),
         likes: (item.likes || []).map(() => getRandomName())
-      }))
+        }
+      })
+      
+      console.log('处理后的数据:', list[0])
       if (isRefresh) {
         // 刷新：重置为第一页数据，并把下一页准备为第2页，避免重复请求第1页
         moments.value = list
@@ -432,6 +628,17 @@ onShow(() => {
   getMomentsList(true)
   stopFireworksLoop() // 防重启
   startFireworksLoop()
+  
+  // 显示祝福文字
+  showBlessingText.value = true
+  // 启动祝福文字粒子
+  generateTextParticles()
+  
+  // 5秒后隐藏祝福文字
+  setTimeout(() => {
+    showBlessingText.value = false
+  }, 5000)
+  
   // 3秒后自动获取列表（刷新）
   setTimeout(() => {
     getMomentsList(true)
@@ -496,45 +703,93 @@ const handleLike = async (index) => {
 
 // 发表评论
 const submitComment = async () => {
-  if (!commentText.value.trim()) return
-  // 重置状态
+  if (!commentText.value.trim() && commentImages.value.length === 0) return
 
+  const tempContent = commentText.value
+  const tempImages = [...commentImages.value]
+  
+  // 先关闭弹窗
   showCommentPopup.value = false
   showEmojiPanel.value = false
 
-  uni.showToast({
-    title: '评论成功',
-    icon: 'none'
+  // 清空输入
+  commentText.value = ''
+  commentImages.value = []
+
+  uni.showLoading({
+    title: '发送中...',
+    mask: true
   })
+
+  console.log('提交评论数据:', {
+    momentId: moments.value[currentMomentIndex.value]._id,
+    content: tempContent,
+    imagesCount: tempImages.length,
+    images: tempImages
+  })
+
   try {
     const { result } = await uniCloud.callFunction({
       name: 'wx_add_comment',
       data: {
         momentId: moments.value[currentMomentIndex.value]._id,
-        content: commentText.value
+        content: tempContent,
+        images: tempImages
       }
     })
 
+    console.log('云函数返回结果:', result)
+
     if (result.code === 0) {
-      // 更新评论列表
+      // 更新评论列表 - 立即显示在界面上
       const moment = moments.value[currentMomentIndex.value]
-      if (!moment.comments) moment.comments = []
+      if (!moment.comments) {
+        moment.comments = []
+      }
+      
+      // 生成随机匿名头像和用户名
+      const randomAvatar = anonymousAvatars[Math.floor(Math.random() * anonymousAvatars.length)]
+      
       moment.comments.push({
         username: getRandomName(),
-        content: commentText.value,
-        create_time: Date.now()
+        avatar: randomAvatar,
+        content: tempContent,
+        images: tempImages,
+        create_time: Date.now(),
+        isNew: true  // 标记为新评论，用于动画
       })
+      
+      console.log('评论已添加到列表，图片数量:', tempImages.length)
+      
+      // 500ms后移除新评论标记
+      setTimeout(() => {
+        const commentIndex = moment.comments.length - 1
+        if (moment.comments[commentIndex]) {
+          delete moment.comments[commentIndex].isNew
+        }
+      }, 500)
 
-      commentText.value = ''
-
-
+      uni.hideLoading()
+      
+      // 显示后端返回的消息
+      const successMsg = result.msg || '评论成功'
+      uni.showToast({
+        title: successMsg,
+        icon: 'success',
+        duration: 1500
+      })
+      
+      console.log('评论成功:', successMsg)
     } else {
-      throw new Error(result.msg)
+      throw new Error(result.msg || '评论失败')
     }
   } catch (error) {
+    console.error('评论失败:', error)
+    uni.hideLoading()
     uni.showToast({
       title: error.message || '评论失败',
-      icon: 'none'
+      icon: 'none',
+      duration: 2000
     })
   }
 }
@@ -556,6 +811,7 @@ const closeCommentPopup = () => {
   showCommentPopup.value = false
   showEmojiPanel.value = false
   commentText.value = ''
+  commentImages.value = []
   currentMomentIndex.value = -1
 }
 
@@ -565,6 +821,77 @@ const toggleEmojiPanel = () => {
 
 const insertEmoji = (emoji) => {
   commentText.value += emoji
+}
+
+// 选择评论图片
+const UPLOAD_URL = 'http://117.72.208.124:40027/api/v1/upload'
+
+const chooseCommentImage = () => {
+  if (commentImages.value.length >= 3) {
+    uni.showToast({
+      title: '最多上传3张图片',
+      icon: 'none'
+    })
+    return
+  }
+  
+  uni.chooseImage({
+    count: 3 - commentImages.value.length,
+    sizeType: ['compressed'],
+    sourceType: ['album', 'camera'],
+    success: async (res) => {
+      uni.showLoading({
+        title: '上传中...'
+      })
+      
+      try {
+        const uploadPromises = res.tempFilePaths.map(filePath => {
+          return new Promise((resolve, reject) => {
+            uni.uploadFile({
+              url: UPLOAD_URL,
+              filePath: filePath,
+              name: 'file',
+              success: (uploadRes) => {
+                try {
+                  const data = JSON.parse(uploadRes.data)
+                  if (data.status) {
+                    resolve(data.data.links.url)
+                  } else {
+                    reject(new Error(data.message || '上传失败'))
+                  }
+                } catch (e) {
+                  reject(new Error('解析上传结果失败'))
+                }
+              },
+              fail: (err) => {
+                reject(err)
+              }
+            })
+          })
+        })
+        
+        const uploadedUrls = await Promise.all(uploadPromises)
+        commentImages.value.push(...uploadedUrls)
+        
+        uni.hideLoading()
+        uni.showToast({
+          title: '上传成功',
+          icon: 'success'
+        })
+      } catch (error) {
+        uni.hideLoading()
+        uni.showToast({
+          title: error.message || '上传失败',
+          icon: 'none'
+        })
+      }
+    }
+  })
+}
+
+// 删除评论图片
+const deleteCommentImage = (index) => {
+  commentImages.value.splice(index, 1)
 }
 
 // 图片点击预览
@@ -646,8 +973,14 @@ const launchFireworks = (bursts = 4, spreadMs = 1000) => {
       // 单枚烟花在动画结束后清理（与 CSS 动画时长匹配，略有冗余）
       setTimeout(() => {
         removeFireworkById(id)
-        if (fireworks.value.length === 0) showFireworks.value = false
-      }, 2200)
+        // 给烟花容器添加淡出过渡
+        if (fireworks.value.length === 0) {
+          // 延迟关闭，让最后的烟花有时间淡出
+          setTimeout(() => {
+            showFireworks.value = false
+          }, 800)
+        }
+      }, 4000)
     }, delay)
   }
 }
@@ -656,7 +989,9 @@ const launchFireworks = (bursts = 4, spreadMs = 1000) => {
 const _origHandleLike = handleLike
 const handleLikeWithFW = async (index) => {
   await _origHandleLike(index)
-  launchFireworks(3)
+  showFireworks.value = true
+  // 点赞时触发更多烟花（6-9组）
+  launchFireworks(6 + Math.floor(Math.random() * 3), 1200)
 }
 
 // 持续烟花：定时发射
@@ -664,18 +999,76 @@ let fwTimer = null
 const startFireworksLoop = () => {
   if (fwTimer) return
   showFireworks.value = true
-  // 随机间隔发射，且每次在1.0~1.6s的时间窗内分散绽放，制造“连续感”
+  // 舒缓版：更慢发射，优雅展示
   fwTimer = setInterval(() => {
-    const groups = 3 + Math.floor(Math.random() * 3) // 3~5组
-    const spread = 1000 + Math.floor(Math.random() * 600) // 1.0s~1.6s
+    const groups = 3 + Math.floor(Math.random() * 3) // 3~5组（减少数量）
+    const spread = 1500 + Math.floor(Math.random() * 800) // 1.5s~2.3s（增加分散时间）
     launchFireworks(groups, spread)
-  }, 1500 + Math.floor(Math.random() * 900)) // 1.5s~2.4s 间隔
+  }, 2500 + Math.floor(Math.random() * 1500)) // 2.5s~4s 间隔（更舒缓）
 }
 const stopFireworksLoop = () => {
   clearInterval(fwTimer)
   fwTimer = null
   showFireworks.value = false
   fireworks.value = []
+}
+
+// 祝福文字烟花特效
+const showBlessingText = ref(true) // 默认显示
+const isTextZooming = ref(false) // 文字缩放效果
+const blessingChars = ['祝', '中', '国', '繁', '荣', '昌', '盛']
+const textParticles = ref([])
+let particleId = 0
+
+// 切换祝福文字显示
+const toggleBlessingText = () => {
+  isTextZooming.value = true
+  setTimeout(() => {
+    isTextZooming.value = false
+  }, 600)
+  
+  // 可选：3秒后淡出（如果用户想隐藏）
+  // setTimeout(() => {
+  //   showBlessingText.value = false
+  // }, 3000)
+}
+
+// 生成文字周围的粒子
+const generateTextParticles = () => {
+  const colors = [
+    '#ff00ff', '#ff33ff', '#ff66ff', '#ff99ff',  // 紫红色系
+    '#00ffff', '#33ffff', '#66ffff', '#99ffff',  // 青色系
+    '#ffff00', '#ffff33', '#ffff66', '#ffff99',  // 黄色系
+    '#00ff99', '#33ff99', '#66ff99', '#99ff99'   // 青绿色系
+  ]
+  const particles = []
+  
+  // 每隔3秒生成一批新粒子（更慢更优雅）
+  setInterval(() => {
+    // 每次生成20-30个粒子（减少数量）
+    const count = 20 + Math.floor(Math.random() * 10)
+    for (let i = 0; i < count; i++) {
+      const id = particleId++
+      const particle = {
+        id,
+        x: 30 + Math.random() * 40, // 30%-70% 文字中心区域（竖直文字更集中）
+        y: 25 + Math.random() * 50, // 25%-75% (竖直文字的上下范围)
+        color: colors[Math.floor(Math.random() * colors.length)],
+        delay: Math.random() * 1.2,
+        // 添加随机移动方向（用于CSS变量）
+        randomX: Math.random(),
+        randomY: Math.random()
+      }
+      particles.push(particle)
+      
+      // 5秒后移除粒子（更持久）
+      setTimeout(() => {
+        const idx = particles.findIndex(p => p.id === id)
+        if (idx !== -1) particles.splice(idx, 1)
+      }, 5000)
+    }
+    textParticles.value = [...particles]
+  }, 3000)
 }
 
 // 浏览量/热度（演示计算）
@@ -1026,7 +1419,7 @@ const emojiList = [
 
 // 免责声明弹窗相关
 const showDisclaimer = ref(true)
-const countdown = ref(30)
+const countdown = ref(10)
 let disclaimerTimer = null
 
 // 关闭免责声明
@@ -1164,6 +1557,7 @@ $action-color: #5A8FFF;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     opacity: 0.3;
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    transition: background 0.6s ease-in-out;
   }
 
   // 主按钮容器
@@ -1179,7 +1573,7 @@ $action-color: #5A8FFF;
     box-shadow: 0 12rpx 40rpx rgba(102, 126, 234, 0.5),
                 0 0 0 4rpx rgba(255, 255, 255, 0.3),
                 inset 0 -4rpx 12rpx rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.6s ease-in-out;
     
     // 光晕效果
     &::before {
@@ -1195,6 +1589,7 @@ $action-color: #5A8FFF;
       filter: blur(12rpx);
       z-index: -1;
       animation: glow 2s ease-in-out infinite alternate;
+      transition: background 0.6s ease-in-out;
     }
 
     // 内部高光
@@ -1233,6 +1628,7 @@ $action-color: #5A8FFF;
     box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.15);
     backdrop-filter: blur(10rpx);
     border: 1rpx solid rgba(102, 126, 234, 0.1);
+    transition: color 0.6s ease-in-out, border-color 0.6s ease-in-out;
   }
 }
 
@@ -1257,6 +1653,84 @@ $action-color: #5A8FFF;
   100% {
     opacity: 0.7;
     transform: scale(1.05);
+  }
+}
+
+// 徽章弹出动画
+@keyframes badge-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// 表情弹跳动画
+@keyframes emoji-bounce {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.2) rotate(-10deg);
+  }
+  75% {
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+// 新评论滑入动画
+@keyframes commentSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// 主题指示器样式
+.theme-indicator {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  padding: 20rpx 16rpx;
+  border-radius: 16rpx 0 0 16rpx;
+  box-shadow: -4rpx 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  animation: themeSlideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backdrop-filter: blur(10rpx);
+  -webkit-backdrop-filter: blur(10rpx);
+
+  .theme-name {
+    font-size: 24rpx;
+    color: #fff;
+    font-weight: 600;
+    writing-mode: vertical-lr;
+    letter-spacing: 2rpx;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.2);
+  }
+}
+
+@keyframes themeSlideIn {
+  0% {
+    transform: translateY(-50%) translateX(100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-50%) translateX(-10rpx);
+  }
+  100% {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
   }
 }
 
@@ -1293,6 +1767,7 @@ $action-color: #5A8FFF;
   overflow: hidden;
   border-bottom-left-radius: $card-radius;
   border-bottom-right-radius: $card-radius;
+  transition: background 0.6s ease-in-out;
 
   // 装饰性流光
   &::after {
@@ -1326,6 +1801,7 @@ $action-color: #5A8FFF;
     border-bottom-right-radius: 0;
     background-size: 300% 300%;
     animation: gradientShift 20s ease infinite;
+    transition: background 0.6s ease-in-out, opacity 0.6s ease-in-out;
   }
 
   .header-blur {
@@ -1367,6 +1843,7 @@ $action-color: #5A8FFF;
       font-weight: 700;
       letter-spacing: 2rpx;
       text-shadow: 0 2rpx 10rpx rgba(0,0,0,0.18);
+      transition: color 0.6s ease-in-out;
     }
 
     .top-actions {
@@ -1432,6 +1909,7 @@ $action-color: #5A8FFF;
         font-size: 32rpx;
         font-weight: 700;
         text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.18);
+        transition: color 0.6s ease-in-out;
       }
 
       .hero-sub {
@@ -1452,6 +1930,7 @@ $action-color: #5A8FFF;
           background: rgba(255, 255, 255, 0.12);
           border: 1rpx solid rgba(255, 255, 255, 0.3);
           border-radius: 999rpx;
+          transition: all 0.6s ease-in-out;
         }
 
         .active {
@@ -1767,6 +2246,7 @@ $action-color: #5A8FFF;
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
+    padding-bottom: 30rpx;
 
     &::before {
       content: '';
@@ -1819,6 +2299,7 @@ $action-color: #5A8FFF;
         font-size: 30rpx;
         font-weight: 600;
         color: $font-color-dark;
+        transition: color 0.6s ease-in-out;
         margin-bottom: 10rpx;
         position: relative;
 
@@ -1858,6 +2339,7 @@ $action-color: #5A8FFF;
             background: rgba(90, 143, 255, 0.08);
             border: 1rpx solid rgba(90, 143, 255, 0.28);
             border-radius: 999rpx;
+            transition: all 0.6s ease-in-out;
           }
 
           .ghost {
@@ -1895,6 +2377,7 @@ $action-color: #5A8FFF;
         background: rgba(90, 143, 255, 0.08);
         border: 1rpx solid rgba(90, 143, 255, 0.18);
         margin-bottom: 12rpx;
+        transition: all 0.6s ease-in-out;
 
         &:active {
           background: rgba(90, 143, 255, 0.16);
@@ -1992,7 +2475,7 @@ $action-color: #5A8FFF;
             border: 1rpx solid rgba(90, 143, 255, 0.18);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s;
+            transition: all 0.6s ease-in-out;
 
             &::before {
               content: '';
@@ -2103,31 +2586,84 @@ $action-color: #5A8FFF;
         .like-users {
           font-size: 26rpx;
           color: $action-color;
+          transition: color 0.6s ease-in-out;
         }
       }
 
       .comments-section {
         .comment-item {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           font-size: 26rpx;
-          margin-bottom: 8rpx;
+          margin-bottom: 15rpx;
+          transition: all 0.3s ease;
 
-          .comment-dot {
-            width: 10rpx;
-            height: 10rpx;
-            background: $action-color;
-            border-radius: 50%;
-            margin-right: 10rpx;
+          &.new-comment {
+            animation: commentSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, 
+              rgba(102, 126, 234, 0.08) 0%, 
+              rgba(102, 126, 234, 0.03) 50%, 
+              transparent 100%
+            );
+            padding: 8rpx;
+            margin-left: -8rpx;
+            margin-right: -8rpx;
+            border-radius: 8rpx;
           }
+
+          .comment-anon-icon {
+            width: 40rpx;
+            height: 40rpx;
+            border-radius: 50%;
+            margin-right: 12rpx;
+            flex-shrink: 0;
+            box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.15);
+            border: 2rpx solid rgba(255, 255, 255, 0.8);
+          }
+
+          .comment-content-wrapper {
+            flex: 1;
+            
+            .comment-text-line {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
 
           .comment-user {
             color: $action-color;
             margin-right: 4rpx;
+                font-weight: 500;
+            transition: color 0.6s ease-in-out;
           }
 
           .comment-content {
             color: $font-color-dark;
+                word-break: break-all;
+                line-height: 1.5;
+              }
+            }
+
+            .comment-images {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 8rpx;
+              margin-top: 12rpx;
+
+              .comment-image {
+                width: 120rpx;
+                height: 120rpx;
+                border-radius: 12rpx;
+                object-fit: cover;
+                transition: all 0.3s ease;
+                border: 1rpx solid #e8ecf0;
+                box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+
+                &:active {
+                  transform: scale(0.95);
+                  opacity: 0.8;
+                }
+              }
+            }
           }
         }
       }
@@ -2293,34 +2829,145 @@ $action-color: #5A8FFF;
 
     .comment-input-area {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       padding: 20rpx;
       border-top: 1rpx solid #eee;
       background: #f8f8f8;
 
       .comment-input {
-        flex: 1;
+        width: 100%;
         height: 72rpx;
         background: #fff;
         border-radius: 36rpx;
         padding: 0 30rpx;
         font-size: 28rpx;
         border: 1rpx solid #eee;
+        box-sizing: border-box;
+      }
+
+      .comment-images-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12rpx;
+        margin: 16rpx 0;
+
+        .comment-preview-item {
+          position: relative;
+          width: 120rpx;
+          height: 120rpx;
+          border-radius: 12rpx;
+          overflow: hidden;
+
+          .comment-preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .comment-preview-delete {
+            position: absolute;
+            top: 4rpx;
+            right: 4rpx;
+            width: 36rpx;
+            height: 36rpx;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24rpx;
+            font-weight: bold;
+            backdrop-filter: blur(10rpx);
+            transition: all 0.2s ease;
+
+            &:active {
+              background: rgba(255, 59, 48, 0.9);
+              transform: scale(0.9);
+            }
+          }
+        }
       }
 
       .toolbar {
         display: flex;
         align-items: center;
-        margin-left: 20rpx;
-        gap: 20rpx;
+        justify-content: space-between;
+        margin-top: 12rpx;
 
-        .emoji-btn {
-          font-size: 56rpx;
-          line-height: 1;
-          padding: 0 10rpx;
+        .toolbar-left {
+          display: flex;
+          align-items: center;
+          gap: 12rpx;
+        }
+
+        .toolbar-icon {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 72rpx;
+          height: 72rpx;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+          border: 2rpx solid rgba(102, 126, 234, 0.1);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.08);
 
           &:active {
-            opacity: 0.7;
+            transform: scale(0.92);
+            box-shadow: 0 1rpx 4rpx rgba(102, 126, 234, 0.15);
+            background: linear-gradient(135deg, #e8ecf0 0%, #dde4ec 100%);
+          }
+
+          .icon-emoji,
+          .icon-camera {
+            font-size: 44rpx;
+          line-height: 1;
+          }
+
+          .icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .icon-label {
+            position: absolute;
+            top: -8rpx;
+            right: -8rpx;
+            min-width: 32rpx;
+            height: 32rpx;
+            line-height: 32rpx;
+            text-align: center;
+            font-size: 20rpx;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16rpx;
+            padding: 0 8rpx;
+            box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.4);
+            font-weight: 600;
+            animation: badge-pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          }
+        }
+
+        .emoji-btn {
+          &:active .icon-emoji {
+            animation: emoji-bounce 0.3s ease;
+          }
+        }
+
+        .image-btn {
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+          border-color: rgba(102, 126, 234, 0.2);
+
+          &:active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+          }
+
+          .icon-camera {
+            filter: drop-shadow(0 2rpx 4rpx rgba(102, 126, 234, 0.2));
           }
         }
 
@@ -2329,17 +2976,34 @@ $action-color: #5A8FFF;
           height: 72rpx;
           line-height: 72rpx;
           text-align: center;
-          background: #e0e6f6;
-          color: #999;
+          background: linear-gradient(135deg, #e8ecf0 0%, #dde4ec 100%);
+          color: #94a3b8;
           border-radius: 36rpx;
           font-size: 28rpx;
-          border: none;
+          border: 2rpx solid rgba(148, 163, 184, 0.15);
+          font-weight: 500;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          padding: 0 32rpx;
+          box-shadow: 0 2rpx 8rpx rgba(148, 163, 184, 0.1);
 
           &.active {
-            background: $primary-gradient;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
             font-weight: 600;
-            box-shadow: 0 2rpx 8rpx #5A8FFF33;
+            border-color: transparent;
+            box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.4),
+                        0 0 0 2rpx rgba(102, 126, 234, 0.1);
+            transform: translateY(-1rpx);
+            
+            &:active {
+              transform: scale(0.96) translateY(0);
+              box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3);
+            }
+          }
+
+          &:not(.active):active {
+            transform: scale(0.96);
+            background: linear-gradient(135deg, #dde4ec 0%, #cbd5e1 100%);
           }
         }
       }
@@ -2476,39 +3140,54 @@ $action-color: #5A8FFF;
 
   .fw-p {
     position: absolute;
-    width: 8rpx;
-    height: 8rpx;
+    width: 16rpx;
+    height: 16rpx;
     border-radius: 50%;
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.2);
-    animation: fw-burst 1600ms ease-out forwards;
+    animation: fw-burst 3500ms ease-out forwards;
   }
 
   // 12个方向发散
   @for $i from 1 through 12 {
-    .p#{$i} { animation-delay: #{($i - 1) * 60}ms; }
+    .p#{$i} { animation-delay: #{($i - 1) * 80}ms; }
   }
 
-  // 位移向量（rpx）- 扩大10%
-  .p1  { --tx:    0rpx;  --ty: -132rpx; }
-  .p2  { --tx:   66rpx;  --ty: -114rpx; }
-  .p3  { --tx:  114rpx;  --ty:  -66rpx; }
-  .p4  { --tx:  132rpx;  --ty:    0rpx; }
-  .p5  { --tx:  114rpx;  --ty:   66rpx; }
-  .p6  { --tx:   66rpx;  --ty:  114rpx; }
-  .p7  { --tx:    0rpx;  --ty:  132rpx; }
-  .p8  { --tx:  -66rpx;  --ty:  114rpx; }
-  .p9  { --tx: -114rpx;  --ty:   66rpx; }
-  .p10 { --tx: -132rpx;  --ty:    0rpx; }
-  .p11 { --tx: -114rpx;  --ty:  -66rpx; }
-  .p12 { --tx:  -66rpx;  --ty: -114rpx; }
+  // 位移向量（rpx）- 扩大到2倍
+  .p1  { --tx:    0rpx;  --ty: -240rpx; }
+  .p2  { --tx:  120rpx;  --ty: -208rpx; }
+  .p3  { --tx:  208rpx;  --ty: -120rpx; }
+  .p4  { --tx:  240rpx;  --ty:    0rpx; }
+  .p5  { --tx:  208rpx;  --ty:  120rpx; }
+  .p6  { --tx:  120rpx;  --ty:  208rpx; }
+  .p7  { --tx:    0rpx;  --ty:  240rpx; }
+  .p8  { --tx: -120rpx;  --ty:  208rpx; }
+  .p9  { --tx: -208rpx;  --ty:  120rpx; }
+  .p10 { --tx: -240rpx;  --ty:    0rpx; }
+  .p11 { --tx: -208rpx;  --ty: -120rpx; }
+  .p12 { --tx: -120rpx;  --ty: -208rpx; }
 
-  // 主题色
-  .t-blue { background: #5A8FFF; box-shadow: 0 0 8rpx rgba(90,143,255,0.8); }
-  .t-violet { background: #7F5AFF; box-shadow: 0 0 8rpx rgba(127,90,255,0.8); }
-  .t-gold { background: #f59e0b; box-shadow: 0 0 8rpx rgba(245,158,11,0.8); }
-  .t-mint { background: #10b981; box-shadow: 0 0 8rpx rgba(16,185,129,0.8); }
-  .t-pink { background: #ec4899; box-shadow: 0 0 8rpx rgba(236,72,153,0.8); }
+  // 主题色 - 增强发光效果
+  .t-blue { 
+    background: linear-gradient(135deg, #5A8FFF, #4facfe); 
+    box-shadow: 0 0 20rpx rgba(90,143,255,1), 0 0 40rpx rgba(90,143,255,0.6); 
+  }
+  .t-violet { 
+    background: linear-gradient(135deg, #7F5AFF, #a855f7); 
+    box-shadow: 0 0 20rpx rgba(127,90,255,1), 0 0 40rpx rgba(127,90,255,0.6); 
+  }
+  .t-gold { 
+    background: linear-gradient(135deg, #f59e0b, #fee140); 
+    box-shadow: 0 0 20rpx rgba(245,158,11,1), 0 0 40rpx rgba(245,158,11,0.6); 
+  }
+  .t-mint { 
+    background: linear-gradient(135deg, #10b981, #38f9d7); 
+    box-shadow: 0 0 20rpx rgba(16,185,129,1), 0 0 40rpx rgba(16,185,129,0.6); 
+  }
+  .t-pink { 
+    background: linear-gradient(135deg, #ec4899, #f093fb); 
+    box-shadow: 0 0 20rpx rgba(236,72,153,1), 0 0 40rpx rgba(236,72,153,0.6); 
+  }
 }
 
 @keyframes fw-pop {
@@ -2517,10 +3196,227 @@ $action-color: #5A8FFF;
 }
 
 @keyframes fw-burst {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4); }
-  80% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx, 0), var(--ty, 0)) scale(1.2); }
+  0% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(0.6); 
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+  70% { 
+    opacity: 1; 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) translate(var(--tx, 0), var(--ty, 0)) scale(1.8); 
+  }
 }
+
+// 祝福文字烟花特效样式
+.blessing-text-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  pointer-events: auto;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  animation: blessingFadeIn 0.8s ease-out;
+  
+  // 添加一个隐藏的提示，鼠标悬停时显示
+  &::after {
+    content: '点击文字放大';
+    position: absolute;
+    bottom: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24rpx;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    animation: hintFadeInOut 4s ease-in-out infinite;
+    animation-delay: 2s;
+    pointer-events: none;
+  }
+}
+
+.blessing-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30rpx;
+  font-size: 120rpx;
+  font-weight: 900;
+  text-shadow: 
+    0 0 40rpx rgba(255, 100, 255, 1),
+    0 0 60rpx rgba(100, 200, 255, 0.8),
+    0 0 100rpx rgba(255, 215, 0, 0.6),
+    4rpx 4rpx 8rpx rgba(0, 0, 0, 0.9);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  &.text-zooming {
+    animation: textZoomPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+.blessing-char {
+  display: inline-block;
+  background: linear-gradient(
+    135deg, 
+    #ff00ff 0%,
+    #00ffff 25%, 
+    #ffff00 50%, 
+    #ff00ff 75%,
+    #00ffff 100%
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  transform: translateY(-50rpx) scale(0);
+  animation: 
+    charAppear 0.6s ease-out forwards,
+    blessingFloat 5s ease-in-out infinite,
+    gradientShift 6s ease infinite,
+    blessingGlow 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 15rpx rgba(255, 100, 255, 0.9))
+          drop-shadow(0 0 25rpx rgba(100, 200, 255, 0.7));
+}
+
+.text-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.text-particle {
+  position: absolute;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  opacity: 0;
+  animation: textParticleBurst 5s ease-out forwards;
+  box-shadow: 
+    0 0 15rpx currentColor,
+    0 0 30rpx currentColor,
+    0 0 45rpx currentColor;
+}
+
+// 祝福文字淡入动画
+@keyframes blessingFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+// 单个字符出现动画
+@keyframes charAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(-80rpx) scale(0) rotate(-15deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(10rpx) scale(1.2) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
+}
+
+// 提示淡入淡出动画
+@keyframes hintFadeInOut {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10rpx);
+  }
+  20%, 80% {
+    opacity: 0.8;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+// 文字缩放脉冲动画
+@keyframes textZoomPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+// 文字浮动动画
+@keyframes blessingFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-15rpx) scale(1.05);
+  }
+  50% {
+    transform: translateY(0) scale(1);
+  }
+  75% {
+    transform: translateY(-10rpx) scale(1.03);
+  }
+}
+
+// 文字发光动画
+@keyframes blessingGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 15rpx rgba(255, 100, 255, 0.9))
+            drop-shadow(0 0 25rpx rgba(100, 200, 255, 0.7));
+  }
+  33% {
+    filter: drop-shadow(0 0 30rpx rgba(100, 200, 255, 1))
+            drop-shadow(0 0 50rpx rgba(255, 215, 0, 0.8));
+  }
+  66% {
+    filter: drop-shadow(0 0 30rpx rgba(255, 215, 0, 1))
+            drop-shadow(0 0 50rpx rgba(255, 100, 255, 0.8));
+  }
+}
+
+// 文字粒子爆发动画
+@keyframes textParticleBurst {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(-200rpx + var(--random-x, 0) * 400rpx),
+      calc(-200rpx + var(--random-y, 0) * 400rpx)
+    ) scale(0.2);
+  }
+}
+
 @keyframes breathe {
   0% {
     transform: scale(1);
@@ -2724,8 +3620,8 @@ $action-color: #5A8FFF;
   }
 
   .comments-section {
-    padding: 16rpx;
 
+    padding-bottom: 0rpx !important;
     .comment-item {
       display: flex;
       margin-bottom: 12rpx;
@@ -2795,25 +3691,26 @@ $action-color: #5A8FFF;
   border: 1rpx solid #e0e6f6;
 }
 
-// 点赞粒子爆炸动画
+// 点赞粒子爆炸动画 - 增强版
 .like-burst-particles {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 40rpx;
-  height: 40rpx;
+  width: 80rpx;
+  height: 80rpx;
   pointer-events: none;
   transform: translate(-50%, -50%);
   z-index: 2;
 
   .particle {
     position: absolute;
-    width: 8rpx;
-    height: 8rpx;
+    width: 14rpx;
+    height: 14rpx;
     border-radius: 50%;
     background: $primary-gradient;
-    opacity: 0.7;
-    animation: particleBurst 0.5s linear;
+    opacity: 1;
+    animation: particleBurst 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12rpx currentColor, 0 0 24rpx currentColor;
   }
 
   .p1 {
@@ -2825,59 +3722,64 @@ $action-color: #5A8FFF;
   .p2 {
     left: 85%;
     top: 15%;
-    animation-delay: 0.05s;
+    animation-delay: 0.06s;
   }
 
   .p3 {
     left: 100%;
     top: 50%;
-    animation-delay: 0.1s;
+    animation-delay: 0.12s;
   }
 
   .p4 {
     left: 85%;
     top: 85%;
-    animation-delay: 0.15s;
+    animation-delay: 0.18s;
   }
 
   .p5 {
     left: 50%;
     top: 100%;
-    animation-delay: 0.2s;
+    animation-delay: 0.24s;
   }
 
   .p6 {
     left: 15%;
     top: 85%;
-    animation-delay: 0.25s;
+    animation-delay: 0.30s;
   }
 
   .p7 {
     left: 0%;
     top: 50%;
-    animation-delay: 0.3s;
+    animation-delay: 0.36s;
   }
 
   .p8 {
     left: 15%;
     top: 15%;
-    animation-delay: 0.35s;
+    animation-delay: 0.42s;
   }
 }
 
 @keyframes particleBurst {
   0% {
-    transform: scale(0.5);
-    opacity: 0.7;
-  }
-
-  80% {
-    transform: scale(1.2);
+    transform: scale(0.4) translate(0, 0);
     opacity: 1;
   }
 
+  30% {
+    transform: scale(1.5) translate(0, 0);
+    opacity: 1;
+  }
+
+  60% {
+    transform: scale(2) translate(0, -40rpx);
+    opacity: 0.8;
+  }
+
   100% {
-    transform: scale(1.8);
+    transform: scale(3) translate(0, -80rpx);
     opacity: 0;
   }
 }
