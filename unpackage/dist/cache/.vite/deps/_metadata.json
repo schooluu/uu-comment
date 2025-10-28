@@ -1,8 +1,15 @@
 {
-  "hash": "f7778fab",
+  "hash": "c35be878",
   "configHash": "0472e67c",
-  "lockfileHash": "90208975",
-  "browserHash": "d47793be",
-  "optimized": {},
+  "lockfileHash": "b4ef71ee",
+  "browserHash": "804bed59",
+  "optimized": {
+    "flv.js": {
+      "src": "../../../../../node_modules/flv.js/dist/flv.js",
+      "file": "flv__js.js",
+      "fileHash": "e212961e",
+      "needsInterop": true
+    }
+  },
   "chunks": {}
 }

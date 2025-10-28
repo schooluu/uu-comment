@@ -76,26 +76,15 @@
 
     <!-- 直播模块 -->
     <view class="live-section" v-if="liveStream.isLive">
+
     
       <view class="live-video-wrapper">
-        <video 
+        <!-- 使用 FlvPlayer 组件支持 FLV 格式 -->
+        <FlvPlayer 
           :src="liveStream.url" 
-          class="live-video"
-          controls
-          autoplay
+          :autoplay="true"
           :muted="liveStream.muted"
-          show-center-play-btn
-          enable-play-gesture
-          show-fullscreen-btn
-          show-play-btn
-          object-fit="contain"
-          :initial-time="0"
-          :enable-auto-rotation="true"
-          :show-mute-btn="true"
-          direction="0"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen="true"
-          x5-video-orientation="portraint"
+          :controls="true"
           @error="handleLiveError"
           @play="handleLivePlay"
         />
@@ -104,6 +93,12 @@
         <view class="live-mute-btn" @tap="toggleMute" v-if="liveStream.muted">
           <text class="mute-icon">🔇</text>
           <text class="mute-text">点击开启声音</text>
+        </view>
+        
+        <!-- 切换源按钮 -->
+        <view class="live-switch-btn" @tap="switchLiveSource">
+
+          <text class="switch-text">切换源</text>
         </view>
       
       </view>
@@ -307,6 +302,7 @@ import {
   onHide,
   onUnload
 } from '@dcloudio/uni-app';
+import FlvPlayer from '@/components/common/FlvPlayer.vue';
 // 匿名昵称池
 const anonymousNames = [
   '星河旅人', '夏日微风', '蓝莓汽水', '橙子汽球', '夜空守望', '晨曦微光', '云端漫步', '月下独行',
@@ -476,17 +472,17 @@ const moments = ref([])
 // 直播相关数据
 const liveStream = ref({
   isLive: true,
-  // 使用真实的 m3u8 直播流地址
-  url: 'https://gcalic.v.myalicdn.com/gc/zsslsjjfsd_1/index.m3u8',
-  title: '精彩直播',
-  host: '官方频道',
+  // FLV 格式直播流地址（使用 flv.js 播放器支持）
+  url: 'https://f17aaf1317136366be2504096b9f92c6.v.smtcdns.net/pull-flv-f11.douyincdn.com/media/stream-118197556637860524_sd.flv?arch_hrchy=w1&exp_hrchy=w1&expire=1762265422&major_anchor_level=common&sign=f4175b289cb11110b19c622aa4c4f0a3&t_id=037-202510282210212F7A436DA68FDB24CF34-PXvUSV&unique_id=stream-118197556637860524_684_flv_sd&_session_id=874-202510282210226191716457F92E2E8546.1761660622619.61134&rsi=0&abr_pts=-800&tencent_test_client_ip=60.171.111.194&dispatch_from=OC_MGR220.180.244.116&utime=1761660658295&TxDispType=7&txTliveMsg=S5;TZ_EIC1LT;TZ_EIC1LT;',
+  title: '抖音 FLV 直播',
+  host: '抖音直播',
   viewerCount: 12580,
   muted: false, // 默认不静音，如果自动播放失败可以设为true
-  // 备用直播源
+  // 备用直播源（支持 FLV 和 m3u8 格式）
   alternativeUrls: [
-    'https://gcalic.v.myalicdn.com/gc/zsslsjjfsd_1/index.m3u8',
-    'http://cctvalih5ca.v.myalicdn.com/live/cctv1_2/index.m3u8',
-    'http://cctvalih5ca.v.myalicdn.com/live/cctv2_2/index.m3u8'
+    'https://58a4c32cd699cb31aa5b89b77e020d6f.v.smtcdns.net/pull-flv-f11.douyincdn.com/media/stream-406441391741469356_sd.flv?arch_hrchy=w1&exp_hrchy=w1&expire=1762265553&major_anchor_level=common&sign=b2bc913a7598aa405bcf7267ba32746e&t_id=037-202510282212337F2D489521D1A425D011-eRzJth&unique_id=stream-406441391741469356_684_flv_sd&_session_id=764-20251028221234812965803771E56CB11.1761660754081.82275&rsi=0&abr_pts=-800&tencent_test_client_ip=60.171.111.194&dispatch_from=OC_MGR220.180.244.116&utime=1761660762208&TxDispType=7&txTliveMsg=S5;QZ_EIC5;QZ_EIC5;',
+    'https://pull-flv-f26.douyincdn.com/media/stream-694555860336116396_sd.flv?arch_hrchy=w1&exp_hrchy=w1&expire=690a0a2e&major_anchor_level=common&sign=cd524f72dd5f86c4fceb3782bb6dc505&t_id=037-2025102822140673FAFEFD730E6D25EFDB-jaIZjj&unique_id=stream-694555860336116396_684_flv_sd&_session_id=504-202510282214068862868643E0D5709526.1761660846886.74324&rsi=0&abr_pts=-800'
+
   ]
 })
 const handleLogin = () => {
@@ -540,6 +536,18 @@ const toggleMute = () => {
     icon: 'none',
     duration: 1000
   })
+}
+
+// 切换直播源
+const switchLiveSource = () => {
+  if (liveStream.value.alternativeUrls && liveStream.value.alternativeUrls.length > 0) {
+    currentUrlIndex = (currentUrlIndex + 1) % liveStream.value.alternativeUrls.length
+    liveStream.value.url = liveStream.value.alternativeUrls[currentUrlIndex]
+    
+    liveStream.value.title = sourceNames[currentUrlIndex] || `直播源${currentUrlIndex + 1}`
+    
+ 
+  }
 }
 
 // 获取朋友圈列表
@@ -2201,12 +2209,44 @@ $action-color: #5A8FFF;
       backdrop-filter: blur(10rpx);
       box-shadow: 0 4rpx 12rpx rgba(255, 87, 34, 0.4);
       animation: mutePulse 2s ease-in-out infinite;
+      z-index: 10;
 
       .mute-icon {
         font-size: 28rpx;
       }
 
       .mute-text {
+        font-size: 22rpx;
+        color: #fff;
+        font-weight: 600;
+      }
+    }
+
+    .live-switch-btn {
+      position: absolute;
+      bottom: 20rpx;
+      left: 20rpx;
+      display: flex;
+      align-items: center;
+      gap: 8rpx;
+      padding: 10rpx 16rpx;
+      background: rgba(103, 58, 183, 0.9);
+      border-radius: 30rpx;
+      backdrop-filter: blur(10rpx);
+      box-shadow: 0 4rpx 12rpx rgba(103, 58, 183, 0.4);
+      z-index: 10;
+      transition: all 0.3s ease;
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      .switch-icon {
+        font-size: 28rpx;
+        animation: rotate 2s linear infinite;
+      }
+
+      .switch-text {
         font-size: 22rpx;
         color: #fff;
         font-weight: 600;
@@ -2234,6 +2274,15 @@ $action-color: #5A8FFF;
   50% {
     transform: scale(1.05);
     box-shadow: 0 6rpx 16rpx rgba(255, 87, 34, 0.6);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

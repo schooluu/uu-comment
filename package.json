@@ -74,6 +74,7 @@
 		}
 	},
 	"dependencies": {
-		"crypto-js": "^4.2.0"
+		"crypto-js": "^4.2.0",
+		"flv.js": "^1.6.2"
 	}
 }
