@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "朋友圈",
+  "usingComponents": {
+    "flv-player": "../../../components/common/FlvPlayer"
+  }
+}

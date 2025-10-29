@@ -1,0 +1,46 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  padding: 30rpx;
+}
+.header {
+  margin-bottom: 40rpx;
+}
+.header .title {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.gift-list .gift-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  display: flex;
+  align-items: center;
+}
+.gift-list .gift-item .gift-info {
+  flex: 1;
+}
+.gift-list .gift-item .gift-info .name {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 12rpx;
+}
+.gift-list .gift-item .gift-info .validity, .gift-list .gift-item .gift-info .count {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 26rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.gift-list .gift-item .gift-btn {
+  width: 120rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  background: #FF4D8F;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 100rpx;
+}

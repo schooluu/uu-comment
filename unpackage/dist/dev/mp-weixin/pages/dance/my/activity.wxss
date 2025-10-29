@@ -1,0 +1,70 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  padding: 30rpx;
+}
+.header {
+  margin-bottom: 40rpx;
+}
+.header .title {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.activity-list .activity-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin-bottom: 30rpx;
+}
+.activity-list .activity-item .cover {
+  width: 100%;
+  height: 300rpx;
+}
+.activity-list .activity-item .content {
+  padding: 30rpx;
+}
+.activity-list .activity-item .content .name {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  display: block;
+}
+.activity-list .activity-item .content .info {
+  margin-bottom: 20rpx;
+}
+.activity-list .activity-item .content .info .time, .activity-list .activity-item .content .info .location {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 26rpx;
+  margin-right: 20rpx;
+}
+.activity-list .activity-item .content .status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.activity-list .activity-item .content .status-bar .price {
+  color: #FF4D8F;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.activity-list .activity-item .content .status-bar .join-btn {
+  width: 160rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  border-radius: 100rpx;
+  font-size: 26rpx;
+}
+.activity-list .activity-item .content .status-bar .join-btn.available {
+  background: #FF4D8F;
+  color: #fff;
+}
+.activity-list .activity-item .content .status-bar .join-btn.full {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+}
+.activity-list .activity-item .content .status-bar .join-btn.joined {
+  background: #2DD4BF;
+  color: #fff;
+}

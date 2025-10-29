@@ -1,0 +1,68 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  padding: 30rpx;
+}
+.header {
+  margin-bottom: 40rpx;
+}
+.header .title {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.filter {
+  margin-bottom: 30rpx;
+}
+.filter .date-picker {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 16rpx 30rpx;
+  border-radius: 100rpx;
+  color: #fff;
+  font-size: 28rpx;
+}
+.filter .date-picker .icon {
+  margin-left: 10rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+.record-list .record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+.record-list .record-item .left .type {
+  color: #fff;
+  font-size: 30rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.record-list .record-item .left .time {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24rpx;
+}
+.record-list .record-item .right {
+  text-align: right;
+}
+.record-list .record-item .right .amount {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+.record-list .record-item .right .amount.minus {
+  color: #FF4D8F;
+}
+.record-list .record-item .right .amount.plus {
+  color: #2DD4BF;
+}
+.record-list .record-item .right .status {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24rpx;
+}

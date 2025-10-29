@@ -1,0 +1,516 @@
+.container {
+  min-height: 100vh;
+  background-color: #141123f5;
+  padding-bottom: 120rpx;
+}
+.banner-swiper {
+  height: 460rpx;
+}
+.banner-swiper .banner-item {
+  position: relative;
+  height: 100%;
+}
+.banner-swiper .banner-item .banner-image {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease;
+}
+.banner-swiper .banner-item .banner-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 40rpx;
+  background: linear-gradient(to right, rgba(20, 17, 35, 0.8) 0%, rgba(20, 17, 35, 0.6) 50%, rgba(20, 17, 35, 0.4) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.banner-swiper .banner-item .banner-content .title {
+  font-size: 48rpx;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  animation: slideRight 0.8s ease-out;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+.banner-swiper .banner-item .banner-content .subtitle {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 30rpx;
+  animation: slideRight 0.8s ease-out 0.2s both;
+}
+.banner-swiper .banner-item .banner-content .date {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  margin-bottom: 16rpx;
+  animation: fadeIn 0.8s ease-out 0.4s both;
+}
+.banner-swiper .banner-item .banner-content .theme {
+  font-size: 32rpx;
+  color: #FF4D8F;
+  font-weight: 500;
+  animation: slideUp 0.8s ease-out 0.6s both;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.2);
+}
+.banner-swiper .banner-item:hover .banner-image {
+  transform: scale(1.05);
+}
+.banner-swiper .banner-item:hover .banner-content {
+  background: linear-gradient(to right, rgba(20, 17, 35, 0.9) 0%, rgba(20, 17, 35, 0.7) 50%, rgba(20, 17, 35, 0.5) 100%);
+}
+.tab-header {
+  display: flex;
+  padding: 30rpx 40rpx;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20rpx;
+}
+.tab-header .tab-item {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 32rpx;
+  margin-right: 60rpx;
+  padding-bottom: 16rpx;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.tab-header .tab-item.active {
+  color: #FF4D8F;
+  font-weight: 600;
+}
+.tab-header .tab-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4rpx;
+  background: #FF4D8F;
+  border-radius: 4rpx;
+  animation: slideIn 0.3s ease;
+}
+.filter-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  gap: 12rpx;
+}
+.filter-section .filter-item {
+  flex: 1;
+  min-width: 0;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 32rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+.filter-section .filter-item.active {
+  background: #FF4D8F;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(255, 77, 143, 0.3);
+}
+.filter-section .filter-item.search {
+  flex: 0 0 64rpx;
+  padding: 0;
+}
+.filter-section .filter-item.search .icon {
+  font-size: 32rpx;
+}
+.filter-section .filter-item .icon {
+  margin-left: 4rpx;
+  font-size: 20rpx;
+}
+.filter-section .filter-item:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+.date-scroll {
+  position: relative;
+  width: 100%;
+  white-space: nowrap;
+  padding: 20rpx 0;
+}
+.date-scroll .date-list {
+  display: inline-flex;
+  padding: 0 30rpx;
+}
+.date-scroll .date-list .date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 20rpx;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+.date-scroll .date-list .date-item.active {
+  background: #FF4D8F;
+  transform: scale(1.05);
+  box-shadow: 0 4rpx 16rpx rgba(255, 77, 143, 0.3);
+}
+.date-scroll .date-list .date-item.active .day,
+.date-scroll .date-list .date-item.active .date {
+  color: #fff;
+  font-weight: 600;
+}
+.date-scroll .date-list .date-item:active {
+  transform: scale(0.95);
+}
+.date-scroll .date-list .date-item .day {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8rpx;
+  transition: all 0.3s ease;
+}
+.date-scroll .date-list .date-item .date {
+  font-size: 32rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.date-scroll .scroll-hint {
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 30rpx;
+  padding: 10rpx 20rpx;
+  display: flex;
+  align-items: center;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+.date-scroll .scroll-hint.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.date-scroll .scroll-hint .hint-text {
+  font-size: 24rpx;
+  color: #fff;
+  margin-right: 10rpx;
+}
+.date-scroll .scroll-hint .hint-arrow {
+  font-size: 28rpx;
+  color: #fff;
+  animation: arrowMove 1.5s infinite;
+}
+@keyframes arrowMove {
+0%, 100% {
+    transform: translateX(0);
+}
+50% {
+    transform: translateX(6rpx);
+}
+}
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+.course-list.recommended {
+  padding: 0 30rpx;
+  margin-bottom: 40rpx;
+}
+.course-list.recommended .course-image-wrapper {
+  position: relative;
+  border-radius: 20rpx;
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease-out;
+}
+.course-list.recommended .course-image-wrapper:hover .course-image {
+  transform: scale(1.05);
+}
+.course-list.recommended .course-image-wrapper:hover .overlay {
+  background: rgba(20, 17, 35, 0.5);
+}
+.course-list.recommended .course-image-wrapper:hover .course-info {
+  transform: translateY(0);
+}
+.course-list.recommended .course-image-wrapper .course-image {
+  width: 100%;
+  height: 360rpx;
+  transition: transform 0.6s ease;
+}
+.course-list.recommended .course-image-wrapper .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(20, 17, 35, 0.3);
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 30rpx;
+}
+.course-list.recommended .course-image-wrapper .course-info {
+  transform: translateY(20rpx);
+  transition: transform 0.3s ease;
+}
+.course-list.recommended .course-image-wrapper .course-info .course-title {
+  display: block;
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+.course-list.recommended .course-image-wrapper .course-info .course-desc {
+  display: block;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 26rpx;
+  margin-bottom: 16rpx;
+}
+.course-list.recommended .course-image-wrapper .course-info .course-tag {
+  display: inline-block;
+  background: #FF4D8F;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 100rpx;
+  opacity: 0.9;
+}
+.course-list {
+  padding: 30rpx;
+}
+.course-list .course-item {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.course-list .course-item .course-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  flex-direction: column;
+  justify-content: center;
+}
+.course-list .course-item .course-header .teacher-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+}
+.course-list .course-item .course-header .teacher-name {
+  color: #fff;
+  font-size: 22rpx;
+  margin-top: 10rpx;
+}
+.course-list .course-item .course-info .title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+.course-list .course-item .course-info .title-row .course-title {
+  color: #fff;
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+.course-list .course-item .course-info .title-row .stars {
+  color: #FFD700;
+}
+.course-list .course-item .course-info .course-count,
+.course-list .course-item .course-info .course-time,
+.course-list .course-item .course-info .course-location {
+  display: block;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24rpx;
+  margin-top: 8rpx;
+}
+.course-list .course-item .course-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 20rpx;
+  gap: 12rpx;
+}
+.course-list .course-item .course-status .remaining .text {
+  display: inline-block;
+  color: #2DD4BF;
+  font-size: 24rpx;
+  background: rgba(45, 212, 191, 0.1);
+  padding: 8rpx 20rpx;
+  border-radius: 100rpx;
+}
+.course-list .course-item .course-status .action-btn {
+  min-width: 120rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  padding: 0 30rpx;
+  border-radius: 100rpx;
+  font-size: 26rpx;
+  text-align: center;
+}
+.course-list .course-item .course-status .action-btn.btn-book {
+  background: #FF4D8F;
+  color: #fff;
+}
+.course-list .course-item .course-status .action-btn.btn-full {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+}
+.course-list .course-item .course-status .action-btn.btn-tight {
+  background: #FF4D8F;
+  color: #fff;
+  opacity: 0.8;
+}
+.course-list .course-item .favorite-btn {
+  position: absolute;
+  top: 30rpx;
+  right: 30rpx;
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.course-list .course-item .favorite-btn .icon {
+  font-size: 40rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+.course-list .course-item .favorite-btn .icon.active {
+  color: #FF4D8F;
+}
+@keyframes fadeIn {
+from {
+    opacity: 0;
+}
+to {
+    opacity: 1;
+}
+}
+@keyframes slideDown {
+from {
+    opacity: 0;
+    transform: translateY(-20rpx);
+}
+to {
+    opacity: 1;
+    transform: translateY(0);
+}
+}
+@keyframes slideRight {
+from {
+    opacity: 0;
+    transform: translateX(-20rpx);
+}
+to {
+    opacity: 1;
+    transform: translateX(0);
+}
+}
+@keyframes slideUp {
+from {
+    opacity: 0;
+    transform: translateY(20rpx);
+}
+to {
+    opacity: 1;
+    transform: translateY(0);
+}
+}
+@keyframes pulse {
+0% {
+    transform: scale(1);
+}
+50% {
+    transform: scale(1.05);
+}
+100% {
+    transform: scale(1);
+}
+}
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+.animate-slide-down {
+  animation: slideDown 0.6s ease-out forwards;
+}
+.animate-slide-right {
+  animation: slideRight 0.6s ease-out forwards;
+}
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+.course-list .course-item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.course-list .course-item:hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+.course-list .course-item:hover .teacher-avatar {
+  transform: scale(1.05);
+}
+.course-list .course-item:hover .course-title {
+  color: #FF4D8F;
+}
+.course-list .course-item .course-header .teacher-avatar {
+  transition: transform 0.3s ease;
+}
+.course-list .course-item .course-header .teacher-name {
+  transition: color 0.3s ease;
+}
+.course-list .course-item .action-btn {
+  transition: all 0.3s ease;
+}
+.course-list .course-item .action-btn:hover {
+  transform: translateY(-2rpx);
+  filter: brightness(1.1);
+}
+.course-list .course-item .action-btn:active {
+  transform: scale(0.95);
+}
+.course-list .course-item .favorite-btn .icon {
+  transition: all 0.3s ease;
+}
+.course-list .course-item .favorite-btn .icon:hover {
+  transform: scale(1.1);
+  color: rgba(255, 77, 143, 0.8);
+}
+.course-list .course-item .favorite-btn .icon:active {
+  transform: scale(0.9);
+}
+.filter-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.filter-item.active {
+  animation: pulse 1s ease infinite;
+}
+.date-item:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2rpx);
+}
+.date-item.active {
+  animation: pulse 2s ease infinite;
+}
+.banner-swiper .banner-item .title {
+  animation: slideRight 0.8s ease-out;
+}
+.banner-swiper .banner-item .subtitle {
+  animation: slideRight 0.8s ease-out 0.2s both;
+}
+.banner-swiper .banner-item .date {
+  animation: fadeIn 0.8s ease-out 0.4s both;
+}
+.banner-swiper .banner-item .theme {
+  animation: slideUp 0.8s ease-out 0.6s both;
+}

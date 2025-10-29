@@ -1,0 +1,1 @@
+<view class="flv-player-container data-v-480bef9f"><video wx:if="{{a}}" src="{{b}}" autoplay="{{c}}" muted="{{d}}" controls="{{e}}" class="flv-video data-v-480bef9f" binderror="{{f}}" bindplay="{{g}}"/></view>

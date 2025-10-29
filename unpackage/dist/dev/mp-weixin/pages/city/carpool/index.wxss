@@ -1,0 +1,78 @@
+.carpool-container.data-v-124c8f6e {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+.carpool-container .header.data-v-124c8f6e {
+  height: 88rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+.carpool-container .header .title.data-v-124c8f6e {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+.carpool-container .filter-bar.data-v-124c8f6e {
+  display: flex;
+  background: #fff;
+  padding: 20rpx 0;
+  margin-bottom: 20rpx;
+}
+.carpool-container .filter-bar .filter-item.data-v-124c8f6e {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+.carpool-container .filter-bar .filter-item .arrow.data-v-124c8f6e {
+  margin-left: 8rpx;
+}
+.carpool-container .carpool-list.data-v-124c8f6e {
+  padding: 20rpx;
+}
+.carpool-container .carpool-list .carpool-item.data-v-124c8f6e {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.carpool-container .carpool-list .carpool-item .carpool-info.data-v-124c8f6e {
+  flex: 1;
+}
+.carpool-container .carpool-list .carpool-item .carpool-info .route.data-v-124c8f6e {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.carpool-container .carpool-list .carpool-item .carpool-info .date.data-v-124c8f6e {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+.carpool-container .carpool-list .carpool-item .carpool-info .price.data-v-124c8f6e {
+  font-size: 28rpx;
+  color: #ff5a5f;
+}
+.carpool-container .carpool-list .carpool-item .driver-info.data-v-124c8f6e {
+  display: flex;
+  align-items: center;
+}
+.carpool-container .carpool-list .carpool-item .driver-info .avatar.data-v-124c8f6e {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  margin-right: 12rpx;
+}
+.carpool-container .carpool-list .carpool-item .driver-info .driver-name.data-v-124c8f6e {
+  font-size: 28rpx;
+  color: #333;
+}

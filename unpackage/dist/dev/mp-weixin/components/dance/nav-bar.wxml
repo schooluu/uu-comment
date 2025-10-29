@@ -1,0 +1,1 @@
+<view class="nav-bar" style="{{'padding-top:' + d}}"><view wx:if="{{a}}" class="left" bindtap="{{b}}"><text class="back-icon">←</text></view><text class="title">{{c}}</text><view class="right"><slot name="right"></slot></view></view>

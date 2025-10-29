@@ -1,0 +1,77 @@
+.user-container.data-v-72000094 {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+.user-container .user-header.data-v-72000094 {
+  height: 300rpx;
+  background: linear-gradient(135deg, #07c160, #10ad7a);
+  padding: 40rpx 30rpx;
+  display: flex;
+  align-items: center;
+}
+.user-container .user-header .avatar.data-v-72000094 {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+.user-container .user-header .user-info.data-v-72000094 {
+  margin-left: 24rpx;
+  color: #fff;
+}
+.user-container .user-header .user-info .nickname.data-v-72000094 {
+  font-size: 36rpx;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+.user-container .user-header .user-info .id.data-v-72000094 {
+  font-size: 26rpx;
+  opacity: 0.8;
+}
+.user-container .menu-list.data-v-72000094 {
+  margin-top: 20rpx;
+  background: #fff;
+  padding: 0 30rpx;
+}
+.user-container .menu-list .menu-item.data-v-72000094 {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.user-container .menu-list .menu-item.data-v-72000094:last-child {
+  border-bottom: none;
+}
+.user-container .menu-list .menu-item .icon.data-v-72000094 {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+.user-container .menu-list .menu-item .name.data-v-72000094 {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+.user-container .menu-list .menu-item .arrow.data-v-72000094 {
+  color: #ccc;
+  font-size: 32rpx;
+}
+.user-container .version.data-v-72000094 {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 60rpx;
+}
+.user-container .logout-btn.data-v-72000094 {
+  margin: 40rpx 30rpx;
+  height: 88rpx;
+  background: #fff;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #ff5a5f;
+}
+.user-container .logout-btn.data-v-72000094:active {
+  opacity: 0.8;
+}

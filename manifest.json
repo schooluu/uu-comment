@@ -92,7 +92,7 @@
             "base" : "./"
         },
         "devServer" : {
-            "https" : true
+            "https" : false
         },
         "title" : "项目模板展示",
         "optimization" : {

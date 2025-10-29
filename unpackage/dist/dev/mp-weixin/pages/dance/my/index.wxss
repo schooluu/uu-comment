@@ -1,0 +1,198 @@
+.container.data-v-a7526a8c {
+  min-height: 100vh;
+  background-color: #141123f5;
+  padding-bottom: 120rpx;
+}
+.header.data-v-a7526a8c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0;
+}
+.header .logo.data-v-a7526a8c {
+  width: 440rpx;
+  height: 420rpx;
+  margin-bottom: 30rpx;
+}
+.header .slogan.data-v-a7526a8c {
+  color: #fff;
+  font-size: 32rpx;
+  margin-bottom: 30rpx;
+}
+.header .login-btn.data-v-a7526a8c {
+  width: 240rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #FF4D8F;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 100rpx;
+}
+.section.data-v-a7526a8c {
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+.section .section-header.data-v-a7526a8c {
+  margin-bottom: 30rpx;
+}
+.section .section-header .section-title.data-v-a7526a8c {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #fff;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.section .section-header .section-subtitle.data-v-a7526a8c {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.5);
+}
+.section .menu-grid.data-v-a7526a8c {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+.section .menu-grid .menu-item.data-v-a7526a8c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+}
+.section .menu-grid .menu-item.data-v-a7526a8c:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.08);
+}
+.section .menu-grid .menu-item .icon-wrapper.data-v-a7526a8c {
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(255, 77, 143, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+.section .menu-grid .menu-item .icon-wrapper .emoji.data-v-a7526a8c {
+  font-size: 36rpx;
+}
+.section .menu-grid .menu-item .text.data-v-a7526a8c {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 8rpx;
+}
+.tab-bar.data-v-a7526a8c {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.tab-bar .tab-item.data-v-a7526a8c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tab-bar .tab-item .icon.data-v-a7526a8c {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 6rpx;
+}
+.tab-bar .tab-item .text.data-v-a7526a8c {
+  color: #fff;
+  font-size: 20rpx;
+}
+.tab-bar .tab-item .text.active.data-v-a7526a8c {
+  color: #FF4D8F;
+}
+.user-info.data-v-a7526a8c {
+  display: flex;
+  align-items: center;
+  padding: 40rpx;
+}
+.user-info .avatar.data-v-a7526a8c {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 30rpx;
+}
+.user-info .info-right.data-v-a7526a8c {
+  flex: 1;
+}
+.user-info .info-right .nickname.data-v-a7526a8c {
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 10rpx;
+}
+.user-info .info-right .phone.data-v-a7526a8c {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+.user-info .edit-btn.data-v-a7526a8c {
+  padding: 20rpx;
+}
+.user-info .edit-btn .emoji.data-v-a7526a8c {
+  font-size: 36rpx;
+}
+.stats-section.data-v-a7526a8c {
+  display: flex;
+  justify-content: space-around;
+  padding: 30rpx;
+  margin: 0 30rpx 30rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16rpx;
+}
+.stats-section .stat-item.data-v-a7526a8c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stats-section .stat-item .number.data-v-a7526a8c {
+  font-size: 40rpx;
+  color: #FF4D8F;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+.stats-section .stat-item .label.data-v-a7526a8c {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+.login-section.data-v-a7526a8c {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 30rpx;
+  box-sizing: border-box;
+}
+.login-section .logo.data-v-a7526a8c {
+  width: 280rpx;
+  height: 280rpx;
+  margin-bottom: 40rpx;
+}
+.login-section .slogan.data-v-a7526a8c {
+  color: #fff;
+  font-size: 32rpx;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+.login-section .login-btn.data-v-a7526a8c {
+  width: 280rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #FF4D8F;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  text-align: center;
+  border: none;
+}
+.login-section .login-btn.data-v-a7526a8c::after {
+  border: none;
+}

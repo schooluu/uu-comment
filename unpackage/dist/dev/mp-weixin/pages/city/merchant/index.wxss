@@ -1,0 +1,82 @@
+.merchant-detail.data-v-1d861fa7 {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+.merchant-detail .header.data-v-1d861fa7 {
+  height: 88rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+.merchant-detail .header .title.data-v-1d861fa7 {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+.merchant-detail .merchant-info.data-v-1d861fa7 {
+  background: #fff;
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.merchant-detail .merchant-info .merchant-image.data-v-1d861fa7 {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+.merchant-detail .merchant-info .info.data-v-1d861fa7 {
+  flex: 1;
+}
+.merchant-detail .merchant-info .info .address.data-v-1d861fa7 {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+.merchant-detail .merchant-info .info .tags.data-v-1d861fa7 {
+  display: flex;
+  gap: 12rpx;
+}
+.merchant-detail .merchant-info .info .tags .tag.data-v-1d861fa7 {
+  padding: 4rpx 12rpx;
+  background: rgba(7, 193, 96, 0.1);
+  color: #07c160;
+  font-size: 24rpx;
+  border-radius: 4rpx;
+}
+.merchant-detail .products-section.data-v-1d861fa7 {
+  background: #fff;
+  padding: 30rpx;
+}
+.merchant-detail .products-section .section-title.data-v-1d861fa7 {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 20rpx;
+}
+.merchant-detail .products-section .product-list .product-item.data-v-1d861fa7 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.merchant-detail .products-section .product-list .product-item .product-image.data-v-1d861fa7 {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+.merchant-detail .products-section .product-list .product-item .product-info.data-v-1d861fa7 {
+  flex: 1;
+}
+.merchant-detail .products-section .product-list .product-item .product-info .name.data-v-1d861fa7 {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.merchant-detail .products-section .product-list .product-item .product-info .price.data-v-1d861fa7 {
+  font-size: 28rpx;
+  color: #ff5a5f;
+}

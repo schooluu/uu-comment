@@ -1,0 +1,116 @@
+.address-edit {
+  min-height: 100vh;
+  background: #f8f8f8;
+  padding-bottom: 140rpx;
+}
+.form {
+  background: #fff;
+  padding: 0 30rpx;
+  margin-top: 20rpx;
+}
+.form .form-item {
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+.form .form-item .label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  display: block;
+}
+.form .form-item .input {
+  height: 60rpx;
+  font-size: 28rpx;
+}
+.form .form-item .textarea {
+  width: 100%;
+  height: 160rpx;
+  font-size: 28rpx;
+}
+.form .form-item .area-picker {
+  display: flex;
+  align-items: center;
+  height: 60rpx;
+}
+.form .form-item .area-picker .value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+.form .form-item .area-picker .arrow {
+  font-size: 28rpx;
+  color: #999;
+  margin-left: 10rpx;
+}
+.form .form-item.switch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.form .form-item.switch-item .label {
+  margin-bottom: 0;
+}
+.form .tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10rpx;
+}
+.form .tags .tag-item {
+  margin: 10rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+}
+.form .tags .tag-item.active {
+  background: #ff6b6b;
+  color: #fff;
+}
+.form .tags .tag-item.custom .custom-input {
+  width: 120rpx;
+  height: 100%;
+  text-align: center;
+}
+.placeholder {
+  color: #999;
+  font-size: 28rpx;
+}
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.03);
+}
+.footer .btn-group {
+  display: flex;
+  gap: 20rpx;
+}
+.footer .btn-group button {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+.footer .btn-group button.delete-btn {
+  background: #fff;
+  color: #666;
+  border: 2rpx solid #ddd;
+}
+.footer .btn-group button.save-btn {
+  background: #ff6b6b;
+  color: #fff;
+}
+.footer .btn-group button.save-btn.full-width {
+  flex: none;
+  width: 100%;
+}
+.footer .btn-group button.save-btn:active {
+  background: #ff5252;
+}

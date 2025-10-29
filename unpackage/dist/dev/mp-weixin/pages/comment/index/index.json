@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "评论列表",
+  "usingComponents": {
+    "uni-rate": "../../../uni_modules/uni-rate/components/uni-rate/uni-rate",
+    "uni-popup": "../../../uni_modules/uni-popup/components/uni-popup/uni-popup",
+    "company-skeleton": "../../../components/comment/CompanySkeleton"
+  }
+}

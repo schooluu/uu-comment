@@ -1,0 +1,55 @@
+.container {
+  min-height: 100vh;
+  background-color: #1C1B21;
+  padding: 30rpx;
+}
+.header {
+  margin-bottom: 40rpx;
+}
+.header .title {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.course-list .course-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+.course-list .course-item .course-info {
+  margin-bottom: 20rpx;
+}
+.course-list .course-item .course-info .name {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 10rpx;
+}
+.course-list .course-item .course-info .time, .course-list .course-item .course-info .location, .course-list .course-item .course-info .teacher {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 26rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.course-list .course-item .book-btn {
+  width: 160rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  border-radius: 100rpx;
+  font-size: 26rpx;
+  text-align: center;
+}
+.course-list .course-item .book-btn.available {
+  background: #FF4D8F;
+  color: #fff;
+}
+.course-list .course-item .book-btn.full {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+}
+.course-list .course-item .book-btn.booked {
+  background: #2DD4BF;
+  color: #fff;
+}
